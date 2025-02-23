@@ -158,16 +158,6 @@ export function SwapForm() {
             />
           </div>
 
-          {error && (
-            <Alert variant="destructive">
-              <TriangleAlert className="h-4 w-4" />
-              <AlertTitle>An error occurred</AlertTitle>
-              <AlertDescription>
-                {error}
-              </AlertDescription>
-            </Alert>
-          )}
-
           {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
           {/* @ts-ignore */}
           {(!quote || quote?.error) ? (
@@ -196,6 +186,16 @@ export function SwapForm() {
                 Cancel
               </Button>
             </div>
+          )}
+
+          {error && (
+            <Alert variant="destructive">
+              <TriangleAlert className="h-4 w-4" />
+              <AlertTitle>An error occurred</AlertTitle>
+              <AlertDescription>
+                {error}
+              </AlertDescription>
+            </Alert>
           )}
 
           {quoteStatus === 'COMPLETED' && (
