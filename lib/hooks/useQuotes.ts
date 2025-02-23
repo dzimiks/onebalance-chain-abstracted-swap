@@ -72,6 +72,13 @@ export const useQuotes = (): UseQuotesReturn => {
 
       const resp = await quotesApi.executeQuote(state.quote);
       console.log({ response: resp });
+      if (resp?.error) {
+        setState(prev => ({
+          ...prev,
+          error: resp?.message || 'Failed to execute quote',
+          loading: false,
+        }));
+      }
 
       // Start polling for status
       const pollStatus = async () => {

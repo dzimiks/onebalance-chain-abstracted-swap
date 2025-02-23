@@ -3,18 +3,21 @@ import { ArrowDownUp, CircleCheck, TriangleAlert } from 'lucide-react';
 import { AssetSelect } from '@/components/AssetSelect';
 import { ChainSelect } from '@/components/ChainSelect';
 import { QuoteDetails } from '@/components/QuoteDetails';
+import { AmountInput } from '@/components/AmountInput';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
 import { useAssets, useChains, useQuotes } from '@/lib/hooks';
+import { Asset } from '@/lib/types/assets';
+import { formatTokenAmount } from '@/lib/utils/token';
 
 export function SwapForm() {
   const [sourceAsset, setSourceAsset] = useState<string>('ds:eth');
   const [targetAsset, setTargetAsset] = useState<string>('ds:usdc');
   const [sourceChain, setSourceChain] = useState<string>('8453');
   const [targetChain, setTargetChain] = useState<string>('42161');
-  const [amount, setAmount] = useState<string>('800000000000000');
+  const [amount, setAmount] = useState<string>(formatTokenAmount('800000000000000', 18));
+  const [parsedAmount, setParsedAmount] = useState('800000000000000');
 
   console.log({
     fromTokenAmount: amount,
@@ -26,6 +29,7 @@ export function SwapForm() {
   const { chains, loading: chainsLoading, error: chainsError } = useChains();
   const { quote, status, loading, error, getQuote, executeQuote, resetQuote } = useQuotes();
   const quoteStatus: string | null = status?.status?.status ?? null;
+  const selectedSourceAsset: Asset | null = assets.find(asset => asset.aggregatedAssetId === sourceAsset) ?? null;
 
   const handleSwapDirection = () => {
     setSourceAsset(targetAsset);
@@ -34,8 +38,13 @@ export function SwapForm() {
     setTargetChain(sourceChain);
   };
 
+  const handleAmountChange = (inputValue: string, parsedValue: string) => {
+    setAmount(inputValue);
+    setParsedAmount(parsedValue);
+  };
+
   const handleGetQuote = async () => {
-    if (!sourceAsset || !targetAsset || !amount) return;
+    if (!sourceAsset || !targetAsset || !parsedAmount) return;
 
     const dummyAccount = {
       sessionAddress: '0x1cBFbFd62a276BF6D79d504eA4CA75a7baDcf5b1',
@@ -45,7 +54,7 @@ export function SwapForm() {
 
     await getQuote({
       account: dummyAccount,
-      fromTokenAmount: amount,
+      fromTokenAmount: parsedAmount,
       fromAggregatedAssetId: sourceAsset,
       toAggregatedAssetId: targetAsset,
     });
@@ -128,13 +137,11 @@ export function SwapForm() {
           </div>
 
           <div className="space-y-2">
-            <label className="block text-sm font-medium">Amount</label>
-            <Input
-              type="text"
-              placeholder="Enter amount"
+            <AmountInput
               value={amount}
-              onChange={(e) => setAmount(e.target.value)}
+              onChange={handleAmountChange}
               disabled={loading}
+              selectedAsset={selectedSourceAsset}
             />
           </div>
 
@@ -148,7 +155,7 @@ export function SwapForm() {
             </Alert>
           )}
 
-          {!quote ? (
+          {(!quote || quote?.error) ? (
             <Button
               className="w-full"
               onClick={handleGetQuote}
@@ -186,7 +193,37 @@ export function SwapForm() {
             </Alert>
           )}
 
-          {quote && <QuoteDetails quote={quote} />}
+          {quote?.error && (
+            <Alert variant="destructive">
+              <TriangleAlert className="h-4 w-4" />
+              <AlertTitle>Quote Error</AlertTitle>
+              <AlertDescription>
+                {quote?.message}
+              </AlertDescription>
+            </Alert>
+          )}
+          {!quote?.error && quote?.originToken && (
+            <QuoteDetails
+              quote={{
+                ...quote,
+                // Format the amounts for display
+                originToken: {
+                  ...quote.originToken,
+                  amount: formatTokenAmount(
+                    quote.originToken.amount,
+                    selectedSourceAsset?.decimals ?? 18
+                  )
+                },
+                destinationToken: {
+                  ...quote.destinationToken,
+                  amount: formatTokenAmount(
+                    quote.destinationToken.amount,
+                    assets.find(a => a.aggregatedAssetId === quote.destinationToken.aggregatedAssetId)?.decimals ?? 18
+                  )
+                }
+              }}
+            />
+          )}
         </div>
       </div>
     </Card>
