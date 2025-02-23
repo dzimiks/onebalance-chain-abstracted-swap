@@ -16,7 +16,7 @@ export function useChains(): ChainData {
 
   const fetchChains = async () => {
     try {
-      const data = await chainsApi.getChains();
+      const data: Chain[] = await chainsApi.getChains();
       setChains(data);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch chains');

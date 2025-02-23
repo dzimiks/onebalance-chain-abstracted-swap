@@ -15,7 +15,7 @@ export const useAssets = (): AssetsData => {
 
   const fetchAssets = async () => {
     try {
-      const data = await assetsApi.getAssets();
+      const data: Asset[] = await assetsApi.getAssets();
       setAssets(data);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch assets');
