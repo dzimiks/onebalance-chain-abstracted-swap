@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import {
   Select,
   SelectContent,
@@ -41,7 +42,14 @@ export const ChainSelect = ({
                 key={chain.chain.reference}
                 value={chain.chain.reference}
               >
-                {CHAIN_NAMES[chain.chain.reference] ?? 'Unknown Chain'}
+                <Image
+                  className="bg-black"
+                  src={`https://storage.googleapis.com/tenderly-public-assets/networks/${chain.chain.reference}.svg`}
+                  alt={chain.chain.reference}
+                  width={16}
+                  height={16}
+                />
+                <span>{CHAIN_NAMES[chain.chain.reference] ?? 'Unknown Chain'}</span>
               </SelectItem>
             ))}
           </SelectGroup>
