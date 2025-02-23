@@ -7,10 +7,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import type { Asset } from '@/lib/types/assets';
+import { Chain, CHAIN_NAMES } from '@/lib/types/chains';
 
-interface AssetSelectProps {
-  assets: Asset[];
+interface ChainSelectProps {
+  chains: Chain[];
   value: string;
   onValueChange: (value: string) => void;
   label: string;
@@ -18,27 +18,30 @@ interface AssetSelectProps {
   disabled?: boolean;
 }
 
-export const AssetSelect = ({
-  assets,
+export const ChainSelect = ({
+  chains,
   value,
   onValueChange,
   label,
-  placeholder = 'Select asset',
+  placeholder = 'Select chain',
   disabled,
-}: AssetSelectProps) => {
+}: ChainSelectProps) => {
   return (
     <div className="space-y-2">
       <label className="block text-sm font-medium">{label}</label>
       <Select value={value} onValueChange={onValueChange} disabled={disabled}>
-        <SelectTrigger className="w-full">
+        <SelectTrigger>
           <SelectValue placeholder={placeholder} />
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>
-            <SelectLabel>Assets</SelectLabel>
-            {assets.map((asset) => (
-              <SelectItem key={asset.aggregatedAssetId} value={asset.aggregatedAssetId}>
-                {asset.symbol} - {asset.name}
+            <SelectLabel>Networks</SelectLabel>
+            {chains.map((chain) => (
+              <SelectItem
+                key={chain.chain.reference}
+                value={chain.chain.reference}
+              >
+                {CHAIN_NAMES[chain.chain.reference] ?? 'Unknown Chain'}
               </SelectItem>
             ))}
           </SelectGroup>
