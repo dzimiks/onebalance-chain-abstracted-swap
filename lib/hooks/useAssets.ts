@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { assetsApi } from '@/lib/api/assets';
-import { Asset } from '@/lib/types/assets';
+import type { Asset } from '@/lib/types/assets';
 
 interface AssetsData {
   assets: Asset[];
