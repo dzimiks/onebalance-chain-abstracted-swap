@@ -1,10 +1,13 @@
 'use client';
 
-import { useAssets, useChains } from '@/lib/hooks';
+import { useState } from 'react';
+import { useAssets } from '@/lib/hooks';
+import { AssetSelect } from '@/components/AssetSelect';
 
 export default function Home() {
   const { assets, loading } = useAssets();
-  const { chains } = useChains();
+  const [sourceAsset, setSourceAsset] = useState('');
+  const [targetAsset, setTargetAsset] = useState('');
 
   return (
     <div className="flex flex-col min-h-screen p-8 font-[family-name:var(--font-geist-sans)]">
@@ -12,9 +15,21 @@ export default function Home() {
       {!loading && (
         <div className="flex flex-col gap-4">
           <h3>Assets</h3>
-          <pre className="border max-h-[300px] overflow-auto">{JSON.stringify(assets, null, 2)}</pre>
-          <h3>Chains</h3>
-          <pre className="border max-h-[300px] overflow-auto">{JSON.stringify(chains, null, 2)}</pre>
+          <pre className="border max-h-[350px] overflow-auto">{JSON.stringify(assets, null, 2)}</pre>
+          <AssetSelect
+            assets={assets}
+            value={sourceAsset}
+            onValueChange={setSourceAsset}
+            label="From"
+            placeholder="Select source asset"
+          />
+          <AssetSelect
+            assets={assets}
+            value={targetAsset}
+            onValueChange={setTargetAsset}
+            label="To"
+            placeholder="Select target asset"
+          />
         </div>
       )}
     </div>
