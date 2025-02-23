@@ -11,7 +11,8 @@ export const quotesApi = {
   },
 
   executeQuote: async (quote: Quote): Promise<void> => {
-    await apiClient.post('?endpoint=/api/quotes/execute-quote', quote);
+    const response = await apiClient.post('?endpoint=/api/quotes/execute-quote', quote);
+    return response.data;
   },
 
   getQuoteStatus: async (quoteId: string): Promise<QuoteStatus> => {

@@ -57,7 +57,21 @@ export const useQuotes = (): UseQuotesReturn => {
     setState(prev => ({ ...prev, loading: true, error: null }));
 
     try {
-      await quotesApi.executeQuote(state.quote);
+      // First validate the quote hasn't expired
+      const expirationTime = parseInt(state.quote.expirationTimestamp) * 1000;
+
+      if (Date.now() > expirationTime) {
+        setState(prev => ({
+          ...prev,
+          error: 'Quote has expired',
+          loading: false,
+        }));
+
+        return;
+      }
+
+      const resp = await quotesApi.executeQuote(state.quote);
+      console.log({ response: resp });
 
       // Start polling for status
       const pollStatus = async () => {
@@ -65,7 +79,7 @@ export const useQuotes = (): UseQuotesReturn => {
           const statusResponse = await quotesApi.getQuoteStatus(state.quote!.id);
           setState(prev => ({ ...prev, status: statusResponse }));
 
-          if (statusResponse.status.status === 'PENDING') {
+          if (statusResponse?.status?.status === 'PENDING') {
             // Poll every 2 seconds
             setTimeout(pollStatus, 2000);
           } else {

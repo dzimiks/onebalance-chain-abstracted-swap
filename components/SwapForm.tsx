@@ -1,20 +1,20 @@
 import { useState } from 'react';
-import { ArrowDownUp } from 'lucide-react';
+import { ArrowDownUp, CircleCheck, TriangleAlert } from 'lucide-react';
 import { AssetSelect } from '@/components/AssetSelect';
 import { ChainSelect } from '@/components/ChainSelect';
 import { QuoteDetails } from '@/components/QuoteDetails';
-import { Alert } from '@/components/ui/alert';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { useAssets, useChains, useQuotes } from '@/lib/hooks';
 
 export function SwapForm() {
-  const [sourceAsset, setSourceAsset] = useState('ds:eth');
-  const [targetAsset, setTargetAsset] = useState('ds:usdc');
-  const [sourceChain, setSourceChain] = useState('');
-  const [targetChain, setTargetChain] = useState('');
-  const [amount, setAmount] = useState('800000000000000');
+  const [sourceAsset, setSourceAsset] = useState<string>('ds:eth');
+  const [targetAsset, setTargetAsset] = useState<string>('ds:usdc');
+  const [sourceChain, setSourceChain] = useState<string>('8453');
+  const [targetChain, setTargetChain] = useState<string>('42161');
+  const [amount, setAmount] = useState<string>('800000000000000');
 
   console.log({
     fromTokenAmount: amount,
@@ -25,6 +25,7 @@ export function SwapForm() {
   const { assets, loading: assetsLoading, error: assetsError } = useAssets();
   const { chains, loading: chainsLoading, error: chainsError } = useChains();
   const { quote, status, loading, error, getQuote, executeQuote, resetQuote } = useQuotes();
+  const quoteStatus: string | null = status?.status?.status ?? null;
 
   const handleSwapDirection = () => {
     setSourceAsset(targetAsset);
@@ -62,18 +63,20 @@ export function SwapForm() {
     return (
       <Card className="w-full max-w-lg mx-auto p-6">
         <Alert variant="destructive">
-          {assetsError || chainsError}
+          <TriangleAlert className="h-4 w-4" />
+          <AlertTitle>An error occurred</AlertTitle>
+          <AlertDescription>
+            {assetsError || chainsError}
+          </AlertDescription>
         </Alert>
       </Card>
     );
   }
 
-  console.log({ assets });
   return (
     <Card className="w-full max-w-lg mx-auto p-6">
-      <pre className="border max-h-[300px] overflow-auto">{JSON.stringify(assets, null, 2)}</pre>
       <div className="space-y-6">
-        <h2 className="text-2xl font-bold text-center">Cross-Chain Swap</h2>
+        <h2 className="text-2xl font-bold text-center">OneBalance Cross-Chain Swap</h2>
 
         <div className="space-y-4">
           <div className="grid grid-cols-2 gap-2">
@@ -90,6 +93,7 @@ export function SwapForm() {
               onValueChange={setSourceAsset}
               label="From Asset"
               disabled={loading}
+              selectedChainId={sourceChain}
             />
           </div>
 
@@ -119,6 +123,7 @@ export function SwapForm() {
               onValueChange={setTargetAsset}
               label="To Asset"
               disabled={loading}
+              selectedChainId={targetChain}
             />
           </div>
 
@@ -135,11 +140,13 @@ export function SwapForm() {
 
           {error && (
             <Alert variant="destructive">
-              {error}
+              <TriangleAlert className="h-4 w-4" />
+              <AlertTitle>An error occurred</AlertTitle>
+              <AlertDescription>
+                {error}
+              </AlertDescription>
             </Alert>
           )}
-
-          {quote && <QuoteDetails quote={quote} />}
 
           {!quote ? (
             <Button
@@ -147,7 +154,7 @@ export function SwapForm() {
               onClick={handleGetQuote}
               disabled={!sourceAsset || !targetAsset || !amount || loading}
             >
-              {loading && status === 'PENDING' ? 'Getting Quote...' : 'Get Quote'}
+              {loading && quoteStatus === 'PENDING' ? 'Getting Quote...' : 'Get Quote'}
             </Button>
           ) : (
             <div className="space-y-2">
@@ -156,7 +163,7 @@ export function SwapForm() {
                 onClick={executeQuote}
                 disabled={loading}
               >
-                {loading && status === 'PENDING' ? 'Executing Swap...' : 'Swap Now'}
+                {loading && quoteStatus === 'PENDING' ? 'Executing Swap...' : 'Swap Now'}
               </Button>
               <Button
                 variant="outline"
@@ -169,11 +176,17 @@ export function SwapForm() {
             </div>
           )}
 
-          {status === 'COMPLETED' && (
+          {quoteStatus === 'COMPLETED' && (
             <Alert>
-              Swap completed successfully!
+              <CircleCheck className="h-4 w-4" />
+              <AlertTitle>Success!</AlertTitle>
+              <AlertDescription>
+                Swap completed successfully!
+              </AlertDescription>
             </Alert>
           )}
+
+          {quote && <QuoteDetails quote={quote} />}
         </div>
       </div>
     </Card>

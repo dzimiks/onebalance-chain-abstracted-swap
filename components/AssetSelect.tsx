@@ -8,6 +8,8 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import type { Asset } from '@/lib/types/assets';
+import { CHAIN_NAMES } from '@/lib/types/chains';
+import { getChainIdFromAssetType } from '@/lib/utils/chain';
 
 interface AssetSelectProps {
   assets: Asset[];
@@ -16,6 +18,7 @@ interface AssetSelectProps {
   label: string;
   placeholder?: string;
   disabled?: boolean;
+  selectedChainId?: string;
 }
 
 export const AssetSelect = ({
@@ -25,20 +28,34 @@ export const AssetSelect = ({
   label,
   placeholder = 'Select asset',
   disabled,
+  selectedChainId,
 }: AssetSelectProps) => {
+  // Filter assets based on selected chain
+  const filteredAssets: Asset[] = selectedChainId
+    ? assets.filter(asset =>
+      asset.aggregatedEntities.some(entity =>
+        getChainIdFromAssetType(entity.assetType) === selectedChainId
+      )
+    )
+    : assets;
+
   return (
     <div className="space-y-2">
       <label className="block text-sm font-medium">{label}</label>
-      <Select value={value} onValueChange={onValueChange} disabled={disabled}>
-        <SelectTrigger className="w-full">
+      <Select value={value} onValueChange={onValueChange} disabled={disabled || filteredAssets?.length === 0}>
+        <SelectTrigger>
           <SelectValue placeholder={placeholder} />
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>
-            <SelectLabel>Assets</SelectLabel>
-            {assets.map((asset) => (
-              <SelectItem key={asset.aggregatedAssetId} value={asset.aggregatedAssetId}>
-                {asset.symbol} - {asset.name}
+            <SelectLabel>Assets{selectedChainId ? ` on ${CHAIN_NAMES[selectedChainId]}` : ''}</SelectLabel>
+            {filteredAssets.map((asset: Asset) => (
+              <SelectItem
+                key={asset.aggregatedAssetId}
+                value={asset.aggregatedAssetId}
+                className="flex items-center justify-between"
+              >
+                <span><span className="font-semibold">{asset.symbol}</span> ({asset.aggregatedAssetId})</span>
               </SelectItem>
             ))}
           </SelectGroup>
