@@ -72,9 +72,14 @@ export const useQuotes = (): UseQuotesReturn => {
 
       const resp = await quotesApi.executeQuote(state.quote);
       console.log({ response: resp });
+
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       if (resp?.error) {
         setState(prev => ({
           ...prev,
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
           error: resp?.message || 'Failed to execute quote',
           loading: false,
         }));

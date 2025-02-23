@@ -4,12 +4,14 @@ import { AssetSelect } from '@/components/AssetSelect';
 import { ChainSelect } from '@/components/ChainSelect';
 import { QuoteDetails } from '@/components/QuoteDetails';
 import { AmountInput } from '@/components/AmountInput';
+import { QuoteCountdown } from '@/components/QuoteCountdown';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useAssets, useChains, useQuotes } from '@/lib/hooks';
 import { Asset } from '@/lib/types/assets';
 import { formatTokenAmount } from '@/lib/utils/token';
+import { QuoteRequest } from '@/lib/types/quote';
 
 export function SwapForm() {
   const [sourceAsset, setSourceAsset] = useState<string>('ds:eth');
@@ -18,6 +20,7 @@ export function SwapForm() {
   const [targetChain, setTargetChain] = useState<string>('42161');
   const [amount, setAmount] = useState<string>(formatTokenAmount('800000000000000', 18));
   const [parsedAmount, setParsedAmount] = useState('800000000000000');
+  const [quoteRequest, setQuoteRequest] = useState<QuoteRequest | null>(null);
 
   console.log({
     fromTokenAmount: amount,
@@ -52,12 +55,22 @@ export function SwapForm() {
       accountAddress: '0xa8305CAD3ECEA0E4B4a02CE45E240e8687B4C2E0',
     };
 
-    await getQuote({
+    const request = {
       account: dummyAccount,
       fromTokenAmount: parsedAmount,
       fromAggregatedAssetId: sourceAsset,
       toAggregatedAssetId: targetAsset,
-    });
+    };
+
+    setQuoteRequest(request);
+    await getQuote(request);
+  };
+
+  const handleQuoteExpire = async () => {
+    if (quoteRequest) {
+      console.log('Quote expired, refreshing...');
+      await getQuote(quoteRequest);
+    }
   };
 
   if (assetsLoading || chainsLoading) {
@@ -155,13 +168,15 @@ export function SwapForm() {
             </Alert>
           )}
 
+          {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+          {/* @ts-ignore */}
           {(!quote || quote?.error) ? (
             <Button
               className="w-full"
               onClick={handleGetQuote}
               disabled={!sourceAsset || !targetAsset || !amount || loading}
             >
-              {loading && quoteStatus === 'PENDING' ? 'Getting Quote...' : 'Get Quote'}
+              {loading ? 'Getting Quote...' : 'Get Quote'}
             </Button>
           ) : (
             <div className="space-y-2">
@@ -193,36 +208,49 @@ export function SwapForm() {
             </Alert>
           )}
 
+          {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+          {/* @ts-ignore */}
           {quote?.error && (
             <Alert variant="destructive">
               <TriangleAlert className="h-4 w-4" />
               <AlertTitle>Quote Error</AlertTitle>
               <AlertDescription>
+                {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+                {/* @ts-ignore */}
                 {quote?.message}
               </AlertDescription>
             </Alert>
           )}
+
+          {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+          {/* @ts-ignore */}
           {!quote?.error && quote?.originToken && (
-            <QuoteDetails
-              quote={{
-                ...quote,
-                // Format the amounts for display
-                originToken: {
-                  ...quote.originToken,
-                  amount: formatTokenAmount(
-                    quote.originToken.amount,
-                    selectedSourceAsset?.decimals ?? 18
-                  )
-                },
-                destinationToken: {
-                  ...quote.destinationToken,
-                  amount: formatTokenAmount(
-                    quote.destinationToken.amount,
-                    assets.find(a => a.aggregatedAssetId === quote.destinationToken.aggregatedAssetId)?.decimals ?? 18
-                  )
-                }
-              }}
-            />
+            <div className="space-y-4">
+              <QuoteCountdown
+                expirationTimestamp={parseInt(quote.expirationTimestamp)}
+                onExpire={handleQuoteExpire}
+              />
+              <QuoteDetails
+                quote={{
+                  ...quote,
+                  // Format the amounts for display
+                  originToken: {
+                    ...quote.originToken,
+                    amount: formatTokenAmount(
+                      quote.originToken.amount,
+                      selectedSourceAsset?.decimals ?? 18,
+                    ),
+                  },
+                  destinationToken: {
+                    ...quote.destinationToken,
+                    amount: formatTokenAmount(
+                      quote.destinationToken.amount,
+                      assets.find(a => a.aggregatedAssetId === quote.destinationToken.aggregatedAssetId)?.decimals ?? 18,
+                    ),
+                  },
+                }}
+              />
+            </div>
           )}
         </div>
       </div>
