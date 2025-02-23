@@ -1,8 +1,15 @@
 import { useState, useEffect } from 'react';
 import { assetsApi } from '@/lib/api/assets';
+import { Asset } from '@/lib/types/assets';
 
-export const useAssets = () => {
-  const [assets, setAssets] = useState([]);
+interface AssetsData {
+  assets: Asset[];
+  loading: boolean;
+  error: string | null;
+}
+
+export const useAssets = (): AssetsData => {
+  const [assets, setAssets] = useState<Asset[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
