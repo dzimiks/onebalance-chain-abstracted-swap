@@ -2,29 +2,52 @@ import { useState } from 'react';
 import { ArrowDownUp } from 'lucide-react';
 import { AssetSelect } from '@/components/AssetSelect';
 import { ChainSelect } from '@/components/ChainSelect';
+import { QuoteDetails } from '@/components/QuoteDetails';
 import { Alert } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { useAssets, useChains } from '@/lib/hooks';
+import { useAssets, useChains, useQuotes } from '@/lib/hooks';
 
 export function SwapForm() {
-  const [sourceAsset, setSourceAsset] = useState('');
-  const [targetAsset, setTargetAsset] = useState('');
+  const [sourceAsset, setSourceAsset] = useState('ds:eth');
+  const [targetAsset, setTargetAsset] = useState('ds:usdc');
   const [sourceChain, setSourceChain] = useState('');
   const [targetChain, setTargetChain] = useState('');
-  const [amount, setAmount] = useState('');
+  const [amount, setAmount] = useState('800000000000000');
+
+  console.log({
+    fromTokenAmount: amount,
+    fromAggregatedAssetId: sourceAsset,
+    toAggregatedAssetId: targetAsset,
+  });
 
   const { assets, loading: assetsLoading, error: assetsError } = useAssets();
   const { chains, loading: chainsLoading, error: chainsError } = useChains();
-  const isLoading = false;
+  const { quote, status, loading, error, getQuote, executeQuote, resetQuote } = useQuotes();
 
-  // Handlers
   const handleSwapDirection = () => {
     setSourceAsset(targetAsset);
     setTargetAsset(sourceAsset);
     setSourceChain(targetChain);
     setTargetChain(sourceChain);
+  };
+
+  const handleGetQuote = async () => {
+    if (!sourceAsset || !targetAsset || !amount) return;
+
+    const dummyAccount = {
+      sessionAddress: '0x1cBFbFd62a276BF6D79d504eA4CA75a7baDcf5b1',
+      adminAddress: '0xc162a3cE45ad151eeCd0a5532D6E489D034aB3B8',
+      accountAddress: '0xa8305CAD3ECEA0E4B4a02CE45E240e8687B4C2E0',
+    };
+
+    await getQuote({
+      account: dummyAccount,
+      fromTokenAmount: amount,
+      fromAggregatedAssetId: sourceAsset,
+      toAggregatedAssetId: targetAsset,
+    });
   };
 
   if (assetsLoading || chainsLoading) {
@@ -45,8 +68,10 @@ export function SwapForm() {
     );
   }
 
+  console.log({ assets });
   return (
     <Card className="w-full max-w-lg mx-auto p-6">
+      <pre className="border max-h-[300px] overflow-auto">{JSON.stringify(assets, null, 2)}</pre>
       <div className="space-y-6">
         <h2 className="text-2xl font-bold text-center">Cross-Chain Swap</h2>
 
@@ -57,14 +82,14 @@ export function SwapForm() {
               value={sourceChain}
               onValueChange={setSourceChain}
               label="From Chain"
-              disabled={isLoading}
+              disabled={loading}
             />
             <AssetSelect
               assets={assets}
               value={sourceAsset}
               onValueChange={setSourceAsset}
               label="From Asset"
-              disabled={isLoading}
+              disabled={loading}
             />
           </div>
 
@@ -73,7 +98,7 @@ export function SwapForm() {
               variant="outline"
               size="icon"
               onClick={handleSwapDirection}
-              disabled={isLoading}
+              disabled={loading}
               className="rounded-full"
             >
               <ArrowDownUp className="h-4 w-4" />
@@ -86,14 +111,14 @@ export function SwapForm() {
               value={targetChain}
               onValueChange={setTargetChain}
               label="To Chain"
-              disabled={isLoading}
+              disabled={loading}
             />
             <AssetSelect
               assets={assets}
               value={targetAsset}
               onValueChange={setTargetAsset}
               label="To Asset"
-              disabled={isLoading}
+              disabled={loading}
             />
           </div>
 
@@ -104,9 +129,51 @@ export function SwapForm() {
               placeholder="Enter amount"
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
-              disabled={isLoading}
+              disabled={loading}
             />
           </div>
+
+          {error && (
+            <Alert variant="destructive">
+              {error}
+            </Alert>
+          )}
+
+          {quote && <QuoteDetails quote={quote} />}
+
+          {!quote ? (
+            <Button
+              className="w-full"
+              onClick={handleGetQuote}
+              disabled={!sourceAsset || !targetAsset || !amount || loading}
+            >
+              {loading && status === 'PENDING' ? 'Getting Quote...' : 'Get Quote'}
+            </Button>
+          ) : (
+            <div className="space-y-2">
+              <Button
+                className="w-full"
+                onClick={executeQuote}
+                disabled={loading}
+              >
+                {loading && status === 'PENDING' ? 'Executing Swap...' : 'Swap Now'}
+              </Button>
+              <Button
+                variant="outline"
+                className="w-full"
+                onClick={resetQuote}
+                disabled={loading}
+              >
+                Cancel
+              </Button>
+            </div>
+          )}
+
+          {status === 'COMPLETED' && (
+            <Alert>
+              Swap completed successfully!
+            </Alert>
+          )}
         </div>
       </div>
     </Card>

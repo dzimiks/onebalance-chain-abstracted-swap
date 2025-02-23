@@ -8,7 +8,7 @@ export interface TokenInfo {
   aggregatedAssetId: string;
   amount: string;
   assetType: string | string[];
-  fiatValue: unknown;
+  fiatValue: never;
 }
 
 export interface QuoteRequest {
