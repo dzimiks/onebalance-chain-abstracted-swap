@@ -18,6 +18,32 @@ export interface QuoteRequest {
   toAggregatedAssetId: string;
 }
 
+export interface ChainOperation {
+  userOp: {
+    sender: string;
+    nonce: string;
+    callData: string;
+    callGasLimit: string;
+    verificationGasLimit: string;
+    preVerificationGas: string;
+    maxFeePerGas: string;
+    maxPriorityFeePerGas: string;
+    paymaster: string;
+    paymasterVerificationGasLimit: string;
+    paymasterPostOpGasLimit: string;
+    paymasterData: string;
+    signature: string;
+  };
+  typedDataToSign: {
+    domain: unknown;
+    types: unknown;
+    primaryType: string;
+    message: unknown;
+  };
+  assetType: string;
+  amount: string;
+}
+
 export interface Quote {
   id: string;
   account: Account;
@@ -25,13 +51,14 @@ export interface Quote {
   destinationToken: TokenInfo;
   expirationTimestamp: string;
   tamperProofSignature: string;
-  originChainsOperations: unknown[];
+  originChainsOperations: ChainOperation[];
+  destinationChainOperation?: ChainOperation;
 }
 
 export interface QuoteStatus {
   quoteId: string;
   status: {
-    status: 'PENDING' | 'COMPLETED' | 'FAILED';
+    status: 'PENDING' | 'COMPLETED' | 'FAILED' | 'IN_PROGRESS' | 'REFUNDED';
   };
   user: string;
   recipientAccountId: string;

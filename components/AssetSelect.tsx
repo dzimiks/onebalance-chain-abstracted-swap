@@ -43,7 +43,7 @@ export const AssetSelect = ({
     <div className="space-y-2">
       <label className="block text-sm font-medium">{label}</label>
       <Select value={value} onValueChange={onValueChange} disabled={disabled || filteredAssets?.length === 0}>
-        <SelectTrigger>
+        <SelectTrigger className="h-16">
           <SelectValue placeholder={placeholder} />
         </SelectTrigger>
         <SelectContent>

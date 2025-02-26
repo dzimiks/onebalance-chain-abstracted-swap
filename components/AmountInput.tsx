@@ -36,6 +36,7 @@ export const AmountInput = ({
     <div className="space-y-2">
       <label className="block text-sm font-medium">Amount</label>
       <Input
+        className="h-16 text-xl pl-4 pr-12"
         type="text"
         placeholder="Enter amount"
         value={value}
