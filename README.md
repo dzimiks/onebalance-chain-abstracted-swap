@@ -1,3 +1,5 @@
+<img width="1200" alt="image" src="https://github.com/user-attachments/assets/bcc50c09-733c-4a8e-a556-a024a983f780" />
+
 # OneBalance Cross-Chain Swap Demo
 
 A demonstration of cross-chain token swaps using the OneBalance Chain Abstraction Toolkit with Privy wallet integration.
