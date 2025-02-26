@@ -52,7 +52,6 @@ export const SwapForm = () => {
   // Get selected assets
   const selectedSourceAsset: Asset | null = assets.find(asset => asset.aggregatedAssetId === sourceAsset) ?? null;
   const selectedTargetAsset: Asset | null = assets.find(asset => asset.aggregatedAssetId === targetAsset) ?? null;
-  const quoteStatus: string | null = status?.status?.status ?? null;
 
   // Update balance state when balances or selected assets change
   useEffect(() => {
@@ -89,6 +88,16 @@ export const SwapForm = () => {
       getPredictedAddress();
     }
   }, [authenticated, embeddedWallet, predictedAddress, getPredictedAddress]);
+
+  // Reset everything after a successful swap
+  useEffect(() => {
+    if (status?.status?.status === 'COMPLETED') {
+      setFromAmount('');
+      setToAmount('');
+      setParsedFromAmount('');
+      resetQuote();
+    }
+  }, [status]);
 
   // Debounce quote fetching to reduce API calls
   const debouncedGetQuote = useCallback(
@@ -364,7 +373,7 @@ export const SwapForm = () => {
                 onClick={executeQuote}
                 disabled={loading || !authenticated}
               >
-                {loading && quoteStatus === 'PENDING' ? 'Executing Swap...' : 'Sign & Swap'}
+                {loading && status?.status?.status === 'PENDING' ? 'Executing Swap...' : 'Sign & Swap'}
               </Button>
               <Button
                 variant="outline"
@@ -389,7 +398,7 @@ export const SwapForm = () => {
           )}
 
           {/* Success Message */}
-          {quoteStatus === 'COMPLETED' && (
+          {status?.status?.status === 'COMPLETED' && (
             <Alert variant="success">
               <CircleCheck className="h-4 w-4" />
               <AlertTitle>Success!</AlertTitle>

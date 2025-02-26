@@ -126,6 +126,9 @@ export const useQuotes = () => {
       // Execute the signed quote
       await quotesApi.executeQuote(signedQuote);
 
+      // Update status after a successful swap
+      setState(prev => ({ ...prev, status: { status: { status: 'COMPLETED' } } }));
+
       // Start polling for status
       const pollStatus = async () => {
         try {
