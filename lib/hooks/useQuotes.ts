@@ -15,7 +15,6 @@ interface QuoteState {
 export const useQuotes = () => {
   const { authenticated } = usePrivy();
   const { wallets } = useWallets();
-  // const embeddedWallet = wallets[0];
   const embeddedWallet = wallets.find(wallet => wallet.walletClientType === 'privy');
 
   const [state, setState] = useState<QuoteState>({

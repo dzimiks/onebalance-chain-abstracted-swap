@@ -1,4 +1,3 @@
-import { AxiosResponse } from 'axios';
 import { apiClient } from '@/lib/api';
 import type { QuoteRequest, Quote, QuoteStatus } from '@/lib/types/quote';
 
@@ -11,7 +10,7 @@ export const quotesApi = {
     return response.data;
   },
 
-  executeQuote: async (quote: Quote): Promise<AxiosResponse> => {
+  executeQuote: async (quote: Quote): Promise<any> => {
     const response = await apiClient.post('?endpoint=/api/quotes/execute-quote', quote);
     return response.data;
   },

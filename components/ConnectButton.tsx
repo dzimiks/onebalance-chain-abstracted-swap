@@ -171,7 +171,7 @@ export const ConnectButton = () => {
             ) : balances?.balanceByAsset && balances.balanceByAsset.length > 0 ? (
               <div className="space-y-2 max-h-72 overflow-y-auto pr-1">
                 {balances.balanceByAsset
-                  .sort((a, b) => b.fiatValue - a.fiatValue)
+                  .sort((a, b) => (b.fiatValue || 0) - (a.fiatValue || 0))
                   .map((asset) => (
                     <Card key={asset.aggregatedAssetId} className="p-3 hover:bg-gray-50 transition-colors duration-200">
                       <div className="flex justify-between items-center">

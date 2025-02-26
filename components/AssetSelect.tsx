@@ -73,7 +73,7 @@ export function AssetSelect({
           </SelectValue>
         </SelectTrigger>
         <SelectContent className="max-h-80">
-          <div className="sticky top-0 bg-white p-2 z-10">
+          <div className="sticky -top-1 bg-white p-2 z-10">
             <div className="relative">
               <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
                 <Search className="h-4 w-4 text-gray-400" />
@@ -94,7 +94,9 @@ export function AssetSelect({
                 No assets found matching <span className="font-semibold">{searchTerm}</span>
               </div>
             ) : (
-              displayAssets.map((asset) => {
+              displayAssets
+                .sort((a, b) => (getAssetBalance(b.aggregatedAssetId || '0')?.fiatValue || 0) - (getAssetBalance(a.aggregatedAssetId || '0')?.fiatValue || 0))
+                .map((asset) => {
                 const assetBalance = showBalances ? getAssetBalance(asset.aggregatedAssetId) : null;
 
                 return (
@@ -103,7 +105,7 @@ export function AssetSelect({
                     value={asset.aggregatedAssetId}
                     className="py-3 hover:bg-gray-50"
                   >
-                    <div className="flex gap-4 justify-between w-full">
+                    <div className="flex gap-4 items-center justify-between md:w-[250px] lg:w-[400px] max-w-full">
                       <div>
                         <div className="font-medium">{asset.symbol}</div>
                         <div className="text-gray-500 text-xs">{asset.name}</div>
@@ -111,7 +113,7 @@ export function AssetSelect({
                       </div>
 
                       {showBalances && assetBalance && (
-                        <div className="text-right text-sm">
+                        <div className="flex flex-col text-right text-sm">
                           <div className="font-medium">
                             {formatTokenAmount(assetBalance.balance, asset.decimals)}
                           </div>

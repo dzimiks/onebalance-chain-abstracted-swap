@@ -20,7 +20,7 @@ export const SwapForm = () => {
 
   // Asset state
   const [sourceAsset, setSourceAsset] = useState<string>('ds:usdt');
-  const [targetAsset, setTargetAsset] = useState<string>('');
+  const [targetAsset, setTargetAsset] = useState<string>('ds:usdc');
 
   // Amount state
   const [fromAmount, setFromAmount] = useState<string>('');
@@ -212,10 +212,10 @@ export const SwapForm = () => {
                 <span className="text-sm text-gray-500">
                   {/*  eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
                   {/*@ts-expect-error*/}
-                  Balance: {formatTokenAmount(sourceBalance.balance, selectedSourceAsset?.decimals || 18)}
+                  Balance: {Number(formatTokenAmount(sourceBalance.balance, selectedSourceAsset?.decimals || 18)).toFixed(3)}
                   {/*  eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
                   {/*@ts-expect-error*/}
-                  {' '}(${sourceBalance.fiatValue?.toFixed(2)})
+                  {' '}(${sourceBalance.fiatValue?.toFixed(2) || 0})
                 </span>
               )}
             </div>
@@ -257,7 +257,6 @@ export const SwapForm = () => {
               placeholder="0.0"
               value={fromAmount}
               onChange={handleFromAmountChange}
-              disabled={loading}
               className="text-lg h-14 p-4"
             />
           </div>
@@ -283,10 +282,10 @@ export const SwapForm = () => {
                 <span className="text-sm text-gray-500">
                   {/*  eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
                   {/*@ts-expect-error*/}
-                  Balance: {formatTokenAmount(targetBalance.balance, selectedTargetAsset?.decimals || 18)}
+                  Balance: {Number(formatTokenAmount(targetBalance.balance, selectedTargetAsset?.decimals || 18)).toFixed(3)}
                   {/*  eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
                   {/*@ts-expect-error*/}
-                  {' '}(${targetBalance.fiatValue?.toFixed(2)})
+                  {' '}(${targetBalance.fiatValue?.toFixed(2) || 0})
                 </span>
               )}
             </div>
@@ -329,7 +328,7 @@ export const SwapForm = () => {
 
           {/* Wallet Connection Alert */}
           {!authenticated && (
-            <Alert variant="info">
+            <Alert variant="warning">
               <AlertTitle>Connect Wallet</AlertTitle>
               <AlertDescription>
                 Please connect your wallet to execute swaps
