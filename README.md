@@ -1,36 +1,82 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# OneBalance Cross-Chain Swap Demo
 
-## Getting Started
+A demonstration of cross-chain token swaps using the OneBalance Chain Abstraction Toolkit with Privy wallet integration.
 
-First, run the development server:
+Live demo: https://one-balance-cross-chain-swap.vercel.app.
+
+## Features
+
+- Connect with Privy wallet
+- View aggregated balances across multiple chains
+- Cross-chain token swaps between different networks
+- Real-time swap quotes with price impact details
+- Quote countdown with auto-refresh
+- Transaction status tracking
+
+## Tech Stack
+
+- Next.js 15 with App Router
+- TypeScript
+- Tailwind CSS
+- shadcn/ui components
+- Privy for wallet connection
+- Viem for transaction signing
+
+## Setup
+
+1. Clone the repository
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/dzimiks/one-balance-cross-chain-swap.git
+cd one-balance-cross-chain-swap
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Install dependencies
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+pnpm install
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+3. Create a `.env` file with the following variables:
 
-## Learn More
+```
+NEXT_PUBLIC_API_URL=https://be.onebalance.io
+NEXT_PUBLIC_API_KEY=42bb629272001ee1163ca0dbbbc07bcbb0ef57a57baf16c4b1d4672db4562c11
+NEXT_PUBLIC_PRIVY_APP_ID=
+```
 
-To learn more about Next.js, take a look at the following resources:
+4. Run the development server
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+pnpm dev
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+5. Open [http://localhost:3000](http://localhost:3000) to see the app
 
-## Deploy on Vercel
+## How It Works
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. Connect your wallet using Privy
+2. Select source and target chains/assets
+3. Enter the amount to swap
+4. Get a quote with price impact details
+5. Execute the swap with signature via Privy
+6. Monitor transaction status until completion
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## OneBalance API Integration
+
+This demo uses several OneBalance API endpoints:
+- `/api/account/predict-address` - Get the smart account address
+- `/api/quotes/swap-quote` - Get cross-chain swap quotes
+- `/api/quotes/execute-quote` - Execute signed quotes
+- `/api/status/get-execution-status` - Check transaction status
+- `/api/balances/aggregated-balance` - Get balances across chains
+
+## Development Notes
+
+This project demonstrates:
+
+- Cross-chain asset transfers
+- EIP-712 signature handling
+- Smart account abstraction
+- Privy wallet integration
+- Tailwind and shadcn/ui styling
