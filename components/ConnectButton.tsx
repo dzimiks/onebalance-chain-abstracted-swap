@@ -18,7 +18,6 @@ import { useQuotes2 } from '@/lib/hooks';
 export const ConnectButton = () => {
   const { login, logout, authenticated, ready } = usePrivy();
   const { wallets } = useWallets();
-  // const embeddedWallet = wallets[0];
   const embeddedWallet = wallets.find(wallet => wallet.walletClientType === 'privy');
   const [open, setOpen] = useState(false);
 
@@ -47,7 +46,6 @@ export const ConnectButton = () => {
     return <Button onClick={login}>Connect Wallet</Button>;
   }
 
-  console.log({ balances });
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -92,7 +90,7 @@ export const ConnectButton = () => {
                 <span>Total: ${balances.totalBalance?.fiatValue.toFixed(2)}</span>
               </h3>
               <div className="max-h-70 overflow-y-auto space-y-2">
-                {balances.balanceByAsset.sort((a, b) => b.balance - a.balance).map((asset: any) => (
+                {balances.balanceByAsset.sort((a, b) => b.fiatValue - a.fiatValue).map((asset: any) => (
                   <Card key={asset.aggregatedAssetId} className="p-2">
                     <div className="flex justify-between items-center">
                       <div>

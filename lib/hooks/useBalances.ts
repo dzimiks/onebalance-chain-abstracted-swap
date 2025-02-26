@@ -7,7 +7,9 @@ export const useBalances = (predictedAddress: string | null) => {
   const [error, setError] = useState<string | null>(null);
 
   const fetchBalances = async () => {
-    if (!predictedAddress) return;
+    if (!predictedAddress) {
+      return;
+    }
 
     setLoading(true);
     setError(null);

@@ -15,7 +15,6 @@ interface QuoteState {
 export const useQuotes2 = () => {
   const { authenticated } = usePrivy();
   const { wallets } = useWallets();
-  console.log({ wallets });
   // const embeddedWallet = wallets[0];
   const embeddedWallet = wallets.find(wallet => wallet.walletClientType === 'privy');
 
@@ -39,7 +38,6 @@ export const useQuotes2 = () => {
       const address = embeddedWallet.address;
       const predicted = await accountApi.predictAddress(address, address);
       setPredictedAddress(predicted);
-      console.log({ predicted });
       return predicted;
     } catch (err) {
       console.error('Failed to predict address:', err);
@@ -79,9 +77,6 @@ export const useQuotes2 = () => {
         sessionAddress: embeddedWallet.address,
         adminAddress: embeddedWallet.address,
         accountAddress: predicted,
-        // sessionAddress: '0x1cBFbFd62a276BF6D79d504eA4CA75a7baDcf5b1',
-        // adminAddress: '0xc162a3cE45ad151eeCd0a5532D6E489D034aB3B8',
-        // accountAddress: '0xa8305CAD3ECEA0E4B4a02CE45E240e8687B4C2E0',
       };
 
       // Get the quote

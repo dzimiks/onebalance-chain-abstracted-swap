@@ -1,30 +1,33 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { usePrivy, useWallets } from '@privy-io/react-auth';
 import { ArrowDownUp, CircleCheck, TriangleAlert } from 'lucide-react';
 import { AssetSelect } from '@/components/AssetSelect';
 import { QuoteDetails } from '@/components/QuoteDetails';
-import { AmountInput } from '@/components/AmountInput';
 import { QuoteCountdown } from '@/components/QuoteCountdown';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { useAssets, useChains, useQuotes2 } from '@/lib/hooks';
+import { Input } from '@/components/ui/input';
+import { useAssets, useChains, useQuotes2, useBalances } from '@/lib/hooks';
 import { Asset } from '@/lib/types/assets';
-import { formatTokenAmount } from '@/lib/utils/token';
+import { formatTokenAmount, parseTokenAmount } from '@/lib/utils/token';
+import debounce from 'lodash.debounce';
 
-export function SwapForm2() {
-  const { login, authenticated } = usePrivy();
+export const SwapForm2 = () => {
+  const { authenticated } = usePrivy();
   const { wallets } = useWallets();
-  // const embeddedWallet = wallets[0];
   const embeddedWallet = wallets.find(wallet => wallet.walletClientType === 'privy');
 
-  const [sourceAsset, setSourceAsset] = useState<string>('ds:avax');
-  const [targetAsset, setTargetAsset] = useState<string>('ds:usdc');
-  const [sourceChain, setSourceChain] = useState<string>('43114');
-  const [targetChain, setTargetChain] = useState<string>('42161');
-  const [amount, setAmount] = useState<string>(formatTokenAmount('800000000000000', 18));
-  const [parsedAmount, setParsedAmount] = useState('800000000000000');
+  // Asset state
+  const [sourceAsset, setSourceAsset] = useState<string>('ds:usdt');
+  const [targetAsset, setTargetAsset] = useState<string>('');
 
+  // Amount state
+  const [fromAmount, setFromAmount] = useState<string>('');
+  const [parsedFromAmount, setParsedFromAmount] = useState('');
+  const [toAmount, setToAmount] = useState<string>('');
+
+  // API data hooks
   const { assets, loading: assetsLoading, error: assetsError } = useAssets();
   const { loading: chainsLoading, error: chainsError } = useChains();
   const {
@@ -39,8 +42,42 @@ export function SwapForm2() {
     resetQuote,
   } = useQuotes2();
 
-  const quoteStatus: string | null = status?.status?.status ?? null;
+  // Balances
+  const { balances } = useBalances(predictedAddress);
+
+  // Use state for dynamically tracking balances
+  const [sourceBalance, setSourceBalance] = useState(null);
+  const [targetBalance, setTargetBalance] = useState(null);
+
+  console.log({ sourceBalance, targetBalance, predictedAddress });
+  // Get selected assets
   const selectedSourceAsset: Asset | null = assets.find(asset => asset.aggregatedAssetId === sourceAsset) ?? null;
+  const selectedTargetAsset: Asset | null = assets.find(asset => asset.aggregatedAssetId === targetAsset) ?? null;
+  const quoteStatus: string | null = status?.status?.status ?? null;
+
+  // Update balance state when balances or selected assets change
+  useEffect(() => {
+    if (balances?.balanceByAsset) {
+      console.log({ balances });
+      const newSourceBalance = balances.balanceByAsset.find(b => b.aggregatedAssetId === sourceAsset);
+      const newTargetBalance = balances.balanceByAsset.find(b => b.aggregatedAssetId === targetAsset);
+
+      setSourceBalance(newSourceBalance || null);
+      setTargetBalance(newTargetBalance || null);
+    }
+  }, [balances, sourceAsset, targetAsset]);
+
+  // Update toAmount when quote is received
+  useEffect(() => {
+    if (quote && !quote.error && quote.destinationToken && selectedTargetAsset) {
+      setToAmount(formatTokenAmount(
+        quote.destinationToken.amount,
+        selectedTargetAsset.decimals || 18,
+      ));
+    } else {
+      setToAmount('');
+    }
+  }, [quote, selectedTargetAsset]);
 
   // Get the predicted address when wallet connects
   useEffect(() => {
@@ -49,91 +86,171 @@ export function SwapForm2() {
     }
   }, [authenticated, embeddedWallet, predictedAddress, getPredictedAddress]);
 
+  // Debounce quote fetching to reduce API calls
+  const debouncedGetQuote = useCallback(
+    debounce(async (request) => {
+      await getQuote(request);
+    }, 1000),
+    [getQuote],
+  );
+
+  // Handle from amount change
+  const handleFromAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+
+    // Validate number format
+    if (!/^(\d*\.?\d*)?$/.test(value)) return;
+
+    setFromAmount(value);
+
+    if (value && selectedSourceAsset) {
+      const parsed = parseTokenAmount(value, selectedSourceAsset.decimals || 18);
+      setParsedFromAmount(parsed);
+
+      // Auto-refresh quote
+      if (authenticated && embeddedWallet && sourceAsset && targetAsset) {
+        debouncedGetQuote({
+          fromTokenAmount: parsed,
+          fromAggregatedAssetId: sourceAsset,
+          toAggregatedAssetId: targetAsset,
+        });
+      }
+    } else {
+      setParsedFromAmount('');
+      setToAmount('');
+      resetQuote();
+    }
+  };
+
+  // Asset switching
   const handleSwapDirection = () => {
     setSourceAsset(targetAsset);
     setTargetAsset(sourceAsset);
-    setSourceChain(targetChain);
-    setTargetChain(sourceChain);
+
+    // Reset amounts when switching directions
+    setFromAmount('');
+    setToAmount('');
+    setParsedFromAmount('');
+    resetQuote();
   };
 
-  const handleAmountChange = (inputValue: string, parsedValue: string) => {
-    setAmount(inputValue);
-    setParsedAmount(parsedValue);
-  };
-
+  // Manual quote fetching button handler
   const handleGetQuote = async () => {
-    if (!sourceAsset || !targetAsset || !parsedAmount) return;
+    if (!sourceAsset || !targetAsset || !parsedFromAmount) return;
+
     if (!authenticated || !embeddedWallet) {
-      login();
-      return;
+      return; // ConnectButton will handle this
     }
 
     await getQuote({
-      fromTokenAmount: parsedAmount,
+      fromTokenAmount: parsedFromAmount,
       fromAggregatedAssetId: sourceAsset,
       toAggregatedAssetId: targetAsset,
     });
   };
 
+  // Quote expiration handler
   const handleQuoteExpire = async () => {
-    if (sourceAsset && targetAsset && parsedAmount) {
+    if (sourceAsset && targetAsset && parsedFromAmount) {
       await getQuote({
-        fromTokenAmount: parsedAmount,
+        fromTokenAmount: parsedFromAmount,
         fromAggregatedAssetId: sourceAsset,
         toAggregatedAssetId: targetAsset,
       });
     }
   };
 
+  // Balance state is now managed via useState
+
+  // Loading state
   if (assetsLoading || chainsLoading) {
     return (
       <Card className="w-full max-w-lg mx-auto p-6">
-        <div className="text-center">Loading...</div>
+        <div className="text-center py-8">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+          <p>Loading assets and chains...</p>
+        </div>
       </Card>
     );
   }
 
+  // Error state
   if (assetsError || chainsError) {
     return (
       <Card className="w-full max-w-lg mx-auto p-6">
         <Alert variant="destructive">
           <TriangleAlert className="h-4 w-4" />
-          <AlertTitle>An error occurred</AlertTitle>
+          <AlertTitle>Failed to load</AlertTitle>
           <AlertDescription>
             {assetsError || chainsError}
           </AlertDescription>
         </Alert>
+        <div className="mt-4 text-center">
+          <Button variant="outline" onClick={() => window.location.reload()}>
+            Retry
+          </Button>
+        </div>
       </Card>
     );
   }
 
-  console.log({ predictedAddress });
   return (
     <Card className="w-full max-w-lg mx-auto p-6">
       <div className="space-y-6">
-        <div className="flex justify-between items-center">
-          <h2 className="text-2xl font-bold">OneBalance Cross-Chain Swap</h2>
-        </div>
+        <h2 className="text-center text-2xl font-bold">OneBalance Cross-Chain Swap</h2>
 
         <div className="space-y-4">
           {/* From Section */}
-          <div className="space-y-2">
+          <div className="space-y-1">
+            <div className="flex justify-between">
+              <label className="text-sm font-medium">From Asset</label>
+              {sourceBalance && (
+                <span className="text-sm text-gray-500">
+                  Balance: {formatTokenAmount(sourceBalance.balance, selectedSourceAsset?.decimals || 18)}
+                  {' '}(${sourceBalance.fiatValue?.toFixed(2)})
+                </span>
+              )}
+            </div>
+
             <AssetSelect
               assets={assets}
               value={sourceAsset}
-              onValueChange={setSourceAsset}
-              label="From Asset"
+              onValueChange={(value) => {
+                setSourceAsset(value);
+                if (fromAmount && value !== sourceAsset) {
+                  // Refresh quote when asset changes
+                  const asset = assets.find(a => a.aggregatedAssetId === value);
+                  if (asset) {
+                    const parsed = parseTokenAmount(fromAmount, asset.decimals || 18);
+                    setParsedFromAmount(parsed);
+
+                    if (authenticated && embeddedWallet && targetAsset) {
+                      debouncedGetQuote({
+                        fromTokenAmount: parsed,
+                        fromAggregatedAssetId: value,
+                        toAggregatedAssetId: targetAsset,
+                      });
+                    }
+                  }
+                }
+              }}
+              label=""
               disabled={loading}
+              showBalances={true}
+              balances={balances?.balanceByAsset}
             />
           </div>
 
-          {/* Amount Input */}
-          <div className="space-y-2">
-            <AmountInput
-              value={amount}
-              onChange={handleAmountChange}
+          {/* From Amount Input */}
+          <div className="space-y-1">
+            <label className="text-sm font-medium">Amount</label>
+            <Input
+              type="text"
+              placeholder="0.0"
+              value={fromAmount}
+              onChange={handleFromAmountChange}
               disabled={loading}
-              selectedAsset={selectedSourceAsset}
+              className="text-lg h-14 p-4"
             />
           </div>
 
@@ -150,16 +267,55 @@ export function SwapForm2() {
             </Button>
           </div>
 
-          <div className="space-y-2">
+          {/* To Section */}
+          <div className="space-y-1">
+            <div className="flex justify-between">
+              <label className="text-sm font-medium">To Asset</label>
+              {targetBalance && (
+                <span className="text-sm text-gray-500">
+                  Balance: {formatTokenAmount(targetBalance.balance, selectedTargetAsset?.decimals || 18)}
+                  {' '}(${targetBalance.fiatValue?.toFixed(2)})
+                </span>
+              )}
+            </div>
+
             <AssetSelect
               assets={assets}
               value={targetAsset}
-              onValueChange={setTargetAsset}
-              label="To Asset"
+              onValueChange={(value) => {
+                setTargetAsset(value);
+                if (fromAmount && parsedFromAmount && value !== targetAsset) {
+                  // Refresh quote when target asset changes
+                  if (authenticated && embeddedWallet && sourceAsset) {
+                    debouncedGetQuote({
+                      fromTokenAmount: parsedFromAmount,
+                      fromAggregatedAssetId: sourceAsset,
+                      toAggregatedAssetId: value,
+                    });
+                  }
+                }
+              }}
+              label=""
               disabled={loading}
+              showBalances={true}
+              balances={balances?.balanceByAsset}
             />
           </div>
 
+          {/* To Amount Input */}
+          <div className="space-y-1">
+            <label className="text-sm font-medium">You will receive (estimated)</label>
+            <Input
+              type="text"
+              placeholder="0.0"
+              value={toAmount}
+              readOnly
+              disabled={true}
+              className="text-lg h-14 p-4 bg-gray-50"
+            />
+          </div>
+
+          {/* Wallet Connection Alert */}
           {!authenticated && (
             <Alert variant="info">
               <AlertTitle>Connect Wallet</AlertTitle>
@@ -169,15 +325,24 @@ export function SwapForm2() {
             </Alert>
           )}
 
+          {/* Quote Loading Alert */}
+          {authenticated && fromAmount && parsedFromAmount && !quote && loading && (
+            <Alert>
+              <AlertTitle>Getting quote...</AlertTitle>
+              <AlertDescription>
+                Please wait while we find the best rate for your swap
+              </AlertDescription>
+            </Alert>
+          )}
+
+          {/* Action Buttons */}
           {(!quote || quote?.error) ? (
             <Button
               className="w-full"
               onClick={handleGetQuote}
-              disabled={!sourceAsset || !targetAsset || !amount || loading}
+              disabled={(!sourceAsset || !targetAsset || !fromAmount || loading)}
             >
-              {!authenticated ? 'Connect Wallet' :
-                loading ? 'Getting Quote...' :
-                  'Get Quote'}
+              {loading ? 'Getting Quote...' : 'Get Quote'}
             </Button>
           ) : (
             <div className="space-y-2">
@@ -199,6 +364,7 @@ export function SwapForm2() {
             </div>
           )}
 
+          {/* Error Handling */}
           {error && (
             <Alert variant="destructive">
               <TriangleAlert className="h-4 w-4" />
@@ -209,6 +375,7 @@ export function SwapForm2() {
             </Alert>
           )}
 
+          {/* Success Message */}
           {quoteStatus === 'COMPLETED' && (
             <Alert variant="success">
               <CircleCheck className="h-4 w-4" />
@@ -219,6 +386,7 @@ export function SwapForm2() {
             </Alert>
           )}
 
+          {/* Quote Error */}
           {quote?.error && (
             <Alert variant="destructive">
               <TriangleAlert className="h-4 w-4" />
@@ -229,6 +397,7 @@ export function SwapForm2() {
             </Alert>
           )}
 
+          {/* Quote Details */}
           {!quote?.error && quote?.originToken && (
             <div className="space-y-4">
               <QuoteCountdown
@@ -260,4 +429,4 @@ export function SwapForm2() {
       </div>
     </Card>
   );
-}
+};
