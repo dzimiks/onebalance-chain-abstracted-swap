@@ -1,8 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-// import { SwapForm } from '@/components/SwapForm';
-import { SwapForm2 } from '@/components/SwapForm2';
+import { SwapForm } from '@/components/SwapForm';
 import { ConnectButton } from '@/components/ConnectButton';
 
 export default function Home() {
@@ -13,7 +12,7 @@ export default function Home() {
         <ConnectButton />
       </header>
       <div className="p-4">
-        <SwapForm2 />
+        <SwapForm />
       </div>
       <footer className="text-center bg-gray-100 p-4">
         <span>Made by <Link className="text-blue-500 hover:underline" href="https://twitter.com/dzimiks">@dzimiks</Link></span>

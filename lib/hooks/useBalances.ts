@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { balancesApi } from '@/lib/api/balances';
+import { BalancesResponse } from '@/lib/types/balances';
 
 export const useBalances = (predictedAddress: string | null) => {
-  const [balances, setBalances] = useState<any>(null);
+  const [balances, setBalances] = useState<BalancesResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 

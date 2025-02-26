@@ -1,28 +1,49 @@
 import { useState, useCallback } from 'react';
+import { usePrivy, useWallets } from '@privy-io/react-auth';
+import { signQuote } from '@/lib/utils/privySigningUtils';
+import { Quote, QuoteRequest } from '@/lib/types/quote';
+import { accountApi } from '@/lib/api/account';
 import { quotesApi } from '@/lib/api/quotes';
-import type { QuoteRequest, Quote, QuoteStatus } from '@/lib/types/quote';
 
 interface QuoteState {
   quote: Quote | null;
-  status: QuoteStatus | null;
+  status: any | null;
   loading: boolean;
   error: string | null;
 }
 
-interface UseQuotesReturn extends QuoteState {
-  getQuote: (request: QuoteRequest) => Promise<void>;
-  executeQuote: () => Promise<void>;
-  resetQuote: () => void;
-}
+export const useQuotes = () => {
+  const { authenticated } = usePrivy();
+  const { wallets } = useWallets();
+  // const embeddedWallet = wallets[0];
+  const embeddedWallet = wallets.find(wallet => wallet.walletClientType === 'privy');
 
-export const useQuotes = (): UseQuotesReturn => {
   const [state, setState] = useState<QuoteState>({
     quote: null,
     status: null,
     loading: false,
     error: null,
   });
-  console.log({ state });
+
+  const [predictedAddress, setPredictedAddress] = useState<string | null>(null);
+
+  // Get the predicted address for the account
+  const getPredictedAddress = useCallback(async () => {
+    if (!embeddedWallet || !embeddedWallet.address) {
+      return null;
+    }
+
+    try {
+      // Use the same wallet address for both session and admin
+      const address = embeddedWallet.address;
+      const predicted = await accountApi.predictAddress(address, address);
+      setPredictedAddress(predicted);
+      return predicted;
+    } catch (err) {
+      console.error('Failed to predict address:', err);
+      return null;
+    }
+  }, [embeddedWallet]);
 
   const resetQuote = useCallback(() => {
     setState({
@@ -33,12 +54,39 @@ export const useQuotes = (): UseQuotesReturn => {
     });
   }, []);
 
-  const getQuote = useCallback(async (request: QuoteRequest) => {
+  const getQuote = useCallback(async (request: Omit<QuoteRequest, 'account'>) => {
+    if (!authenticated || !embeddedWallet) {
+      setState(prev => ({ ...prev, error: 'Wallet not connected' }));
+      return;
+    }
+
     setState(prev => ({ ...prev, loading: true, error: null }));
 
     try {
-      const quote = await quotesApi.getQuote(request);
+      // Get or fetch the predicted address
+      let predicted = predictedAddress;
+      if (!predicted) {
+        predicted = await getPredictedAddress();
+        if (!predicted) {
+          throw new Error('Failed to get account address');
+        }
+      }
+
+      // Create the account object with the predicted address
+      const account = {
+        sessionAddress: embeddedWallet.address,
+        adminAddress: embeddedWallet.address,
+        accountAddress: predicted,
+      };
+
+      // Get the quote
+      const quote = await quotesApi.getQuote({
+        ...request,
+        account,
+      });
+
       setState(prev => ({ ...prev, quote, loading: false }));
+      return quote;
     } catch (err) {
       setState(prev => ({
         ...prev,
@@ -46,9 +94,14 @@ export const useQuotes = (): UseQuotesReturn => {
         loading: false,
       }));
     }
-  }, []);
+  }, [authenticated, embeddedWallet, predictedAddress, getPredictedAddress]);
 
   const executeQuote = useCallback(async () => {
+    if (!authenticated || !embeddedWallet) {
+      setState(prev => ({ ...prev, error: 'Wallet not connected' }));
+      return;
+    }
+
     if (!state.quote) {
       setState(prev => ({ ...prev, error: 'No quote to execute' }));
       return;
@@ -57,33 +110,22 @@ export const useQuotes = (): UseQuotesReturn => {
     setState(prev => ({ ...prev, loading: true, error: null }));
 
     try {
-      // First validate the quote hasn't expired
+      // Validate the quote hasn't expired
       const expirationTime = parseInt(state.quote.expirationTimestamp) * 1000;
-
       if (Date.now() > expirationTime) {
         setState(prev => ({
           ...prev,
           error: 'Quote has expired',
           loading: false,
         }));
-
         return;
       }
 
-      const resp = await quotesApi.executeQuote(state.quote);
-      console.log({ response: resp });
+      // Sign the quote with Privy
+      const signedQuote = await signQuote(state.quote, embeddedWallet);
 
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      if (resp?.error) {
-        setState(prev => ({
-          ...prev,
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          error: resp?.message || 'Failed to execute quote',
-          loading: false,
-        }));
-      }
+      // Execute the signed quote
+      await quotesApi.executeQuote(signedQuote);
 
       // Start polling for status
       const pollStatus = async () => {
@@ -91,8 +133,8 @@ export const useQuotes = (): UseQuotesReturn => {
           const statusResponse = await quotesApi.getQuoteStatus(state.quote!.id);
           setState(prev => ({ ...prev, status: statusResponse }));
 
-          if (statusResponse?.status?.status === 'PENDING') {
-            // Poll every 2 seconds
+          if (statusResponse?.status?.status === 'PENDING' || statusResponse?.status?.status === 'IN_PROGRESS') {
+            // Continue polling
             setTimeout(pollStatus, 2000);
           } else {
             setState(prev => ({ ...prev, loading: false }));
@@ -114,10 +156,15 @@ export const useQuotes = (): UseQuotesReturn => {
         loading: false,
       }));
     }
-  }, [state.quote]);
+  }, [state.quote, authenticated, embeddedWallet]);
 
   return {
-    ...state,
+    quote: state.quote,
+    status: state.status,
+    loading: state.loading,
+    error: state.error,
+    predictedAddress,
+    getPredictedAddress,
     getQuote,
     executeQuote,
     resetQuote,

@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { usePrivy, useWallets } from '@privy-io/react-auth';
-import { ArrowDownUp, CircleCheck, TriangleAlert, Search } from 'lucide-react';
+import { ArrowDownUp, CircleCheck, TriangleAlert } from 'lucide-react';
 import { AssetSelect } from '@/components/AssetSelect';
 import { QuoteDetails } from '@/components/QuoteDetails';
 import { QuoteCountdown } from '@/components/QuoteCountdown';
@@ -8,29 +8,26 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { useAssets, useChains, useQuotes2, useBalances } from '@/lib/hooks';
+import { useAssets, useChains, useQuotes, useBalances } from '@/lib/hooks';
 import { Asset } from '@/lib/types/assets';
 import { formatTokenAmount, parseTokenAmount } from '@/lib/utils/token';
 import debounce from 'lodash.debounce';
 
-export function SwapForm() {
-  const { login, authenticated } = usePrivy();
+export const SwapForm = () => {
+  const { authenticated } = usePrivy();
   const { wallets } = useWallets();
   const embeddedWallet = wallets.find(wallet => wallet.walletClientType === 'privy');
 
   // Asset state
-  const [sourceAsset, setSourceAsset] = useState<string>('ds:avax');
-  const [targetAsset, setTargetAsset] = useState<string>('ds:usdc');
+  const [sourceAsset, setSourceAsset] = useState<string>('ds:usdt');
+  const [targetAsset, setTargetAsset] = useState<string>('');
 
   // Amount state
-  const [fromAmount, setFromAmount] = useState<string>('0.0008');
-  const [parsedFromAmount, setParsedFromAmount] = useState('800000000000000');
+  const [fromAmount, setFromAmount] = useState<string>('');
+  const [parsedFromAmount, setParsedFromAmount] = useState('');
   const [toAmount, setToAmount] = useState<string>('');
 
-  // Search state
-  const [assetSearch, setAssetSearch] = useState<string>('');
-
-  // API data
+  // API data hooks
   const { assets, loading: assetsLoading, error: assetsError } = useAssets();
   const { loading: chainsLoading, error: chainsError } = useChains();
   const {
@@ -43,47 +40,48 @@ export function SwapForm() {
     getQuote,
     executeQuote,
     resetQuote,
-  } = useQuotes2();
+  } = useQuotes();
 
   // Balances
-  const { balances, loading: balancesLoading } = useBalances(predictedAddress);
+  const { balances } = useBalances(predictedAddress);
 
-  const quoteStatus: string | null = status?.status?.status ?? null;
+  // Use state for dynamically tracking balances
+  const [sourceBalance, setSourceBalance] = useState(null);
+  const [targetBalance, setTargetBalance] = useState(null);
+
+  // Get selected assets
   const selectedSourceAsset: Asset | null = assets.find(asset => asset.aggregatedAssetId === sourceAsset) ?? null;
   const selectedTargetAsset: Asset | null = assets.find(asset => asset.aggregatedAssetId === targetAsset) ?? null;
+  const quoteStatus: string | null = status?.status?.status ?? null;
 
-  // Get user balances for each asset
-  const getAssetBalance = useCallback((assetId: string) => {
-    if (!balances?.balanceByAsset) return null;
-    const assetBalance = balances.balanceByAsset.find(b => b.aggregatedAssetId === assetId);
-    return assetBalance || null;
-  }, [balances]);
+  // Update balance state when balances or selected assets change
+  useEffect(() => {
+    if (balances?.balanceByAsset) {
+      const newSourceBalance = balances.balanceByAsset.find(b => b.aggregatedAssetId === sourceAsset) || null;
+      const newTargetBalance = balances.balanceByAsset.find(b => b.aggregatedAssetId === targetAsset);
 
-  // Sort assets by balance (highest first)
-  const sortedAssets = useCallback(() => {
-    if (!balances?.balanceByAsset) return assets;
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-expect-error
+      setSourceBalance(newSourceBalance || null);
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-expect-error
+      setTargetBalance(newTargetBalance || null);
+    }
+  }, [balances, sourceAsset, targetAsset]);
 
-    return [...assets].sort((a, b) => {
-      const aBalance = getAssetBalance(a.aggregatedAssetId);
-      const bBalance = getAssetBalance(b.aggregatedAssetId);
-
-      const aValue = aBalance?.fiatValue || 0;
-      const bValue = bBalance?.fiatValue || 0;
-
-      return bValue - aValue;
-    });
-  }, [assets, balances, getAssetBalance]);
-
-  // Filter assets by search term
-  const filteredAssets = useCallback(() => {
-    if (!assetSearch) return sortedAssets();
-
-    return sortedAssets().filter(asset =>
-      asset.symbol.toLowerCase().includes(assetSearch.toLowerCase()) ||
-      asset.name.toLowerCase().includes(assetSearch.toLowerCase()) ||
-      asset.aggregatedAssetId.toLowerCase().includes(assetSearch.toLowerCase())
-    );
-  }, [assetSearch, sortedAssets]);
+  // Update toAmount when quote is received
+  useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
+    if (quote && !quote.error && quote.destinationToken && selectedTargetAsset) {
+      setToAmount(formatTokenAmount(
+        quote.destinationToken.amount,
+        selectedTargetAsset.decimals || 18,
+      ));
+    } else {
+      setToAmount('');
+    }
+  }, [quote, selectedTargetAsset]);
 
   // Get the predicted address when wallet connects
   useEffect(() => {
@@ -92,24 +90,12 @@ export function SwapForm() {
     }
   }, [authenticated, embeddedWallet, predictedAddress, getPredictedAddress]);
 
-  // Update toAmount when quote is received
-  useEffect(() => {
-    if (quote && !quote.error && quote.destinationToken && selectedTargetAsset) {
-      setToAmount(formatTokenAmount(
-        quote.destinationToken.amount,
-        selectedTargetAsset.decimals || 18
-      ));
-    } else {
-      setToAmount('');
-    }
-  }, [quote, selectedTargetAsset]);
-
-  // Debounce quote fetching
+  // Debounce quote fetching to reduce API calls
   const debouncedGetQuote = useCallback(
     debounce(async (request) => {
       await getQuote(request);
-    }, 500),
-    [getQuote]
+    }, 1000),
+    [getQuote],
   );
 
   // Handle from amount change
@@ -140,12 +126,6 @@ export function SwapForm() {
     }
   };
 
-  // Handle to amount change (currently read-only)
-  const handleToAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // Currently to amount is read-only, derived from quote
-    // Future: could implement reverse quote lookup
-  };
-
   // Asset switching
   const handleSwapDirection = () => {
     setSourceAsset(targetAsset);
@@ -161,9 +141,9 @@ export function SwapForm() {
   // Manual quote fetching button handler
   const handleGetQuote = async () => {
     if (!sourceAsset || !targetAsset || !parsedFromAmount) return;
+
     if (!authenticated || !embeddedWallet) {
-      login();
-      return;
+      return; // ConnectButton will handle this
     }
 
     await getQuote({
@@ -184,11 +164,16 @@ export function SwapForm() {
     }
   };
 
+  // Balance state is now managed via useState
+
   // Loading state
   if (assetsLoading || chainsLoading) {
     return (
       <Card className="w-full max-w-lg mx-auto p-6">
-        <div className="text-center">Loading...</div>
+        <div className="text-center py-8">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+          <p>Loading assets and chains...</p>
+        </div>
       </Card>
     );
   }
@@ -199,25 +184,24 @@ export function SwapForm() {
       <Card className="w-full max-w-lg mx-auto p-6">
         <Alert variant="destructive">
           <TriangleAlert className="h-4 w-4" />
-          <AlertTitle>An error occurred</AlertTitle>
+          <AlertTitle>Failed to load</AlertTitle>
           <AlertDescription>
             {assetsError || chainsError}
           </AlertDescription>
         </Alert>
+        <div className="mt-4 text-center">
+          <Button variant="outline" onClick={() => window.location.reload()}>
+            Retry
+          </Button>
+        </div>
       </Card>
     );
   }
 
-  // Get balance for display
-  const sourceBalance = getAssetBalance(sourceAsset);
-  const targetBalance = getAssetBalance(targetAsset);
-
   return (
     <Card className="w-full max-w-lg mx-auto p-6">
       <div className="space-y-6">
-        <div className="flex justify-between items-center">
-          <h2 className="text-2xl font-bold">OneBalance Cross-Chain Swap</h2>
-        </div>
+        <h2 className="text-center text-2xl font-bold">OneBalance Cross-Chain Swap</h2>
 
         <div className="space-y-4">
           {/* From Section */}
@@ -226,31 +210,21 @@ export function SwapForm() {
               <label className="text-sm font-medium">From Asset</label>
               {sourceBalance && (
                 <span className="text-sm text-gray-500">
+                  {/*  eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+                  {/*@ts-expect-error*/}
                   Balance: {formatTokenAmount(sourceBalance.balance, selectedSourceAsset?.decimals || 18)}
-                  {" "}(${sourceBalance.fiatValue.toFixed(2)})
+                  {/*  eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+                  {/*@ts-expect-error*/}
+                  {' '}(${sourceBalance.fiatValue?.toFixed(2)})
                 </span>
               )}
             </div>
 
-            <div className="relative">
-              <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
-                <Search className="h-4 w-4 text-gray-400" />
-              </div>
-              <Input
-                type="text"
-                placeholder="Search assets..."
-                value={assetSearch}
-                onChange={(e) => setAssetSearch(e.target.value)}
-                className="pl-9 mb-1"
-              />
-            </div>
-
             <AssetSelect
-              assets={filteredAssets()}
+              assets={assets}
               value={sourceAsset}
               onValueChange={(value) => {
                 setSourceAsset(value);
-                setAssetSearch('');
                 if (fromAmount && value !== sourceAsset) {
                   // Refresh quote when asset changes
                   const asset = assets.find(a => a.aggregatedAssetId === value);
@@ -307,14 +281,18 @@ export function SwapForm() {
               <label className="text-sm font-medium">To Asset</label>
               {targetBalance && (
                 <span className="text-sm text-gray-500">
+                  {/*  eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+                  {/*@ts-expect-error*/}
                   Balance: {formatTokenAmount(targetBalance.balance, selectedTargetAsset?.decimals || 18)}
-                  {" "}(${targetBalance.fiatValue.toFixed(2)})
+                  {/*  eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+                  {/*@ts-expect-error*/}
+                  {' '}(${targetBalance.fiatValue?.toFixed(2)})
                 </span>
               )}
             </div>
 
             <AssetSelect
-              assets={sortedAssets()}
+              assets={assets}
               value={targetAsset}
               onValueChange={(value) => {
                 setTargetAsset(value);
@@ -343,12 +321,13 @@ export function SwapForm() {
               type="text"
               placeholder="0.0"
               value={toAmount}
-              onChange={handleToAmountChange}
-              disabled={true} // Read-only
+              readOnly
+              disabled={true}
               className="text-lg h-14 p-4 bg-gray-50"
             />
           </div>
 
+          {/* Wallet Connection Alert */}
           {!authenticated && (
             <Alert variant="info">
               <AlertTitle>Connect Wallet</AlertTitle>
@@ -358,8 +337,9 @@ export function SwapForm() {
             </Alert>
           )}
 
-          {authenticated && fromAmount && parsedFromAmount && !quote && !loading && (
-            <Alert variant="info">
+          {/* Quote Loading Alert */}
+          {authenticated && fromAmount && parsedFromAmount && !quote && loading && (
+            <Alert>
               <AlertTitle>Getting quote...</AlertTitle>
               <AlertDescription>
                 Please wait while we find the best rate for your swap
@@ -367,15 +347,16 @@ export function SwapForm() {
             </Alert>
           )}
 
+          {/* Action Buttons */}
+          {/*  eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+          {/*@ts-expect-error*/}
           {(!quote || quote?.error) ? (
             <Button
               className="w-full"
               onClick={handleGetQuote}
-              disabled={!sourceAsset || !targetAsset || !fromAmount || loading}
+              disabled={(!sourceAsset || !targetAsset || !fromAmount || loading)}
             >
-              {!authenticated ? 'Connect Wallet' :
-                loading ? 'Getting Quote...' :
-                  'Get Quote'}
+              {loading ? 'Getting Quote...' : 'Get Quote'}
             </Button>
           ) : (
             <div className="space-y-2">
@@ -397,6 +378,7 @@ export function SwapForm() {
             </div>
           )}
 
+          {/* Error Handling */}
           {error && (
             <Alert variant="destructive">
               <TriangleAlert className="h-4 w-4" />
@@ -407,6 +389,7 @@ export function SwapForm() {
             </Alert>
           )}
 
+          {/* Success Message */}
           {quoteStatus === 'COMPLETED' && (
             <Alert variant="success">
               <CircleCheck className="h-4 w-4" />
@@ -417,16 +400,24 @@ export function SwapForm() {
             </Alert>
           )}
 
+          {/* Quote Error */}
+          {/*  eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+          {/*@ts-expect-error*/}
           {quote?.error && (
             <Alert variant="destructive">
               <TriangleAlert className="h-4 w-4" />
               <AlertTitle>Quote Error</AlertTitle>
               <AlertDescription>
+                {/*  eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+                {/*@ts-expect-error*/}
                 {quote?.message}
               </AlertDescription>
             </Alert>
           )}
 
+          {/* Quote Details */}
+          {/*  eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+          {/*@ts-expect-error*/}
           {!quote?.error && quote?.originToken && (
             <div className="space-y-4">
               <QuoteCountdown
@@ -458,4 +449,4 @@ export function SwapForm() {
       </div>
     </Card>
   );
-}
+};

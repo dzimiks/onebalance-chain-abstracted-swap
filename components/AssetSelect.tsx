@@ -29,14 +29,14 @@ interface AssetSelectProps {
 }
 
 export function AssetSelect({
-                              assets,
-                              value,
-                              onValueChange,
-                              label,
-                              disabled = false,
-                              showBalances = false,
-                              balances = [],
-                            }: AssetSelectProps) {
+  assets,
+  value,
+  onValueChange,
+  label,
+  disabled = false,
+  showBalances = false,
+  balances = [],
+}: AssetSelectProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const selectedAsset = assets.find(a => a.aggregatedAssetId === value);
 
