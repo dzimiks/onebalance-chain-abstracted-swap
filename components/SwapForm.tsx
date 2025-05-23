@@ -1,9 +1,10 @@
 import { useState, useEffect, useCallback } from 'react';
 import { usePrivy, useWallets } from '@privy-io/react-auth';
-import { ArrowDownUp, CircleCheck, TriangleAlert } from 'lucide-react';
+import { ArrowDownUp, TriangleAlert } from 'lucide-react';
 import { AssetSelect } from '@/components/AssetSelect';
 import { QuoteDetails } from '@/components/QuoteDetails';
 import { QuoteCountdown } from '@/components/QuoteCountdown';
+import { TransactionStatus } from '@/components/TransactionStatus';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -40,10 +41,11 @@ export const SwapForm = () => {
     getQuote,
     executeQuote,
     resetQuote,
+    isPolling,
   } = useQuotes();
 
   // Balances
-  const { balances } = useBalances(predictedAddress);
+  const { balances, fetchBalances } = useBalances(predictedAddress);
 
   // Use state for dynamically tracking balances
   const [sourceBalance, setSourceBalance] = useState(null);
@@ -397,17 +399,6 @@ export const SwapForm = () => {
             </Alert>
           )}
 
-          {/* Success Message */}
-          {status?.status === 'COMPLETED' && (
-            <Alert variant="success">
-              <CircleCheck className="h-4 w-4" />
-              <AlertTitle>Success!</AlertTitle>
-              <AlertDescription>
-                Swap completed successfully!
-              </AlertDescription>
-            </Alert>
-          )}
-
           {/* Quote Error */}
           {/*  eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
           {/*@ts-expect-error*/}
@@ -453,6 +444,24 @@ export const SwapForm = () => {
               />
             </div>
           )}
+
+          {/* Transaction Status */}
+          <TransactionStatus
+            status={status}
+            isPolling={isPolling}
+            onComplete={() => {
+              // Clear the form
+              setFromAmount('');
+              setToAmount('');
+              setParsedFromAmount('');
+              resetQuote();
+              
+              // Refresh balances after transaction completion
+              if (predictedAddress) {
+                fetchBalances();
+              }
+            }}
+          />
         </div>
       </div>
     </Card>

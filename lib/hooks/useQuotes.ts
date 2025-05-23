@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import { usePrivy, useWallets } from '@privy-io/react-auth';
 import { signQuote } from '@/lib/utils/privySigningUtils';
 import { Quote, QuoteRequest } from '@/lib/types/quote';
@@ -10,6 +10,7 @@ interface QuoteState {
   status: any | null;
   loading: boolean;
   error: string | null;
+  isPolling: boolean;
 }
 
 // Simple interface for components to use
@@ -23,12 +24,14 @@ export const useQuotes = () => {
   const { authenticated } = usePrivy();
   const { wallets } = useWallets();
   const embeddedWallet = wallets.find(wallet => wallet.walletClientType === 'privy');
+  const statusPollingRef = useRef<NodeJS.Timeout | null>(null);
 
   const [state, setState] = useState<QuoteState>({
     quote: null,
     status: null,
     loading: false,
     error: null,
+    isPolling: false,
   });
 
   const [predictedAddress, setPredictedAddress] = useState<string | null>(null);
@@ -52,11 +55,18 @@ export const useQuotes = () => {
   }, [embeddedWallet]);
 
   const resetQuote = useCallback(() => {
+    // Clear any active polling
+    if (statusPollingRef.current) {
+      clearInterval(statusPollingRef.current);
+      statusPollingRef.current = null;
+    }
+    
     setState({
       quote: null,
       status: null,
       loading: false,
       error: null,
+      isPolling: false,
     });
   }, []);
 
@@ -78,8 +88,7 @@ export const useQuotes = () => {
         }
       }
 
-      // Build the new v1 nested quote request format
-      const v1QuoteRequest: QuoteRequest = {
+      const quoteRequest: QuoteRequest = {
         from: {
           account: {
             sessionAddress: embeddedWallet.address,
@@ -99,7 +108,7 @@ export const useQuotes = () => {
       };
 
       // Get the quote
-      const quote = await quotesApi.getQuote(v1QuoteRequest);
+      const quote = await quotesApi.getQuote(quoteRequest);
 
       setState(prev => ({ ...prev, quote, loading: false }));
       return quote;
@@ -144,27 +153,40 @@ export const useQuotes = () => {
       await quotesApi.executeQuote(signedQuote);
 
       // Start polling for status immediately after execution
-      const pollStatus = async () => {
+      setState(prev => ({ ...prev, isPolling: true }));
+      
+      // Clear any existing polling
+      if (statusPollingRef.current) {
+        clearInterval(statusPollingRef.current);
+      }
+      
+      statusPollingRef.current = setInterval(async () => {
         try {
           const statusResponse = await quotesApi.getQuoteStatus(state.quote!.id);
           setState(prev => ({ ...prev, status: statusResponse }));
-
-          if (statusResponse?.status === 'PENDING' || statusResponse?.status === 'IN_PROGRESS') {
-            // Continue polling
-            setTimeout(pollStatus, 1000);
-          } else {
-            setState(prev => ({ ...prev, loading: false }));
+          
+          // If the transaction is completed or failed, stop polling
+          if (statusResponse?.status === 'COMPLETED' || statusResponse?.status === 'FAILED') {
+            if (statusPollingRef.current) {
+              clearInterval(statusPollingRef.current);
+              statusPollingRef.current = null;
+            }
+            setState(prev => ({ ...prev, loading: false, isPolling: false }));
           }
         } catch (err) {
+          console.error('Error polling transaction status:', err);
+          if (statusPollingRef.current) {
+            clearInterval(statusPollingRef.current);
+            statusPollingRef.current = null;
+          }
           setState(prev => ({
             ...prev,
             error: err instanceof Error ? err.message : 'Failed to get status',
             loading: false,
+            isPolling: false,
           }));
         }
-      };
-
-      pollStatus();
+      }, 1000); // Poll every 1 second
     } catch (err) {
       setState(prev => ({
         ...prev,
@@ -174,11 +196,20 @@ export const useQuotes = () => {
     }
   }, [state.quote, authenticated, embeddedWallet]);
 
+  useEffect(() => {
+    return () => {
+      if (statusPollingRef.current) {
+        clearInterval(statusPollingRef.current);
+      }
+    };
+  }, []);
+
   return {
     quote: state.quote,
     status: state.status,
     loading: state.loading,
     error: state.error,
+    isPolling: state.isPolling,
     predictedAddress,
     getPredictedAddress,
     getQuote,
