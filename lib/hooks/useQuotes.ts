@@ -12,6 +12,13 @@ interface QuoteState {
   error: string | null;
 }
 
+// Simple interface for components to use
+interface SimpleQuoteRequest {
+  fromTokenAmount: string;
+  fromAggregatedAssetId: string;
+  toAggregatedAssetId: string;
+}
+
 export const useQuotes = () => {
   const { authenticated } = usePrivy();
   const { wallets } = useWallets();
@@ -53,7 +60,7 @@ export const useQuotes = () => {
     });
   }, []);
 
-  const getQuote = useCallback(async (request: Omit<QuoteRequest, 'account'>) => {
+  const getQuote = useCallback(async (request: SimpleQuoteRequest) => {
     if (!authenticated || !embeddedWallet) {
       setState(prev => ({ ...prev, error: 'Wallet not connected' }));
       return;
@@ -71,18 +78,28 @@ export const useQuotes = () => {
         }
       }
 
-      // Create the account object with the predicted address
-      const account = {
-        sessionAddress: embeddedWallet.address,
-        adminAddress: embeddedWallet.address,
-        accountAddress: predicted,
+      // Build the new v1 nested quote request format
+      const v1QuoteRequest: QuoteRequest = {
+        from: {
+          account: {
+            sessionAddress: embeddedWallet.address,
+            adminAddress: embeddedWallet.address,
+            accountAddress: predicted,
+          },
+          asset: {
+            assetId: request.fromAggregatedAssetId,
+          },
+          amount: request.fromTokenAmount,
+        },
+        to: {
+          asset: {
+            assetId: request.toAggregatedAssetId,
+          },
+        },
       };
 
       // Get the quote
-      const quote = await quotesApi.getQuote({
-        ...request,
-        account,
-      });
+      const quote = await quotesApi.getQuote(v1QuoteRequest);
 
       setState(prev => ({ ...prev, quote, loading: false }));
       return quote;
@@ -126,18 +143,15 @@ export const useQuotes = () => {
       // Execute the signed quote
       await quotesApi.executeQuote(signedQuote);
 
-      // Update status after a successful swap
-      setState(prev => ({ ...prev, status: { status: { status: 'COMPLETED' } } }));
-
-      // Start polling for status
+      // Start polling for status immediately after execution
       const pollStatus = async () => {
         try {
           const statusResponse = await quotesApi.getQuoteStatus(state.quote!.id);
           setState(prev => ({ ...prev, status: statusResponse }));
 
-          if (statusResponse?.status?.status === 'PENDING' || statusResponse?.status?.status === 'IN_PROGRESS') {
+          if (statusResponse?.status === 'PENDING' || statusResponse?.status === 'IN_PROGRESS') {
             // Continue polling
-            setTimeout(pollStatus, 2000);
+            setTimeout(pollStatus, 1000);
           } else {
             setState(prev => ({ ...prev, loading: false }));
           }

@@ -48,7 +48,7 @@ export interface TotalBalance {
  */
 export interface BalancesResponse {
   /** Array of balance information for each aggregated asset */
-  balanceByAsset: BalanceByAssetDto[];
+  balanceByAggregatedAsset: BalanceByAssetDto[];
 
   /** Total balance information */
   totalBalance: TotalBalance;

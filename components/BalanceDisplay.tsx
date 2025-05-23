@@ -38,8 +38,8 @@ export const BalanceDisplay = ({
 
   // Find balance for selected asset if specified
   let selectedBalance = null;
-  if (selectedAssetId && balances.balanceByAsset) {
-    selectedBalance = balances.balanceByAsset.find(
+  if (selectedAssetId && balances.balanceByAggregatedAsset) {
+    selectedBalance = balances.balanceByAggregatedAsset.find(
       (b: any) => b.aggregatedAssetId === selectedAssetId,
     );
   }

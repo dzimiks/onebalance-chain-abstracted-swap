@@ -55,9 +55,9 @@ export const SwapForm = () => {
 
   // Update balance state when balances or selected assets change
   useEffect(() => {
-    if (balances?.balanceByAsset) {
-      const newSourceBalance = balances.balanceByAsset.find(b => b.aggregatedAssetId === sourceAsset) || null;
-      const newTargetBalance = balances.balanceByAsset.find(b => b.aggregatedAssetId === targetAsset);
+    if (balances?.balanceByAggregatedAsset) {
+      const newSourceBalance = balances.balanceByAggregatedAsset.find(b => b.aggregatedAssetId === sourceAsset) || null;
+      const newTargetBalance = balances.balanceByAggregatedAsset.find(b => b.aggregatedAssetId === targetAsset);
 
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-expect-error
@@ -91,7 +91,7 @@ export const SwapForm = () => {
 
   // Reset everything after a successful swap
   useEffect(() => {
-    if (status?.status?.status === 'COMPLETED') {
+    if (status?.status === 'COMPLETED') {
       setFromAmount('');
       setToAmount('');
       setParsedFromAmount('');
@@ -254,7 +254,7 @@ export const SwapForm = () => {
               label=""
               disabled={loading}
               showBalances={true}
-              balances={balances?.balanceByAsset}
+              balances={balances?.balanceByAggregatedAsset}
             />
           </div>
 
@@ -318,7 +318,7 @@ export const SwapForm = () => {
               label=""
               disabled={loading}
               showBalances={true}
-              balances={balances?.balanceByAsset}
+              balances={balances?.balanceByAggregatedAsset}
             />
           </div>
 
@@ -373,7 +373,7 @@ export const SwapForm = () => {
                 onClick={executeQuote}
                 disabled={loading || !authenticated}
               >
-                {loading && status?.status?.status === 'PENDING' ? 'Executing Swap...' : 'Sign & Swap'}
+                {loading && status?.status === 'PENDING' ? 'Executing Swap...' : 'Sign & Swap'}
               </Button>
               <Button
                 variant="outline"
@@ -398,7 +398,7 @@ export const SwapForm = () => {
           )}
 
           {/* Success Message */}
-          {status?.status?.status === 'COMPLETED' && (
+          {status?.status === 'COMPLETED' && (
             <Alert variant="success">
               <CircleCheck className="h-4 w-4" />
               <AlertTitle>Success!</AlertTitle>

@@ -168,9 +168,9 @@ export const ConnectButton = () => {
               <div className="py-4 text-center text-sm text-gray-500">
                 Loading balances...
               </div>
-            ) : balances?.balanceByAsset && balances.balanceByAsset.length > 0 ? (
+            ) : balances?.balanceByAggregatedAsset && balances.balanceByAggregatedAsset.length > 0 ? (
               <div className="space-y-2 max-h-72 overflow-y-auto pr-1">
-                {balances.balanceByAsset
+                {balances.balanceByAggregatedAsset
                   .sort((a, b) => (b.fiatValue || 0) - (a.fiatValue || 0))
                   .map((asset) => (
                     <Card key={asset.aggregatedAssetId} className="p-3 hover:bg-gray-50 transition-colors duration-200">

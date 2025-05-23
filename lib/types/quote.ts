@@ -12,10 +12,24 @@ export interface TokenInfo {
 }
 
 export interface QuoteRequest {
-  account: Account;
-  fromTokenAmount: string;
-  fromAggregatedAssetId: string;
-  toAggregatedAssetId: string;
+  from: {
+    account: {
+      sessionAddress: string;
+      adminAddress: string;
+      accountAddress: string;
+    };
+    asset: {
+      assetId: string;
+    };
+    amount: string;
+  };
+  to: {
+    asset: {
+      assetId: string;
+    };
+    account?: string; // Optional CAIP account ID for transfers to other accounts
+    amount?: string; // Optional for quotes (used for exact output)
+  };
 }
 
 export interface ChainOperation {
@@ -57,9 +71,7 @@ export interface Quote {
 
 export interface QuoteStatus {
   quoteId: string;
-  status: {
-    status: 'PENDING' | 'COMPLETED' | 'FAILED' | 'IN_PROGRESS' | 'REFUNDED';
-  };
+  status: 'PENDING' | 'COMPLETED' | 'FAILED' | 'IN_PROGRESS' | 'REFUNDED';
   user: string;
   recipientAccountId: string;
   originChainOperations: {
