@@ -150,20 +150,7 @@ export const SwapForm = () => {
     resetQuote();
   };
 
-  // Manual quote fetching button handler
-  const handleGetQuote = async () => {
-    if (!sourceAsset || !targetAsset || !parsedFromAmount) return;
 
-    if (!authenticated || !embeddedWallet) {
-      return; // ConnectButton will handle this
-    }
-
-    await getQuote({
-      fromTokenAmount: parsedFromAmount,
-      fromAggregatedAssetId: sourceAsset,
-      toAggregatedAssetId: targetAsset,
-    });
-  };
 
   // Quote expiration handler
   const handleQuoteExpire = async () => {
@@ -189,6 +176,28 @@ export const SwapForm = () => {
       fetchBalances();
     }
   }, [predictedAddress, fetchBalances, resetQuote]);
+
+  // Get swap button state
+  const getSwapButtonState = () => {
+    if (!authenticated) {
+      return { disabled: true, text: 'Connect Wallet to Swap' };
+    }
+    
+    if (loading && status?.status === 'PENDING') {
+      return { disabled: true, text: 'Executing Swap...' };
+    }
+    
+    if (loading) {
+      return { disabled: true, text: 'Getting Quote...' };
+    }
+    
+    const isDisabled = !sourceAsset || !targetAsset || !fromAmount || !quote || 
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-expect-error
+      quote?.error;
+    
+    return { disabled: isDisabled, text: 'Swap' };
+  };
 
   // Balance state is now managed via useState
 
@@ -326,16 +335,6 @@ export const SwapForm = () => {
             balances={balances?.balanceByAggregatedAsset}
           />
 
-          {/* Wallet Connection Alert */}
-          {!authenticated && (
-            <Alert variant="warning">
-              <AlertTitle>Connect Wallet</AlertTitle>
-              <AlertDescription>
-                Please connect your wallet to execute swaps
-              </AlertDescription>
-            </Alert>
-          )}
-
           {/* Quote Loading Alert */}
           {authenticated && fromAmount && parsedFromAmount && !quote && loading && (
             <Alert>
@@ -346,36 +345,30 @@ export const SwapForm = () => {
             </Alert>
           )}
 
-          {/* Action Buttons */}
-          {/*  eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
-          {/*@ts-expect-error*/}
-          {(!quote || quote?.error) ? (
+          {/* Swap Button */}
+          <div className="space-y-2">
             <Button
               className="w-full"
-              onClick={handleGetQuote}
-              disabled={(!sourceAsset || !targetAsset || !fromAmount || loading)}
+              onClick={executeQuote}
+              disabled={getSwapButtonState().disabled}
             >
-              {loading ? 'Getting Quote...' : 'Get Quote'}
+              {getSwapButtonState().text}
             </Button>
-          ) : (
-            <div className="space-y-2">
-              <Button
-                className="w-full"
-                onClick={executeQuote}
-                disabled={loading || !authenticated}
-              >
-                {loading && status?.status === 'PENDING' ? 'Executing Swap...' : 'Sign & Swap'}
-              </Button>
+            
+            {/* Cancel button only shows when there's a quote */}
+            {/*  eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+            {/*@ts-expect-error*/}
+            {quote && !quote?.error && (
               <Button
                 variant="outline"
                 className="w-full"
                 onClick={resetQuote}
                 disabled={loading}
               >
-                Cancel
+                Cancel Quote
               </Button>
-            </div>
-          )}
+            )}
+          </div>
 
           {/* Error Handling */}
           {error && (
