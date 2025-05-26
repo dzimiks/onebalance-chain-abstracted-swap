@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { usePrivy, useWallets } from '@privy-io/react-auth';
 import { ArrowDownUp, TriangleAlert } from 'lucide-react';
 import { AssetSelect } from '@/components/AssetSelect';
+import { TokenInput } from '@/components/TokenInput';
 import { QuoteDetails } from '@/components/QuoteDetails';
 import { QuoteCountdown } from '@/components/QuoteCountdown';
 import { TransactionStatus } from '@/components/TransactionStatus';
@@ -228,106 +229,62 @@ export const SwapForm = () => {
       <div className="space-y-6">
         <h2 className="text-center text-2xl font-bold">OneBalance Cross-Chain Swap</h2>
 
-        <div className="space-y-4">
-          {/* From Section */}
-          <div className="space-y-1">
-            <div className="flex justify-between">
-              <label className="text-sm font-medium">From Asset</label>
-              {sourceBalance && (
-                <span className="text-sm text-gray-500">
-                  {/*  eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
-                  {/*@ts-expect-error*/}
-                  Balance: {Number(formatTokenAmount(sourceBalance.balance, selectedSourceAsset?.decimals || 18)).toFixed(3)}
-                  {/*  eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
-                  {/*@ts-expect-error*/}
-                  {' '}(${sourceBalance.fiatValue?.toFixed(2) || 0})
-                </span>
-              )}
-            </div>
+                <div className="space-y-4">
+          {/* From Token Input */}
+          <TokenInput
+            label="Sell"
+            assets={assets}
+            selectedAsset={sourceAsset}
+            onAssetChange={(value) => {
+              setSourceAsset(value);
+              if (fromAmount && value !== sourceAsset) {
+                // Refresh quote when asset changes
+                const asset = assets.find(a => a.aggregatedAssetId === value);
+                if (asset) {
+                  const parsed = parseTokenAmount(fromAmount, asset.decimals || 18);
+                  setParsedFromAmount(parsed);
 
-            <AssetSelect
-              assets={assets}
-              value={sourceAsset}
-              onValueChange={(value) => {
-                setSourceAsset(value);
-                if (fromAmount && value !== sourceAsset) {
-                  // Refresh quote when asset changes
-                  const asset = assets.find(a => a.aggregatedAssetId === value);
-                  if (asset) {
-                    const parsed = parseTokenAmount(fromAmount, asset.decimals || 18);
-                    setParsedFromAmount(parsed);
-
-                    if (authenticated && embeddedWallet && targetAsset) {
-                      debouncedGetQuote({
-                        fromTokenAmount: parsed,
-                        fromAggregatedAssetId: value,
-                        toAggregatedAssetId: targetAsset,
-                      });
-                    }
+                  if (authenticated && embeddedWallet && targetAsset) {
+                    debouncedGetQuote({
+                      fromTokenAmount: parsed,
+                      fromAggregatedAssetId: value,
+                      toAggregatedAssetId: targetAsset,
+                    });
                   }
                 }
-              }}
-              label=""
-              disabled={loading}
-              showBalances={true}
-              balances={balances?.balanceByAggregatedAsset}
-            />
-          </div>
-
-          {/* From Amount Input */}
-          <div className="space-y-1">
-            <div className="flex items-center justify-between flex-wrap gap-2">
-              <label className="text-sm font-medium">Amount</label>
-
-              {/* Percentage Buttons */}
-              {sourceBalance && selectedSourceAsset && (
-                <div className="flex gap-2">
-                  {[25, 50, 75, 100].map((percentage) => (
-                    <Button
-                      key={percentage}
-                      variant="outline"
-                      size="sm"
-                      className="flex-1 py-1 px-2 text-xs"
-                      onClick={() => {
-                        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                        // @ts-expect-error
-                        const balance = sourceBalance.balance;
-                        const decimals = selectedSourceAsset.decimals || 18;
-                        const maxAmount = formatTokenAmount(balance, decimals);
-                        const targetAmount = (parseFloat(maxAmount) * percentage / 100).toString();
-                        
-                        setFromAmount(targetAmount);
-                        
-                        // Update parsed amount and trigger quote
-                        const parsed = parseTokenAmount(targetAmount, decimals);
-                        setParsedFromAmount(parsed);
-                        
-                        if (authenticated && embeddedWallet && sourceAsset && targetAsset) {
-                          debouncedGetQuote({
-                            fromTokenAmount: parsed,
-                            fromAggregatedAssetId: sourceAsset,
-                            toAggregatedAssetId: targetAsset,
-                          });
-                        }
-                      }}
-                      disabled={loading}
-                    >
-                      {percentage === 100 ? 'Max' : `${percentage}%`}
-                    </Button>
-                  ))}
-                </div>
-              )}
-            </div>
-            <div className="space-y-2">
-              <Input
-                type="text"
-                placeholder="0.0"
-                value={fromAmount}
-                onChange={handleFromAmountChange}
-                className="text-lg h-14 p-4"
-              />
-            </div>
-          </div>
+              }
+            }}
+            amount={fromAmount}
+            onAmountChange={handleFromAmountChange}
+            balance={sourceBalance}
+            showPercentageButtons={true}
+            onPercentageClick={(percentage) => {
+              if (sourceBalance && selectedSourceAsset) {
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-expect-error
+                const balance = sourceBalance.balance;
+                const decimals = selectedSourceAsset.decimals || 18;
+                const maxAmount = formatTokenAmount(balance, decimals);
+                const targetAmount = (parseFloat(maxAmount) * percentage / 100).toString();
+                
+                setFromAmount(targetAmount);
+                
+                // Update parsed amount and trigger quote
+                const parsed = parseTokenAmount(targetAmount, decimals);
+                setParsedFromAmount(parsed);
+                
+                if (authenticated && embeddedWallet && sourceAsset && targetAsset) {
+                  debouncedGetQuote({
+                    fromTokenAmount: parsed,
+                    fromAggregatedAssetId: sourceAsset,
+                    toAggregatedAssetId: targetAsset,
+                  });
+                }
+              }
+            }}
+            disabled={loading}
+            balances={balances?.balanceByAggregatedAsset}
+          />
 
           {/* Swap Direction Button */}
           <div className="flex justify-center">
@@ -342,57 +299,32 @@ export const SwapForm = () => {
             </Button>
           </div>
 
-          {/* To Section */}
-          <div className="space-y-1">
-            <div className="flex justify-between">
-              <label className="text-sm font-medium">To Asset</label>
-              {targetBalance && (
-                <span className="text-sm text-gray-500">
-                  {/*  eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
-                  {/*@ts-expect-error*/}
-                  Balance: {Number(formatTokenAmount(targetBalance.balance, selectedTargetAsset?.decimals || 18)).toFixed(3)}
-                  {/*  eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
-                  {/*@ts-expect-error*/}
-                  {' '}(${targetBalance.fiatValue?.toFixed(2) || 0})
-                </span>
-              )}
-            </div>
-
-            <AssetSelect
-              assets={assets}
-              value={targetAsset}
-              onValueChange={(value) => {
-                setTargetAsset(value);
-                if (fromAmount && parsedFromAmount && value !== targetAsset) {
-                  // Refresh quote when target asset changes
-                  if (authenticated && embeddedWallet && sourceAsset) {
-                    debouncedGetQuote({
-                      fromTokenAmount: parsedFromAmount,
-                      fromAggregatedAssetId: sourceAsset,
-                      toAggregatedAssetId: value,
-                    });
-                  }
+          {/* To Token Input */}
+          <TokenInput
+            label="Buy"
+            assets={assets}
+            selectedAsset={targetAsset}
+            onAssetChange={(value) => {
+              setTargetAsset(value);
+              if (fromAmount && parsedFromAmount && value !== targetAsset) {
+                // Refresh quote when target asset changes
+                if (authenticated && embeddedWallet && sourceAsset) {
+                  debouncedGetQuote({
+                    fromTokenAmount: parsedFromAmount,
+                    fromAggregatedAssetId: sourceAsset,
+                    toAggregatedAssetId: value,
+                  });
                 }
-              }}
-              label=""
-              disabled={loading}
-              showBalances={true}
-              balances={balances?.balanceByAggregatedAsset}
-            />
-          </div>
-
-          {/* To Amount Input */}
-          <div className="space-y-1">
-            <label className="text-sm font-medium">You will receive (estimated)</label>
-            <Input
-              type="text"
-              placeholder="0.0"
-              value={toAmount}
-              readOnly
-              disabled={true}
-              className="text-lg h-14 p-4 bg-gray-50"
-            />
-          </div>
+              }
+            }}
+            amount={toAmount}
+            onAmountChange={() => {}} // No-op since it's read-only
+            balance={targetBalance}
+            showPercentageButtons={false}
+            disabled={loading}
+            readOnly={true}
+            balances={balances?.balanceByAggregatedAsset}
+          />
 
           {/* Wallet Connection Alert */}
           {!authenticated && (
