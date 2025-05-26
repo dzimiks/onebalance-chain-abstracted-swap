@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { usePrivy, useWallets } from '@privy-io/react-auth';
-import { ArrowDownUp, Send, TriangleAlert } from 'lucide-react';
+import { ArrowDownUp, TriangleAlert } from 'lucide-react';
 import { TokenInput } from '@/components/TokenInput';
 import { QuoteDetails } from '@/components/QuoteDetails';
 import { QuoteCountdown } from '@/components/QuoteCountdown';
@@ -354,7 +354,6 @@ export const SwapForm = () => {
               onClick={executeQuote}
               disabled={getSwapButtonState().disabled}
             >
-              <Send className="mr-2 h-4 w-4" />
               {getSwapButtonState().text}
             </Button>
 
