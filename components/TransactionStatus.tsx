@@ -1,6 +1,7 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Card } from '@/components/ui/card';
-import { ExternalLink, Clock, CheckCircle, XCircle } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { ExternalLink, Clock, CheckCircle, XCircle, X } from 'lucide-react';
 import { QuoteStatus } from '@/lib/types/quote';
 
 interface TransactionStatusProps {
@@ -14,15 +15,27 @@ export const TransactionStatus = ({
   isPolling,
   onComplete,
 }: TransactionStatusProps) => {
-    console.log({ status, isPolling });
+  // Internal state to persist status even when prop becomes null
+  const [persistedStatus, setPersistedStatus] = useState<QuoteStatus | null>(null);
+  const [isVisible, setIsVisible] = useState(false);
+
+  // Update persisted status when new status is received
+  useEffect(() => {
+    if (status) {
+      setPersistedStatus(status);
+      setIsVisible(true);
+    }
+  }, [status]);
+
   // Call onComplete when transaction is completed or failed
   useEffect(() => {
-    if (status && (status.status === 'COMPLETED' || status.status === 'FAILED') && onComplete) {
+    if (persistedStatus && (persistedStatus.status === 'COMPLETED' || persistedStatus.status === 'FAILED') && onComplete) {
       onComplete();
     }
-  }, [status, onComplete]);
+  }, [persistedStatus, onComplete]);
 
-  if (!status) {
+  // Don't render if no status has been set yet
+  if (!persistedStatus || !isVisible) {
     return null;
   }
 
@@ -50,17 +63,26 @@ export const TransactionStatus = ({
     }
   };
 
+  const handleDismiss = () => {
+    setIsVisible(false);
+    setPersistedStatus(null);
+  };
+
   return (
     <Card className="p-6">
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <h3 className="text-lg font-semibold">Transaction Status</h3>
-          {isPolling && (
-            <div className="flex items-center text-sm text-gray-500">
-              <div className="animate-spin rounded-full h-3 w-3 border-b border-gray-400 mr-2"></div>
-              Monitoring...
-            </div>
-          )}
+          <div className="flex items-center gap-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleDismiss}
+              className="h-6 w-6 p-0"
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
 
         <div className="space-y-3">
@@ -68,19 +90,19 @@ export const TransactionStatus = ({
           <div className="flex items-center justify-between">
             <span className="text-gray-500 text-sm">Status:</span>
             <div className="flex items-center gap-2">
-              {getStatusIcon(status.status)}
-              <span className={`font-medium ${getStatusColor(status.status)}`}>
-                {status.status || 'Pending'}
+              {getStatusIcon(persistedStatus.status)}
+              <span className={`font-medium ${getStatusColor(persistedStatus.status)}`}>
+                {persistedStatus.status || 'Pending'}
               </span>
             </div>
           </div>
 
           {/* Origin Chain Operations */}
-          {status.originChainOperations?.length > 0 && (
+          {persistedStatus.originChainOperations?.length > 0 && (
             <div className="flex items-center justify-between">
               <span className="text-gray-500 text-sm">Origin Chain:</span>
               <a
-                href={status.originChainOperations[0].explorerUrl}
+                href={persistedStatus.originChainOperations[0].explorerUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-1 text-blue-500 hover:underline text-sm max-w-[200px] truncate"
@@ -92,11 +114,11 @@ export const TransactionStatus = ({
           )}
 
           {/* Destination Chain Operations */}
-          {status.destinationChainOperations?.length > 0 && (
+          {persistedStatus.destinationChainOperations?.length > 0 && (
             <div className="flex items-center justify-between">
               <span className="text-gray-500 text-sm">Destination Chain:</span>
               <a
-                href={status.destinationChainOperations[0].explorerUrl}
+                href={persistedStatus.destinationChainOperations[0].explorerUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-1 text-blue-500 hover:underline text-sm max-w-[200px] truncate"
@@ -108,7 +130,7 @@ export const TransactionStatus = ({
           )}
 
           {/* Additional Info */}
-          {status.status === 'COMPLETED' && (
+          {persistedStatus.status === 'COMPLETED' && (
             <div className="mt-4 p-3 bg-green-50 rounded-lg border border-green-200">
               <p className="text-green-700 text-sm font-medium">
                 ✅ Transaction completed successfully!
@@ -119,7 +141,7 @@ export const TransactionStatus = ({
             </div>
           )}
 
-          {status.status === 'FAILED' && (
+          {persistedStatus.status === 'FAILED' && (
             <div className="mt-4 p-3 bg-red-50 rounded-lg border border-red-200">
               <p className="text-red-700 text-sm font-medium">
                 ❌ Transaction failed

@@ -20,8 +20,8 @@ export const SwapForm = () => {
   const embeddedWallet = wallets.find(wallet => wallet.walletClientType === 'privy');
 
   // Asset state
-  const [sourceAsset, setSourceAsset] = useState<string>('ds:usdt');
-  const [targetAsset, setTargetAsset] = useState<string>('ds:usdc');
+  const [sourceAsset, setSourceAsset] = useState<string>('ds:usdc');
+  const [targetAsset, setTargetAsset] = useState<string>('ds:usdt');
 
   // Amount state
   const [fromAmount, setFromAmount] = useState<string>('');
@@ -183,7 +183,7 @@ export const SwapForm = () => {
       <Card className="w-full max-w-lg mx-auto p-6">
         <div className="text-center py-8">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-          <p>Loading assets and chains...</p>
+          <p>Loading assets...</p>
         </div>
       </Card>
     );

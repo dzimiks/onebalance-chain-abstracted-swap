@@ -13,6 +13,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Wallet, CircleUser, Copy, CheckCircle2 } from 'lucide-react';
 import { useBalances } from '@/lib/hooks/useBalances';
+import { useAssets } from '@/lib/hooks/useAssets';
 import { useQuotes } from '@/lib/hooks';
 import { formatTokenAmount } from '@/lib/utils/token';
 import { BalanceByAssetDto } from '@/lib/types/balances';
@@ -34,6 +35,8 @@ export const ConnectButton = () => {
     loading: balancesLoading,
     fetchBalances,
   } = useBalances(predictedAddress);
+
+  const { assets } = useAssets();
 
   // Get the predicted address when wallet connects
   useEffect(() => {
@@ -72,6 +75,12 @@ export const ConnectButton = () => {
     return assetId.split(':')[1]?.toUpperCase() || assetId;
   };
 
+  // Get asset decimals from assets data
+  const getAssetDecimals = (aggregatedAssetId: string) => {
+    const asset = assets.find(a => a.aggregatedAssetId === aggregatedAssetId);
+    return asset?.decimals || 18;
+  };
+
   if (!ready) {
     return <Button variant="outline" size="sm" disabled>Loading...</Button>;
   }
@@ -102,33 +111,11 @@ export const ConnectButton = () => {
         </DialogHeader>
 
         <div className="space-y-4 py-2">
-          {/* Wallet Address */}
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <h3 className="text-sm font-medium">Wallet Address</h3>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-6 w-6"
-                onClick={() => embeddedWallet && copyAddress(embeddedWallet.address)}
-              >
-                {copied ? (
-                  <CheckCircle2 className="h-4 w-4 text-green-500" />
-                ) : (
-                  <Copy className="h-4 w-4" />
-                )}
-              </Button>
-            </div>
-            <p className="text-sm p-2 bg-gray-100 rounded break-all">
-              {embeddedWallet?.address}
-            </p>
-          </div>
-
           {/* Predicted Address */}
           {predictedAddress && (
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <h3 className="text-sm font-medium">Account Address (Predicted)</h3>
+                <h3 className="text-sm font-medium">Account Address</h3>
                 <Button
                   variant="ghost"
                   size="icon"
@@ -171,6 +158,7 @@ export const ConnectButton = () => {
             ) : balances?.balanceByAggregatedAsset && balances.balanceByAggregatedAsset.length > 0 ? (
               <div className="space-y-2 max-h-72 overflow-y-auto pr-1">
                 {balances.balanceByAggregatedAsset
+                  .filter(asset => asset.fiatValue && asset.fiatValue > 0)
                   .sort((a, b) => (b.fiatValue || 0) - (a.fiatValue || 0))
                   .map((asset) => (
                     <Card key={asset.aggregatedAssetId} className="p-3 hover:bg-gray-50 transition-colors duration-200">
@@ -191,7 +179,7 @@ export const ConnectButton = () => {
                           }) || 0}
                           </div>
                           <div className="text-xs text-gray-500">
-                            {formatTokenAmount(asset.balance, asset.decimals || 18)}
+                            {formatTokenAmount(asset.balance, getAssetDecimals(asset.aggregatedAssetId))}
                           </div>
                         </div>
                       </div>
