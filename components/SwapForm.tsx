@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { usePrivy, useWallets } from '@privy-io/react-auth';
-import { ArrowDownUp, TriangleAlert } from 'lucide-react';
-import { AssetSelect } from '@/components/AssetSelect';
+import { ArrowDownUp, Send, TriangleAlert } from 'lucide-react';
 import { TokenInput } from '@/components/TokenInput';
 import { QuoteDetails } from '@/components/QuoteDetails';
 import { QuoteCountdown } from '@/components/QuoteCountdown';
@@ -9,7 +8,6 @@ import { TransactionStatus } from '@/components/TransactionStatus';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
 import { useAssets, useChains, useQuotes, useBalances } from '@/lib/hooks';
 import { Asset } from '@/lib/types/assets';
 import { formatTokenAmount, parseTokenAmount } from '@/lib/utils/token';
@@ -240,9 +238,7 @@ export const SwapForm = () => {
   return (
     <Card className="w-full max-w-lg mx-auto p-6">
       <div className="space-y-6">
-        <h2 className="text-center text-2xl font-bold text-foreground">
-          OneBalance Cross-Chain Swap
-        </h2>
+        <h2 className="text-center text-2xl font-bold text-foreground">Swap Tokens</h2>
 
         <div className="space-y-4">
           {/* From Token Input */}
@@ -358,6 +354,7 @@ export const SwapForm = () => {
               onClick={executeQuote}
               disabled={getSwapButtonState().disabled}
             >
+              <Send className="mr-2 h-4 w-4" />
               {getSwapButtonState().text}
             </Button>
 

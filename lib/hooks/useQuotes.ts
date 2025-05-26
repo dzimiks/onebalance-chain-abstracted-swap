@@ -18,6 +18,7 @@ interface SimpleQuoteRequest {
   fromTokenAmount: string;
   fromAggregatedAssetId: string;
   toAggregatedAssetId: string;
+  recipientAddress?: string; // Optional for transfers, should include chain prefix (e.g., "eip155:1:0x...")
 }
 
 export const useQuotes = () => {
@@ -105,6 +106,10 @@ export const useQuotes = () => {
             asset: {
               assetId: request.toAggregatedAssetId,
             },
+            // Add recipient account for transfers (should already include chain prefix)
+            ...(request.recipientAddress && {
+              account: request.recipientAddress,
+            }),
           },
         };
 

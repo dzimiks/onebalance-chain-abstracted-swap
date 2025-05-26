@@ -10,10 +10,12 @@ const alertVariants = cva(
       variant: {
         default: 'bg-background text-foreground',
         destructive:
-          'border-red-500/50 text-destructive-foreground bg-red-50 [&>svg]:text-current *:data-[slot=alert-description]:text-destructive-foreground/80',
-        success: 'border-green-500/50 text-green-700 bg-green-50 [&>svg]:text-green-500',
-        warning: 'border-yellow-500/50 text-yellow-700 bg-yellow-50 [&>svg]:text-yellow-500',
-        info: 'border-blue-500/50 text-blue-700 bg-blue-50 [&>svg]:text-blue-500',
+          'border-red-500/50 text-red-900 bg-red-50 dark:border-red-500/50 dark:text-red-100 dark:bg-red-950/50 [&>svg]:text-current',
+        success:
+          'border-green-500/50 text-green-900 bg-green-50 dark:border-green-500/50 dark:text-green-100 dark:bg-green-950/50 [&>svg]:text-current',
+        warning:
+          'border-yellow-500/50 text-yellow-900 bg-yellow-50 dark:border-yellow-500/50 dark:text-yellow-100 dark:bg-yellow-950/50 [&>svg]:text-current',
+        info: 'border-blue-500/50 text-blue-900 bg-blue-50 dark:border-blue-500/50 dark:text-blue-100 dark:bg-blue-950/50 [&>svg]:text-current',
       },
     },
     defaultVariants: {
@@ -52,7 +54,7 @@ function AlertDescription({ className, ...props }: React.ComponentProps<'div'>) 
     <div
       data-slot="alert-description"
       className={cn(
-        'text-muted-foreground col-start-2 grid justify-items-start gap-1 text-sm [&_p]:leading-relaxed',
+        'col-start-2 grid justify-items-start gap-1 text-sm [&_p]:leading-relaxed opacity-90',
         className
       )}
       {...props}

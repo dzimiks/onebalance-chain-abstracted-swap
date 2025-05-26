@@ -133,18 +133,22 @@ export const TransactionStatus = ({ status, isPolling, onComplete }: Transaction
 
           {/* Additional Info */}
           {persistedStatus.status === 'COMPLETED' && (
-            <div className="mt-4 p-3 bg-green-50 rounded-lg border border-green-200">
-              <p className="text-green-700 text-sm font-medium">
+            <div className="mt-4 p-3 bg-green-50 dark:bg-green-950/50 rounded-lg border border-green-200 dark:border-green-800/50">
+              <p className="text-green-700 dark:text-green-300 text-sm font-medium">
                 ✅ Transaction completed successfully!
               </p>
-              <p className="text-green-600 text-xs mt-1">Your balances have been updated.</p>
+              <p className="text-green-600 dark:text-green-400 text-xs mt-1">
+                Your balances have been updated.
+              </p>
             </div>
           )}
 
           {persistedStatus.status === 'FAILED' && (
-            <div className="mt-4 p-3 bg-red-50 rounded-lg border border-red-200">
-              <p className="text-red-700 text-sm font-medium">❌ Transaction failed</p>
-              <p className="text-red-600 text-xs mt-1">
+            <div className="mt-4 p-3 bg-red-50 dark:bg-red-950/50 rounded-lg border border-red-200 dark:border-red-800/50">
+              <p className="text-red-700 dark:text-red-300 text-sm font-medium">
+                ❌ Transaction failed
+              </p>
+              <p className="text-red-600 dark:text-red-400 text-xs mt-1">
                 Please check the transaction details and try again.
               </p>
             </div>
