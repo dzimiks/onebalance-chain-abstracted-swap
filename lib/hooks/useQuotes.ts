@@ -60,7 +60,7 @@ export const useQuotes = () => {
       clearInterval(statusPollingRef.current);
       statusPollingRef.current = null;
     }
-    
+
     setState({
       quote: null,
       status: null,
@@ -70,56 +70,59 @@ export const useQuotes = () => {
     });
   }, []);
 
-  const getQuote = useCallback(async (request: SimpleQuoteRequest) => {
-    if (!authenticated || !embeddedWallet) {
-      setState(prev => ({ ...prev, error: 'Wallet not connected' }));
-      return;
-    }
-
-    setState(prev => ({ ...prev, loading: true, error: null }));
-
-    try {
-      // Get or fetch the predicted address
-      let predicted = predictedAddress;
-      if (!predicted) {
-        predicted = await getPredictedAddress();
-        if (!predicted) {
-          throw new Error('Failed to get account address');
-        }
+  const getQuote = useCallback(
+    async (request: SimpleQuoteRequest) => {
+      if (!authenticated || !embeddedWallet) {
+        setState(prev => ({ ...prev, error: 'Wallet not connected' }));
+        return;
       }
 
-      const quoteRequest: QuoteRequest = {
-        from: {
-          account: {
-            sessionAddress: embeddedWallet.address,
-            adminAddress: embeddedWallet.address,
-            accountAddress: predicted,
-          },
-          asset: {
-            assetId: request.fromAggregatedAssetId,
-          },
-          amount: request.fromTokenAmount,
-        },
-        to: {
-          asset: {
-            assetId: request.toAggregatedAssetId,
-          },
-        },
-      };
+      setState(prev => ({ ...prev, loading: true, error: null }));
 
-      // Get the quote
-      const quote = await quotesApi.getQuote(quoteRequest);
+      try {
+        // Get or fetch the predicted address
+        let predicted = predictedAddress;
+        if (!predicted) {
+          predicted = await getPredictedAddress();
+          if (!predicted) {
+            throw new Error('Failed to get account address');
+          }
+        }
 
-      setState(prev => ({ ...prev, quote, loading: false }));
-      return quote;
-    } catch (err) {
-      setState(prev => ({
-        ...prev,
-        error: err instanceof Error ? err.message : 'Failed to get quote',
-        loading: false,
-      }));
-    }
-  }, [authenticated, embeddedWallet, predictedAddress, getPredictedAddress]);
+        const quoteRequest: QuoteRequest = {
+          from: {
+            account: {
+              sessionAddress: embeddedWallet.address,
+              adminAddress: embeddedWallet.address,
+              accountAddress: predicted,
+            },
+            asset: {
+              assetId: request.fromAggregatedAssetId,
+            },
+            amount: request.fromTokenAmount,
+          },
+          to: {
+            asset: {
+              assetId: request.toAggregatedAssetId,
+            },
+          },
+        };
+
+        // Get the quote
+        const quote = await quotesApi.getQuote(quoteRequest);
+
+        setState(prev => ({ ...prev, quote, loading: false }));
+        return quote;
+      } catch (err) {
+        setState(prev => ({
+          ...prev,
+          error: err instanceof Error ? err.message : 'Failed to get quote',
+          loading: false,
+        }));
+      }
+    },
+    [authenticated, embeddedWallet, predictedAddress, getPredictedAddress]
+  );
 
   const executeQuote = useCallback(async () => {
     if (!authenticated || !embeddedWallet) {
@@ -154,17 +157,17 @@ export const useQuotes = () => {
 
       // Start polling for status immediately after execution
       setState(prev => ({ ...prev, isPolling: true }));
-      
+
       // Clear any existing polling
       if (statusPollingRef.current) {
         clearInterval(statusPollingRef.current);
       }
-      
+
       statusPollingRef.current = setInterval(async () => {
         try {
           const statusResponse = await quotesApi.getQuoteStatus(state.quote!.id);
           setState(prev => ({ ...prev, status: statusResponse }));
-          
+
           // If the transaction is completed or failed, stop polling
           if (statusResponse?.status === 'COMPLETED' || statusResponse?.status === 'FAILED') {
             if (statusPollingRef.current) {

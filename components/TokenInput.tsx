@@ -42,7 +42,7 @@ export const TokenInput = ({
   balances = [],
 }: TokenInputProps) => {
   const selectedAssetData = assets.find(asset => asset.aggregatedAssetId === selectedAsset);
-  
+
   // Get asset symbol for display
   const getAssetSymbol = (assetId: string) => {
     return assetId.split(':')[1]?.toUpperCase() || assetId;
@@ -60,10 +60,12 @@ export const TokenInput = ({
     if (!balance || !amount || !selectedAssetData) return null;
     const numericAmount = parseFloat(amount);
     if (isNaN(numericAmount) || numericAmount === 0) return null;
-    
-    const balanceAmount = parseFloat(formatTokenAmount(balance.balance, selectedAssetData.decimals || 18));
+
+    const balanceAmount = parseFloat(
+      formatTokenAmount(balance.balance, selectedAssetData.decimals || 18)
+    );
     if (balanceAmount === 0) return null;
-    
+
     const pricePerToken = balance.fiatValue / balanceAmount;
     const usdValue = numericAmount * pricePerToken;
     return usdValue.toFixed(2);
@@ -77,20 +79,20 @@ export const TokenInput = ({
 
         {/* Percentage Buttons */}
         {showPercentageButtons && balance && selectedAssetData && onPercentageClick && (
-            <div className="flex gap-2 px-1">
-            {[25, 50, 75, 100].map((percentage) => (
-                <Button
+          <div className="flex gap-2 px-1">
+            {[25, 50, 75, 100].map(percentage => (
+              <Button
                 key={percentage}
                 variant="outline"
                 size="sm"
                 className="flex-1 h-7 text-xs font-medium"
                 onClick={() => onPercentageClick(percentage)}
                 disabled={disabled}
-                >
+              >
                 {percentage === 100 ? 'MAX' : `${percentage}%`}
-                </Button>
+              </Button>
             ))}
-            </div>
+          </div>
         )}
       </div>
 
@@ -136,4 +138,4 @@ export const TokenInput = ({
       </div>
     </div>
   );
-}; 
+};

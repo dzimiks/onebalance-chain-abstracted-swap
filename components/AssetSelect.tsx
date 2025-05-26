@@ -53,11 +53,11 @@ export function AssetSelect({
 
   // Filter assets by search term
   const filteredAssets = assets.filter(asset =>
-    !searchTerm ? true : (
-      asset.symbol.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      asset.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      asset.aggregatedAssetId.toLowerCase().includes(searchTerm.toLowerCase())
-    ),
+    !searchTerm
+      ? true
+      : asset.symbol.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        asset.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        asset.aggregatedAssetId.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   // If no assets match search, show a message
@@ -93,7 +93,7 @@ export function AssetSelect({
                 type="text"
                 placeholder="Search assets..."
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={e => setSearchTerm(e.target.value)}
                 className="pl-9"
               />
             </div>
@@ -106,43 +106,51 @@ export function AssetSelect({
               </div>
             ) : (
               displayAssets
-                .sort((a, b) => (getAssetBalance(b.aggregatedAssetId || '0')?.fiatValue || 0) - (getAssetBalance(a.aggregatedAssetId || '0')?.fiatValue || 0))
-                .map((asset) => {
-                const assetBalance = showBalances ? getAssetBalance(asset.aggregatedAssetId) : null;
+                .sort(
+                  (a, b) =>
+                    (getAssetBalance(b.aggregatedAssetId || '0')?.fiatValue || 0) -
+                    (getAssetBalance(a.aggregatedAssetId || '0')?.fiatValue || 0)
+                )
+                .map(asset => {
+                  const assetBalance = showBalances
+                    ? getAssetBalance(asset.aggregatedAssetId)
+                    : null;
 
-                return (
-                  <SelectItem
-                    key={asset.aggregatedAssetId}
-                    value={asset.aggregatedAssetId}
-                    className="py-3 hover:bg-muted/50"
-                  >
-                    <div className="flex gap-4 items-center justify-between md:w-[250px] lg:w-[400px] max-w-full">
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
-                          <span className="text-white text-sm font-bold">
-                            {getAssetSymbol(asset.aggregatedAssetId).charAt(0)}
-                          </span>
+                  return (
+                    <SelectItem
+                      key={asset.aggregatedAssetId}
+                      value={asset.aggregatedAssetId}
+                      className="py-3 hover:bg-muted/50"
+                    >
+                      <div className="flex gap-4 items-center justify-between md:w-[250px] lg:w-[400px] max-w-full">
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                            <span className="text-white text-sm font-bold">
+                              {getAssetSymbol(asset.aggregatedAssetId).charAt(0)}
+                            </span>
+                          </div>
+                          <div>
+                            <div className="font-semibold text-foreground">
+                              {getAssetSymbol(asset.aggregatedAssetId)}
+                            </div>
+                            <div className="text-muted-foreground text-xs">{asset.name}</div>
+                          </div>
                         </div>
-                        <div>
-                          <div className="font-semibold text-foreground">{getAssetSymbol(asset.aggregatedAssetId)}</div>
-                          <div className="text-muted-foreground text-xs">{asset.name}</div>
-                        </div>
+
+                        {showBalances && assetBalance && (
+                          <div className="flex flex-col text-right text-sm">
+                            <div className="font-medium text-foreground">
+                              ${assetBalance.fiatValue?.toFixed(2) || '0.00'}
+                            </div>
+                            <div className="text-xs text-muted-foreground">
+                              {formatTokenAmount(assetBalance.balance, asset.decimals)}
+                            </div>
+                          </div>
+                        )}
                       </div>
-
-                      {showBalances && assetBalance && (
-                        <div className="flex flex-col text-right text-sm">
-                          <div className="font-medium text-foreground">
-                            ${assetBalance.fiatValue?.toFixed(2) || '0.00'}
-                          </div>
-                          <div className="text-xs text-muted-foreground">
-                            {formatTokenAmount(assetBalance.balance, asset.decimals)}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </SelectItem>
-                );
-              })
+                    </SelectItem>
+                  );
+                })
             )}
           </SelectGroup>
         </SelectContent>

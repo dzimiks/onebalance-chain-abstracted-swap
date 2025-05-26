@@ -53,14 +53,19 @@ export const SwapForm = () => {
   const [targetBalance, setTargetBalance] = useState(null);
 
   // Get selected assets
-  const selectedSourceAsset: Asset | null = assets.find(asset => asset.aggregatedAssetId === sourceAsset) ?? null;
-  const selectedTargetAsset: Asset | null = assets.find(asset => asset.aggregatedAssetId === targetAsset) ?? null;
+  const selectedSourceAsset: Asset | null =
+    assets.find(asset => asset.aggregatedAssetId === sourceAsset) ?? null;
+  const selectedTargetAsset: Asset | null =
+    assets.find(asset => asset.aggregatedAssetId === targetAsset) ?? null;
 
   // Update balance state when balances or selected assets change
   useEffect(() => {
     if (balances?.balanceByAggregatedAsset) {
-      const newSourceBalance = balances.balanceByAggregatedAsset.find(b => b.aggregatedAssetId === sourceAsset) || null;
-      const newTargetBalance = balances.balanceByAggregatedAsset.find(b => b.aggregatedAssetId === targetAsset);
+      const newSourceBalance =
+        balances.balanceByAggregatedAsset.find(b => b.aggregatedAssetId === sourceAsset) || null;
+      const newTargetBalance = balances.balanceByAggregatedAsset.find(
+        b => b.aggregatedAssetId === targetAsset
+      );
 
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-expect-error
@@ -76,10 +81,9 @@ export const SwapForm = () => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-expect-error
     if (quote && !quote.error && quote.destinationToken && selectedTargetAsset) {
-      setToAmount(formatTokenAmount(
-        quote.destinationToken.amount,
-        selectedTargetAsset.decimals || 18,
-      ));
+      setToAmount(
+        formatTokenAmount(quote.destinationToken.amount, selectedTargetAsset.decimals || 18)
+      );
     } else {
       setToAmount('');
     }
@@ -104,10 +108,10 @@ export const SwapForm = () => {
 
   // Debounce quote fetching to reduce API calls
   const debouncedGetQuote = useCallback(
-    debounce(async (request) => {
+    debounce(async request => {
       await getQuote(request);
     }, 1000),
-    [getQuote],
+    [getQuote]
   );
 
   // Handle from amount change
@@ -150,8 +154,6 @@ export const SwapForm = () => {
     resetQuote();
   };
 
-
-
   // Quote expiration handler
   const handleQuoteExpire = async () => {
     if (sourceAsset && targetAsset && parsedFromAmount) {
@@ -170,7 +172,7 @@ export const SwapForm = () => {
     setToAmount('');
     setParsedFromAmount('');
     resetQuote();
-    
+
     // Refresh balances after transaction completion
     if (predictedAddress) {
       fetchBalances();
@@ -182,20 +184,24 @@ export const SwapForm = () => {
     if (!authenticated) {
       return { disabled: true, text: 'Connect Wallet to Swap' };
     }
-    
+
     if (loading && status?.status === 'PENDING') {
       return { disabled: true, text: 'Executing Swap...' };
     }
-    
+
     if (loading) {
       return { disabled: true, text: 'Getting Quote...' };
     }
-    
-    const isDisabled = !sourceAsset || !targetAsset || !fromAmount || !quote || 
+
+    const isDisabled =
+      !sourceAsset ||
+      !targetAsset ||
+      !fromAmount ||
+      !quote ||
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-expect-error
       quote?.error;
-    
+
     return { disabled: isDisabled, text: 'Swap' };
   };
 
@@ -220,9 +226,7 @@ export const SwapForm = () => {
         <Alert variant="destructive">
           <TriangleAlert className="h-4 w-4" />
           <AlertTitle>Failed to load</AlertTitle>
-          <AlertDescription>
-            {assetsError || chainsError}
-          </AlertDescription>
+          <AlertDescription>{assetsError || chainsError}</AlertDescription>
         </Alert>
         <div className="mt-4 text-center">
           <Button variant="outline" onClick={() => window.location.reload()}>
@@ -236,15 +240,17 @@ export const SwapForm = () => {
   return (
     <Card className="w-full max-w-lg mx-auto p-6">
       <div className="space-y-6">
-        <h2 className="text-center text-2xl font-bold text-foreground">OneBalance Cross-Chain Swap</h2>
+        <h2 className="text-center text-2xl font-bold text-foreground">
+          OneBalance Cross-Chain Swap
+        </h2>
 
-                <div className="space-y-4">
+        <div className="space-y-4">
           {/* From Token Input */}
           <TokenInput
             label="Sell"
             assets={assets}
             selectedAsset={sourceAsset}
-            onAssetChange={(value) => {
+            onAssetChange={value => {
               setSourceAsset(value);
               if (fromAmount && value !== sourceAsset) {
                 // Refresh quote when asset changes
@@ -267,21 +273,21 @@ export const SwapForm = () => {
             onAmountChange={handleFromAmountChange}
             balance={sourceBalance}
             showPercentageButtons={true}
-            onPercentageClick={(percentage) => {
+            onPercentageClick={percentage => {
               if (sourceBalance && selectedSourceAsset) {
                 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                 // @ts-expect-error
                 const balance = sourceBalance.balance;
                 const decimals = selectedSourceAsset.decimals || 18;
                 const maxAmount = formatTokenAmount(balance, decimals);
-                const targetAmount = (parseFloat(maxAmount) * percentage / 100).toString();
-                
+                const targetAmount = ((parseFloat(maxAmount) * percentage) / 100).toString();
+
                 setFromAmount(targetAmount);
-                
+
                 // Update parsed amount and trigger quote
                 const parsed = parseTokenAmount(targetAmount, decimals);
                 setParsedFromAmount(parsed);
-                
+
                 if (authenticated && embeddedWallet && sourceAsset && targetAsset) {
                   debouncedGetQuote({
                     fromTokenAmount: parsed,
@@ -313,7 +319,7 @@ export const SwapForm = () => {
             label="Buy"
             assets={assets}
             selectedAsset={targetAsset}
-            onAssetChange={(value) => {
+            onAssetChange={value => {
               setTargetAsset(value);
               if (fromAmount && parsedFromAmount && value !== targetAsset) {
                 // Refresh quote when target asset changes
@@ -354,17 +360,12 @@ export const SwapForm = () => {
             >
               {getSwapButtonState().text}
             </Button>
-            
+
             {/* Cancel button only shows when there's a quote */}
             {/*  eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
             {/*@ts-expect-error*/}
             {quote && !quote?.error && (
-              <Button
-                variant="outline"
-                className="w-full"
-                onClick={resetQuote}
-                disabled={loading}
-              >
+              <Button variant="outline" className="w-full" onClick={resetQuote} disabled={loading}>
                 Cancel Quote
               </Button>
             )}
@@ -375,9 +376,7 @@ export const SwapForm = () => {
             <Alert variant="destructive">
               <TriangleAlert className="h-4 w-4" />
               <AlertTitle>An error occurred</AlertTitle>
-              <AlertDescription>
-                {error}
-              </AlertDescription>
+              <AlertDescription>{error}</AlertDescription>
             </Alert>
           )}
 
@@ -412,14 +411,16 @@ export const SwapForm = () => {
                     ...quote.originToken,
                     amount: formatTokenAmount(
                       quote.originToken.amount,
-                      selectedSourceAsset?.decimals ?? 18,
+                      selectedSourceAsset?.decimals ?? 18
                     ),
                   },
                   destinationToken: {
                     ...quote.destinationToken,
                     amount: formatTokenAmount(
                       quote.destinationToken.amount,
-                      assets.find(a => a.aggregatedAssetId === quote.destinationToken.aggregatedAssetId)?.decimals ?? 18,
+                      assets.find(
+                        a => a.aggregatedAssetId === quote.destinationToken.aggregatedAssetId
+                      )?.decimals ?? 18
                     ),
                   },
                 }}

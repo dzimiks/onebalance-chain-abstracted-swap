@@ -16,7 +16,9 @@ export const quotesApi = {
   },
 
   getQuoteStatus: async (quoteId: string): Promise<QuoteStatus> => {
-    const response = await apiClient.get(`?endpoint=/api/status/get-execution-status?quoteId=${quoteId}`);
+    const response = await apiClient.get(
+      `?endpoint=/api/status/get-execution-status?quoteId=${quoteId}`
+    );
     return response.data;
   },
 };

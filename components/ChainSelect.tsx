@@ -37,11 +37,8 @@ export const ChainSelect = ({
         <SelectContent>
           <SelectGroup>
             <SelectLabel>Networks</SelectLabel>
-            {chains.map((chain) => (
-              <SelectItem
-                key={chain.chain.reference}
-                value={chain.chain.reference}
-              >
+            {chains.map(chain => (
+              <SelectItem key={chain.chain.reference} value={chain.chain.reference}>
                 <Image
                   className="bg-black"
                   src={`https://storage.googleapis.com/tenderly-public-assets/networks/${chain.chain.reference}.svg`}

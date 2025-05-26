@@ -24,10 +24,10 @@ export const QuoteDetails = ({ quote }: QuoteDetailsProps) => {
   // Format the expiration time
   const formatExpirationTime = () => {
     const expirationDate = new Date(parseInt(quote.expirationTimestamp) * 1000);
-    return expirationDate.toLocaleTimeString([], { 
-      hour: '2-digit', 
-      minute: '2-digit', 
-      second: '2-digit' 
+    return expirationDate.toLocaleTimeString([], {
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
     });
   };
 
@@ -50,7 +50,8 @@ export const QuoteDetails = ({ quote }: QuoteDetailsProps) => {
                 <span className="text-muted-foreground">Exchange Rate</span>
               </div>
               <div className="font-medium text-foreground">
-                1 {getAssetSymbol(quote.originToken.aggregatedAssetId)} = {getExchangeRate()} {getAssetSymbol(quote.destinationToken.aggregatedAssetId)}
+                1 {getAssetSymbol(quote.originToken.aggregatedAssetId)} = {getExchangeRate()}{' '}
+                {getAssetSymbol(quote.destinationToken.aggregatedAssetId)}
               </div>
             </div>
           </div>
@@ -63,15 +64,13 @@ export const QuoteDetails = ({ quote }: QuoteDetailsProps) => {
                 {quote.id.slice(0, 8)}...{quote.id.slice(-8)}
               </div>
             </div>
-            
+
             <div className="bg-background rounded-lg p-2 border border-border">
               <div className="text-muted-foreground flex items-center gap-1">
                 <Clock className="h-3 w-3" />
                 Expires at
               </div>
-              <div className="font-medium text-foreground">
-                {formatExpirationTime()}
-              </div>
+              <div className="font-medium text-foreground">{formatExpirationTime()}</div>
             </div>
           </div>
         </div>

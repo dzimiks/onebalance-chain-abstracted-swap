@@ -59,14 +59,12 @@ export const QuoteCountdown = ({ expirationTimestamp, onExpire }: QuoteCountdown
             <Clock className={`h-4 w-4 ${getTimeColor()}`} />
             <span className="text-sm text-foreground">Quote expires in</span>
           </div>
-          <div className={`text-sm font-bold ${getTimeColor()}`}>
-            {formattedTime}s
-          </div>
+          <div className={`text-sm font-bold ${getTimeColor()}`}>{formattedTime}s</div>
         </div>
 
         {/* Progress Bar */}
         <div className="w-full bg-muted rounded-full h-2">
-          <div 
+          <div
             className={`h-2 rounded-full transition-all duration-1000 ease-linear ${getProgressColor()}`}
             style={{ width: `${progressPercentage}%` }}
           />

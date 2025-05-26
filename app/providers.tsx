@@ -3,7 +3,7 @@
 import React from 'react';
 import { PrivyProvider } from '@privy-io/react-auth';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ThemeProvider } from "@/components/ThemeProvider";
+import { ThemeProvider } from '@/components/ThemeProvider';
 
 // Create a client
 const queryClient = new QueryClient();
@@ -13,12 +13,7 @@ interface ProvidersProps {
 }
 
 export const Providers = ({ children }: ProvidersProps) => (
-  <ThemeProvider
-    attribute="class"
-    defaultTheme="system"
-    enableSystem
-    disableTransitionOnChange
-  >
+  <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
     <QueryClientProvider client={queryClient}>
       <PrivyProvider
         appId={process.env.NEXT_PUBLIC_PRIVY_APP_ID || ''}
