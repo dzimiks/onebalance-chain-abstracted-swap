@@ -276,14 +276,57 @@ export const SwapForm = () => {
 
           {/* From Amount Input */}
           <div className="space-y-1">
-            <label className="text-sm font-medium">Amount</label>
-            <Input
-              type="text"
-              placeholder="0.0"
-              value={fromAmount}
-              onChange={handleFromAmountChange}
-              className="text-lg h-14 p-4"
-            />
+            <div className="flex items-center justify-between flex-wrap gap-2">
+              <label className="text-sm font-medium">Amount</label>
+
+              {/* Percentage Buttons */}
+              {sourceBalance && selectedSourceAsset && (
+                <div className="flex gap-2">
+                  {[25, 50, 75, 100].map((percentage) => (
+                    <Button
+                      key={percentage}
+                      variant="outline"
+                      size="sm"
+                      className="flex-1 py-1 px-2 text-xs"
+                      onClick={() => {
+                        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                        // @ts-expect-error
+                        const balance = sourceBalance.balance;
+                        const decimals = selectedSourceAsset.decimals || 18;
+                        const maxAmount = formatTokenAmount(balance, decimals);
+                        const targetAmount = (parseFloat(maxAmount) * percentage / 100).toString();
+                        
+                        setFromAmount(targetAmount);
+                        
+                        // Update parsed amount and trigger quote
+                        const parsed = parseTokenAmount(targetAmount, decimals);
+                        setParsedFromAmount(parsed);
+                        
+                        if (authenticated && embeddedWallet && sourceAsset && targetAsset) {
+                          debouncedGetQuote({
+                            fromTokenAmount: parsed,
+                            fromAggregatedAssetId: sourceAsset,
+                            toAggregatedAssetId: targetAsset,
+                          });
+                        }
+                      }}
+                      disabled={loading}
+                    >
+                      {percentage === 100 ? 'Max' : `${percentage}%`}
+                    </Button>
+                  ))}
+                </div>
+              )}
+            </div>
+            <div className="space-y-2">
+              <Input
+                type="text"
+                placeholder="0.0"
+                value={fromAmount}
+                onChange={handleFromAmountChange}
+                className="text-lg h-14 p-4"
+              />
+            </div>
           </div>
 
           {/* Swap Direction Button */}

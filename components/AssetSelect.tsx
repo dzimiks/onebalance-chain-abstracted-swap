@@ -115,10 +115,10 @@ export function AssetSelect({
                       {showBalances && assetBalance && (
                         <div className="flex flex-col text-right text-sm">
                           <div className="font-medium">
-                            {formatTokenAmount(assetBalance.balance, asset.decimals)}
+                            ${assetBalance.fiatValue?.toFixed(2) || '0.00'}
                           </div>
                           <div className="text-xs text-gray-500">
-                            ${assetBalance.fiatValue?.toFixed(2) || '0.00'}
+                            {formatTokenAmount(assetBalance.balance, asset.decimals)}
                           </div>
                         </div>
                       )}
