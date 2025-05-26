@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ExternalLink, Clock, CheckCircle, XCircle, X } from 'lucide-react';
@@ -18,21 +18,32 @@ export const TransactionStatus = ({
   // Internal state to persist status even when prop becomes null
   const [persistedStatus, setPersistedStatus] = useState<QuoteStatus | null>(null);
   const [isVisible, setIsVisible] = useState(false);
+  
+  // Track if onComplete has already been called to prevent multiple calls
+  const onCompleteCalledRef = useRef(false);
 
   // Update persisted status when new status is received
   useEffect(() => {
     if (status) {
       setPersistedStatus(status);
       setIsVisible(true);
+      // Reset the onComplete flag when a new status is received
+      onCompleteCalledRef.current = false;
     }
   }, [status]);
 
-  // Call onComplete when transaction is completed or failed
+  // Call onComplete when transaction is completed or failed (only once)
   useEffect(() => {
-    if (persistedStatus && (persistedStatus.status === 'COMPLETED' || persistedStatus.status === 'FAILED') && onComplete) {
+    if (
+      persistedStatus && 
+      (persistedStatus.status === 'COMPLETED' || persistedStatus.status === 'FAILED') && 
+      onComplete && 
+      !onCompleteCalledRef.current
+    ) {
+      onCompleteCalledRef.current = true;
       onComplete();
     }
-  }, [persistedStatus, onComplete]);
+  }, [persistedStatus?.status, onComplete]);
 
   // Don't render if no status has been set yet
   if (!persistedStatus || !isVisible) {

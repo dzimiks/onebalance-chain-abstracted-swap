@@ -175,6 +175,20 @@ export const SwapForm = () => {
     }
   };
 
+  // Transaction completion handler
+  const handleTransactionComplete = useCallback(() => {
+    // Clear the form
+    setFromAmount('');
+    setToAmount('');
+    setParsedFromAmount('');
+    resetQuote();
+    
+    // Refresh balances after transaction completion
+    if (predictedAddress) {
+      fetchBalances();
+    }
+  }, [predictedAddress, fetchBalances, resetQuote]);
+
   // Balance state is now managed via useState
 
   // Loading state
@@ -449,18 +463,7 @@ export const SwapForm = () => {
           <TransactionStatus
             status={status}
             isPolling={isPolling}
-            onComplete={() => {
-              // Clear the form
-              setFromAmount('');
-              setToAmount('');
-              setParsedFromAmount('');
-              resetQuote();
-              
-              // Refresh balances after transaction completion
-              if (predictedAddress) {
-                fetchBalances();
-              }
-            }}
+            onComplete={handleTransactionComplete}
           />
         </div>
       </div>
