@@ -32,24 +32,24 @@ export const QuoteDetails = ({ quote }: QuoteDetailsProps) => {
   };
 
   return (
-    <Card className="p-4 bg-slate-50 border-slate-200">
+    <Card className="p-4 bg-muted/50 border-border">
       <div className="space-y-3">
         {/* Header */}
         <div className="flex items-center gap-2">
-          <Info className="h-4 w-4 text-slate-600" />
-          <span className="font-medium text-slate-800">Quote Details</span>
+          <Info className="h-4 w-4 text-muted-foreground" />
+          <span className="font-medium text-foreground">Quote Details</span>
         </div>
 
         {/* Key Details Grid */}
         <div className="grid grid-cols-1 gap-3 text-sm">
           {/* Exchange Rate */}
-          <div className="bg-white rounded-lg p-3 border border-slate-200">
+          <div className="bg-background rounded-lg p-3 border border-border">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <TrendingUp className="h-4 w-4 text-emerald-600" />
-                <span className="text-slate-600">Exchange Rate</span>
+                <TrendingUp className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+                <span className="text-muted-foreground">Exchange Rate</span>
               </div>
-              <div className="font-medium text-slate-900">
+              <div className="font-medium text-foreground">
                 1 {getAssetSymbol(quote.originToken.aggregatedAssetId)} = {getExchangeRate()} {getAssetSymbol(quote.destinationToken.aggregatedAssetId)}
               </div>
             </div>
@@ -57,19 +57,19 @@ export const QuoteDetails = ({ quote }: QuoteDetailsProps) => {
 
           {/* Quote ID and Expiration */}
           <div className="grid grid-cols-2 gap-3">
-            <div className="bg-white rounded-lg p-2 border border-slate-200">
-              <div className="text-slate-500">Quote ID</div>
-              <div className="font-mono text-xs text-slate-700 truncate">
+            <div className="bg-background rounded-lg p-2 border border-border">
+              <div className="text-muted-foreground">Quote ID</div>
+              <div className="font-mono text-xs text-foreground truncate">
                 {quote.id.slice(0, 8)}...{quote.id.slice(-8)}
               </div>
             </div>
             
-            <div className="bg-white rounded-lg p-2 border border-slate-200">
-              <div className="text-slate-500 flex items-center gap-1">
+            <div className="bg-background rounded-lg p-2 border border-border">
+              <div className="text-muted-foreground flex items-center gap-1">
                 <Clock className="h-3 w-3" />
                 Expires at
               </div>
-              <div className="font-medium text-slate-700">
+              <div className="font-medium text-foreground">
                 {formatExpirationTime()}
               </div>
             </div>

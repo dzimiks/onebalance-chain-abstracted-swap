@@ -65,9 +65,9 @@ export function AssetSelect({
 
   return (
     <div className="space-y-2">
-      {label && <label className="block text-sm font-medium">{label}</label>}
+      {label && <label className="block text-sm font-medium text-foreground">{label}</label>}
       <Select value={value} onValueChange={onValueChange} disabled={disabled}>
-        <SelectTrigger className="h-auto p-2 bg-white border border-gray-200 rounded-xl hover:border-gray-300 transition-colors min-w-[120px]">
+        <SelectTrigger className="h-auto p-2 bg-background border border-border rounded-xl hover:border-muted-foreground/20 transition-colors min-w-[120px]">
           <SelectValue>
             {selectedAsset && (
               <div className="flex items-center gap-2">
@@ -76,7 +76,7 @@ export function AssetSelect({
                     {getAssetSymbol(selectedAsset.aggregatedAssetId).charAt(0)}
                   </span>
                 </div>
-                <span className="font-semibold text-gray-900">
+                <span className="font-semibold text-foreground">
                   {getAssetSymbol(selectedAsset.aggregatedAssetId)}
                 </span>
               </div>
@@ -84,10 +84,10 @@ export function AssetSelect({
           </SelectValue>
         </SelectTrigger>
         <SelectContent className="max-h-80">
-          <div className="sticky -top-1 bg-white p-2 z-10">
+          <div className="sticky -top-1 bg-background p-2 z-10">
             <div className="relative">
               <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
-                <Search className="h-4 w-4 text-gray-400" />
+                <Search className="h-4 w-4 text-muted-foreground" />
               </div>
               <Input
                 type="text"
@@ -101,7 +101,7 @@ export function AssetSelect({
 
           <SelectGroup>
             {displayAssets.length === 0 ? (
-              <div className="py-6 text-center text-gray-500">
+              <div className="py-6 text-center text-muted-foreground">
                 No assets found matching <span className="font-semibold">{searchTerm}</span>
               </div>
             ) : (
@@ -114,7 +114,7 @@ export function AssetSelect({
                   <SelectItem
                     key={asset.aggregatedAssetId}
                     value={asset.aggregatedAssetId}
-                    className="py-3 hover:bg-gray-50"
+                    className="py-3 hover:bg-muted/50"
                   >
                     <div className="flex gap-4 items-center justify-between md:w-[250px] lg:w-[400px] max-w-full">
                       <div className="flex items-center gap-3">
@@ -124,17 +124,17 @@ export function AssetSelect({
                           </span>
                         </div>
                         <div>
-                          <div className="font-semibold text-gray-900">{getAssetSymbol(asset.aggregatedAssetId)}</div>
-                          <div className="text-gray-500 text-xs">{asset.name}</div>
+                          <div className="font-semibold text-foreground">{getAssetSymbol(asset.aggregatedAssetId)}</div>
+                          <div className="text-muted-foreground text-xs">{asset.name}</div>
                         </div>
                       </div>
 
                       {showBalances && assetBalance && (
                         <div className="flex flex-col text-right text-sm">
-                          <div className="font-medium text-gray-900">
+                          <div className="font-medium text-foreground">
                             ${assetBalance.fiatValue?.toFixed(2) || '0.00'}
                           </div>
-                          <div className="text-xs text-gray-500">
+                          <div className="text-xs text-muted-foreground">
                             {formatTokenAmount(assetBalance.balance, asset.decimals)}
                           </div>
                         </div>

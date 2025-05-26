@@ -53,24 +53,24 @@ export const TransactionStatus = ({
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'COMPLETED':
-        return 'text-green-600';
+        return 'text-green-600 dark:text-green-400';
       case 'FAILED':
-        return 'text-red-600';
+        return 'text-red-600 dark:text-red-400';
       case 'REFUNDED':
-        return 'text-orange-600';
+        return 'text-orange-600 dark:text-orange-400';
       default:
-        return 'text-yellow-600';
+        return 'text-yellow-600 dark:text-yellow-400';
     }
   };
 
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'COMPLETED':
-        return <CheckCircle className="h-4 w-4 text-green-600" />;
+        return <CheckCircle className="h-4 w-4 text-green-600 dark:text-green-400" />;
       case 'FAILED':
-        return <XCircle className="h-4 w-4 text-red-600" />;
+        return <XCircle className="h-4 w-4 text-red-600 dark:text-red-400" />;
       default:
-        return <Clock className="h-4 w-4 text-yellow-600" />;
+        return <Clock className="h-4 w-4 text-yellow-600 dark:text-yellow-400" />;
     }
   };
 
@@ -83,7 +83,7 @@ export const TransactionStatus = ({
     <Card className="p-6">
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <h3 className="text-lg font-semibold">Transaction Status</h3>
+          <h3 className="text-lg font-semibold text-foreground">Transaction Status</h3>
           <div className="flex items-center gap-2">
             <Button
               variant="ghost"
@@ -99,7 +99,7 @@ export const TransactionStatus = ({
         <div className="space-y-3">
           {/* Status */}
           <div className="flex items-center justify-between">
-            <span className="text-gray-500 text-sm">Status:</span>
+            <span className="text-muted-foreground text-sm">Status:</span>
             <div className="flex items-center gap-2">
               {getStatusIcon(persistedStatus.status)}
               <span className={`font-medium ${getStatusColor(persistedStatus.status)}`}>
@@ -111,12 +111,12 @@ export const TransactionStatus = ({
           {/* Origin Chain Operations */}
           {persistedStatus.originChainOperations?.length > 0 && (
             <div className="flex items-center justify-between">
-              <span className="text-gray-500 text-sm">Origin Chain:</span>
+              <span className="text-muted-foreground text-sm">Origin Chain:</span>
               <a
                 href={persistedStatus.originChainOperations[0].explorerUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-1 text-blue-500 hover:underline text-sm max-w-[200px] truncate"
+                className="flex items-center gap-1 text-primary hover:text-primary/80 hover:underline text-sm max-w-[200px] truncate"
               >
                 <span>View Transaction</span>
                 <ExternalLink className="h-3 w-3" />
@@ -127,12 +127,12 @@ export const TransactionStatus = ({
           {/* Destination Chain Operations */}
           {persistedStatus.destinationChainOperations?.length > 0 && (
             <div className="flex items-center justify-between">
-              <span className="text-gray-500 text-sm">Destination Chain:</span>
+              <span className="text-muted-foreground text-sm">Destination Chain:</span>
               <a
                 href={persistedStatus.destinationChainOperations[0].explorerUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-1 text-blue-500 hover:underline text-sm max-w-[200px] truncate"
+                className="flex items-center gap-1 text-primary hover:text-primary/80 hover:underline text-sm max-w-[200px] truncate"
               >
                 <span>View Transaction</span>
                 <ExternalLink className="h-3 w-3" />

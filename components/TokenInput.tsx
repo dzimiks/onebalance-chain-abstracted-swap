@@ -73,7 +73,7 @@ export const TokenInput = ({
     <div className="space-y-1">
       {/* Label */}
       <div className="flex items-center justify-between px-1">
-        <label className="text-sm font-medium text-gray-700">{label}</label>
+        <label className="text-sm font-medium text-foreground">{label}</label>
 
         {/* Percentage Buttons */}
         {showPercentageButtons && balance && selectedAssetData && onPercentageClick && (
@@ -83,7 +83,7 @@ export const TokenInput = ({
                 key={percentage}
                 variant="outline"
                 size="sm"
-                className="flex-1 h-7 text-xs bg-white hover:bg-gray-50 border-gray-200 text-gray-600 font-medium"
+                className="flex-1 h-7 text-xs font-medium"
                 onClick={() => onPercentageClick(percentage)}
                 disabled={disabled}
                 >
@@ -95,7 +95,7 @@ export const TokenInput = ({
       </div>
 
       {/* Main Input Container */}
-      <div className="relative bg-gray-50 rounded-2xl p-4 border border-gray-200 hover:border-gray-300 transition-colors">
+      <div className="relative bg-muted/50 rounded-2xl p-4 border border-border hover:border-muted-foreground/20 transition-colors">
         <div className="flex items-start justify-between gap-4">
           {/* Left Side - Amount */}
           <div className="flex-1 space-y-1">
@@ -106,10 +106,10 @@ export const TokenInput = ({
               onChange={onAmountChange}
               disabled={disabled}
               readOnly={readOnly}
-              className="text-2xl! font-medium bg-transparent border-none p-0 h-auto shadow-none focus-visible:ring-0 placeholder:text-gray-300 text-gray-900"
+              className="text-2xl! font-medium bg-transparent border-none p-0 h-auto shadow-none focus-visible:ring-0 placeholder:text-muted-foreground/50 text-foreground"
             />
             {/* USD Value */}
-            <div className="text-sm text-gray-500">
+            <div className="text-sm text-muted-foreground">
               {getUSDValue() ? `$${getUSDValue()}` : '$0.00'}
             </div>
           </div>
@@ -127,7 +127,7 @@ export const TokenInput = ({
             />
             {/* Balance in asset */}
             {balance && selectedAssetData && (
-              <div className="text-xs text-gray-500">
+              <div className="text-xs text-muted-foreground">
                 {formatBalance(balance, selectedAssetData)} {getAssetSymbol(selectedAsset)}
               </div>
             )}

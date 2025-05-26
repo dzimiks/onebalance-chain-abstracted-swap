@@ -236,7 +236,7 @@ export const SwapForm = () => {
   return (
     <Card className="w-full max-w-lg mx-auto p-6">
       <div className="space-y-6">
-        <h2 className="text-center text-2xl font-bold">OneBalance Cross-Chain Swap</h2>
+        <h2 className="text-center text-2xl font-bold text-foreground">OneBalance Cross-Chain Swap</h2>
 
                 <div className="space-y-4">
           {/* From Token Input */}

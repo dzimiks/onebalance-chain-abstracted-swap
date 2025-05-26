@@ -18,18 +18,16 @@ export const metadata: Metadata = {
   description: 'Made by @dzimiks.',
 };
 
-export default function RootLayout({
-                                     children,
-                                   }: Readonly<{
+export default function RootLayout({ children }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-    <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-    <Providers>
-      {children}
-    </Providers>
-    </body>
+    <html lang="en" suppressHydrationWarning>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <Providers>
+          {children}
+        </Providers>
+      </body>
     </html>
   );
 }

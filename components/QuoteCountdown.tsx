@@ -28,21 +28,21 @@ export const QuoteCountdown = ({ expirationTimestamp, onExpire }: QuoteCountdown
   };
 
   const getBorderColor = () => {
-    if (timeLeft <= 5) return 'border-red-200';
-    if (timeLeft <= 10) return 'border-amber-200';
-    return 'border-emerald-200';
+    if (timeLeft <= 5) return 'border-red-200 dark:border-red-800/30';
+    if (timeLeft <= 10) return 'border-amber-200 dark:border-amber-800/30';
+    return 'border-emerald-200 dark:border-emerald-800/30';
   };
 
   const getBackgroundColor = () => {
-    if (timeLeft <= 5) return 'bg-red-50';
-    if (timeLeft <= 10) return 'bg-amber-50';
-    return 'bg-emerald-50';
+    if (timeLeft <= 5) return 'bg-red-50 dark:bg-red-950/20';
+    if (timeLeft <= 10) return 'bg-amber-50 dark:bg-amber-950/20';
+    return 'bg-emerald-50 dark:bg-emerald-950/20';
   };
 
   if (timeLeft < 1) {
     return (
-      <Card className="p-4 bg-slate-50 border-slate-200">
-        <div className="flex items-center justify-center gap-2 text-slate-600">
+      <Card className="p-4 bg-muted/50 border-border">
+        <div className="flex items-center justify-center gap-2 text-muted-foreground">
           <RefreshCw className="h-4 w-4 animate-spin" />
           <span className="font-medium text-sm">Refreshing quote...</span>
         </div>
@@ -57,7 +57,7 @@ export const QuoteCountdown = ({ expirationTimestamp, onExpire }: QuoteCountdown
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Clock className={`h-4 w-4 ${getTimeColor()}`} />
-            <span className="text-sm text-slate-700">Quote expires in</span>
+            <span className="text-sm text-foreground">Quote expires in</span>
           </div>
           <div className={`text-sm font-bold ${getTimeColor()}`}>
             {formattedTime}s
@@ -65,7 +65,7 @@ export const QuoteCountdown = ({ expirationTimestamp, onExpire }: QuoteCountdown
         </div>
 
         {/* Progress Bar */}
-        <div className="w-full bg-slate-200 rounded-full h-2">
+        <div className="w-full bg-muted rounded-full h-2">
           <div 
             className={`h-2 rounded-full transition-all duration-1000 ease-linear ${getProgressColor()}`}
             style={{ width: `${progressPercentage}%` }}
