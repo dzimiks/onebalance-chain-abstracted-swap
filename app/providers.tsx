@@ -4,6 +4,7 @@ import React from 'react';
 import { PrivyProvider } from '@privy-io/react-auth';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ThemeProvider } from '@/components/ThemeProvider';
+import { OnboardingProvider } from '@/components/onboarding/OnboardingProvider';
 
 // Create a client
 const queryClient = new QueryClient();
@@ -29,7 +30,7 @@ export const Providers = ({ children }: ProvidersProps) => (
           },
         }}
       >
-        {children}
+        <OnboardingProvider>{children}</OnboardingProvider>
       </PrivyProvider>
     </QueryClientProvider>
   </ThemeProvider>

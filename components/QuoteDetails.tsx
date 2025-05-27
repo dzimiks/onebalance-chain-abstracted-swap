@@ -1,6 +1,7 @@
 import { Info, Clock, TrendingUp } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Quote } from '@/lib/types/quote';
+import { ContextualHelp, helpContent } from '@/components/onboarding/ContextualHelp';
 
 interface QuoteDetailsProps {
   quote: Quote;
@@ -35,9 +36,17 @@ export const QuoteDetails = ({ quote }: QuoteDetailsProps) => {
     <Card className="p-4 bg-muted/50 border-border">
       <div className="space-y-3">
         {/* Header */}
-        <div className="flex items-center gap-2">
-          <Info className="h-4 w-4 text-muted-foreground" />
-          <span className="font-medium text-foreground">Quote Details</span>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Info className="h-4 w-4 text-muted-foreground" />
+            <span className="font-medium text-foreground">Quote Details</span>
+          </div>
+          <ContextualHelp
+            title={helpContent.quote.title}
+            content={helpContent.quote.content}
+            type={helpContent.quote.type}
+            position="left"
+          />
         </div>
 
         {/* Key Details Grid */}

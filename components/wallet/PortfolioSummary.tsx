@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { TrendingUp, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { ContextualHelp, helpContent } from '@/components/onboarding/ContextualHelp';
 
 interface PortfolioSummaryProps {
   totalValue: number;
@@ -33,6 +34,13 @@ export const PortfolioSummary = ({
           <span className="text-sm font-medium text-emerald-800 dark:text-emerald-200">
             Total Portfolio Value
           </span>
+          <ContextualHelp
+            title={helpContent.aggregatedBalance.title}
+            content={helpContent.aggregatedBalance.content}
+            type={helpContent.aggregatedBalance.type}
+            position="top"
+            className="ml-1"
+          />
         </div>
         <Button
           variant="ghost"

@@ -109,6 +109,7 @@ export const TokenInput = ({
               disabled={disabled}
               readOnly={readOnly}
               className="text-2xl! font-medium bg-transparent border-none p-0 h-auto shadow-none focus-visible:ring-0 placeholder:text-muted-foreground/50 text-foreground"
+              data-onboarding="amount-input"
             />
             {/* USD Value */}
             <div className="text-sm text-muted-foreground">

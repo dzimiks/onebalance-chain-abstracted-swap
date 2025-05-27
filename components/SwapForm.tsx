@@ -236,66 +236,68 @@ export const SwapForm = () => {
   }
 
   return (
-    <Card className="w-full max-w-lg mx-auto p-6">
+    <Card className="w-full max-w-lg mx-auto p-6" data-onboarding="main-card">
       <div className="space-y-6">
         <h2 className="text-center text-2xl font-bold text-foreground">Swap Tokens</h2>
 
         <div className="space-y-4">
           {/* From Token Input */}
-          <TokenInput
-            label="Sell"
-            assets={assets}
-            selectedAsset={sourceAsset}
-            onAssetChange={value => {
-              setSourceAsset(value);
-              if (fromAmount && value !== sourceAsset) {
-                // Refresh quote when asset changes
-                const asset = assets.find(a => a.aggregatedAssetId === value);
-                if (asset) {
-                  const parsed = parseTokenAmount(fromAmount, asset.decimals || 18);
+          <div data-onboarding="from-token">
+            <TokenInput
+              label="Sell"
+              assets={assets}
+              selectedAsset={sourceAsset}
+              onAssetChange={value => {
+                setSourceAsset(value);
+                if (fromAmount && value !== sourceAsset) {
+                  // Refresh quote when asset changes
+                  const asset = assets.find(a => a.aggregatedAssetId === value);
+                  if (asset) {
+                    const parsed = parseTokenAmount(fromAmount, asset.decimals || 18);
+                    setParsedFromAmount(parsed);
+
+                    if (authenticated && embeddedWallet && targetAsset) {
+                      debouncedGetQuote({
+                        fromTokenAmount: parsed,
+                        fromAggregatedAssetId: value,
+                        toAggregatedAssetId: targetAsset,
+                      });
+                    }
+                  }
+                }
+              }}
+              amount={fromAmount}
+              onAmountChange={handleFromAmountChange}
+              balance={sourceBalance}
+              showPercentageButtons={true}
+              onPercentageClick={percentage => {
+                if (sourceBalance && selectedSourceAsset) {
+                  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                  // @ts-expect-error
+                  const balance = sourceBalance.balance;
+                  const decimals = selectedSourceAsset.decimals || 18;
+                  const maxAmount = formatTokenAmount(balance, decimals);
+                  const targetAmount = ((parseFloat(maxAmount) * percentage) / 100).toString();
+
+                  setFromAmount(targetAmount);
+
+                  // Update parsed amount and trigger quote
+                  const parsed = parseTokenAmount(targetAmount, decimals);
                   setParsedFromAmount(parsed);
 
-                  if (authenticated && embeddedWallet && targetAsset) {
+                  if (authenticated && embeddedWallet && sourceAsset && targetAsset) {
                     debouncedGetQuote({
                       fromTokenAmount: parsed,
-                      fromAggregatedAssetId: value,
+                      fromAggregatedAssetId: sourceAsset,
                       toAggregatedAssetId: targetAsset,
                     });
                   }
                 }
-              }
-            }}
-            amount={fromAmount}
-            onAmountChange={handleFromAmountChange}
-            balance={sourceBalance}
-            showPercentageButtons={true}
-            onPercentageClick={percentage => {
-              if (sourceBalance && selectedSourceAsset) {
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-expect-error
-                const balance = sourceBalance.balance;
-                const decimals = selectedSourceAsset.decimals || 18;
-                const maxAmount = formatTokenAmount(balance, decimals);
-                const targetAmount = ((parseFloat(maxAmount) * percentage) / 100).toString();
-
-                setFromAmount(targetAmount);
-
-                // Update parsed amount and trigger quote
-                const parsed = parseTokenAmount(targetAmount, decimals);
-                setParsedFromAmount(parsed);
-
-                if (authenticated && embeddedWallet && sourceAsset && targetAsset) {
-                  debouncedGetQuote({
-                    fromTokenAmount: parsed,
-                    fromAggregatedAssetId: sourceAsset,
-                    toAggregatedAssetId: targetAsset,
-                  });
-                }
-              }
-            }}
-            disabled={loading}
-            balances={balances?.balanceByAggregatedAsset}
-          />
+              }}
+              disabled={loading}
+              balances={balances?.balanceByAggregatedAsset}
+            />
+          </div>
 
           {/* Swap Direction Button */}
           <div className="flex justify-center">
@@ -311,31 +313,33 @@ export const SwapForm = () => {
           </div>
 
           {/* To Token Input */}
-          <TokenInput
-            label="Buy"
-            assets={assets}
-            selectedAsset={targetAsset}
-            onAssetChange={value => {
-              setTargetAsset(value);
-              if (fromAmount && parsedFromAmount && value !== targetAsset) {
-                // Refresh quote when target asset changes
-                if (authenticated && embeddedWallet && sourceAsset) {
-                  debouncedGetQuote({
-                    fromTokenAmount: parsedFromAmount,
-                    fromAggregatedAssetId: sourceAsset,
-                    toAggregatedAssetId: value,
-                  });
+          <div data-onboarding="to-token">
+            <TokenInput
+              label="Buy"
+              assets={assets}
+              selectedAsset={targetAsset}
+              onAssetChange={value => {
+                setTargetAsset(value);
+                if (fromAmount && parsedFromAmount && value !== targetAsset) {
+                  // Refresh quote when target asset changes
+                  if (authenticated && embeddedWallet && sourceAsset) {
+                    debouncedGetQuote({
+                      fromTokenAmount: parsedFromAmount,
+                      fromAggregatedAssetId: sourceAsset,
+                      toAggregatedAssetId: value,
+                    });
+                  }
                 }
-              }
-            }}
-            amount={toAmount}
-            onAmountChange={() => {}} // No-op since it's read-only
-            balance={targetBalance}
-            showPercentageButtons={false}
-            disabled={loading}
-            readOnly={true}
-            balances={balances?.balanceByAggregatedAsset}
-          />
+              }}
+              amount={toAmount}
+              onAmountChange={() => {}} // No-op since it's read-only
+              balance={targetBalance}
+              showPercentageButtons={false}
+              disabled={loading}
+              readOnly={true}
+              balances={balances?.balanceByAggregatedAsset}
+            />
+          </div>
 
           {/* Quote Loading Alert */}
           {authenticated && fromAmount && parsedFromAmount && !quote && loading && (
@@ -353,6 +357,7 @@ export const SwapForm = () => {
               className="w-full"
               onClick={executeQuote}
               disabled={getSwapButtonState().disabled}
+              data-onboarding="swap-button"
             >
               {getSwapButtonState().text}
             </Button>
@@ -395,7 +400,7 @@ export const SwapForm = () => {
           {/*  eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
           {/*@ts-expect-error*/}
           {!quote?.error && quote?.originToken && (
-            <div className="space-y-4">
+            <div className="space-y-4" data-onboarding="quote-details">
               <QuoteCountdown
                 expirationTimestamp={parseInt(quote.expirationTimestamp)}
                 onExpire={handleQuoteExpire}

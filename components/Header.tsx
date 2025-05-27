@@ -13,7 +13,9 @@ export const Header = () => {
 
       <div className="flex items-center gap-2">
         <ModeToggle />
-        <ConnectButton />
+        <div data-onboarding="connect-button">
+          <ConnectButton />
+        </div>
       </div>
     </header>
   );

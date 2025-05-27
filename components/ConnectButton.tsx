@@ -12,6 +12,7 @@ import { WalletHeader } from '@/components/wallet/WalletHeader';
 import { AccountAddress } from '@/components/wallet/AccountAddress';
 import { PortfolioSummary } from '@/components/wallet/PortfolioSummary';
 import { AssetList } from '@/components/wallet/AssetList';
+import { ContextualHelp, helpContent } from '@/components/onboarding/ContextualHelp';
 
 export const ConnectButton = () => {
   const { login, logout, authenticated, ready } = usePrivy();
@@ -100,7 +101,15 @@ export const ConnectButton = () => {
       <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-hidden">
         <div className="space-y-6 overflow-y-auto max-h-[80vh] pr-2">
           {/* Wallet Header */}
-          <WalletHeader address={predictedAddress || ''} />
+          <div className="flex items-center justify-between">
+            <WalletHeader address={predictedAddress || ''} />
+            <ContextualHelp
+              title={helpContent.smartAccount.title}
+              content={helpContent.smartAccount.content}
+              type={helpContent.smartAccount.type}
+              position="left"
+            />
+          </div>
 
           {/* Account Address Section */}
           {predictedAddress && <AccountAddress address={predictedAddress} />}
