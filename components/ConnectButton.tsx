@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { usePrivy, useWallets } from '@privy-io/react-auth';
-import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogTrigger, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Wallet, ChevronRight, LogOut } from 'lucide-react';
 import { useBalances } from '@/lib/hooks/useBalances';
@@ -12,7 +12,6 @@ import { WalletHeader } from '@/components/wallet/WalletHeader';
 import { AccountAddress } from '@/components/wallet/AccountAddress';
 import { PortfolioSummary } from '@/components/wallet/PortfolioSummary';
 import { AssetList } from '@/components/wallet/AssetList';
-import { ContextualHelp, helpContent } from '@/components/onboarding/ContextualHelp';
 
 export const ConnectButton = () => {
   const { login, logout, authenticated, ready } = usePrivy();
@@ -99,17 +98,10 @@ export const ConnectButton = () => {
       </DialogTrigger>
 
       <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-hidden">
+        <DialogTitle className="sr-only">Wallet Details</DialogTitle>
         <div className="space-y-6 overflow-y-auto max-h-[80vh] pr-2">
           {/* Wallet Header */}
-          <div className="flex items-center justify-between">
-            <WalletHeader address={predictedAddress || ''} />
-            <ContextualHelp
-              title={helpContent.smartAccount.title}
-              content={helpContent.smartAccount.content}
-              type={helpContent.smartAccount.type}
-              position="left"
-            />
-          </div>
+          <WalletHeader address={predictedAddress || ''} />
 
           {/* Account Address Section */}
           {predictedAddress && <AccountAddress address={predictedAddress} />}
