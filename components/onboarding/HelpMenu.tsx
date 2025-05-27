@@ -46,8 +46,12 @@ export const HelpMenu = () => {
   const handleRestartTour = () => {
     // Close the help dialog first
     setShowHelpDialog(false);
-    // Navigate to swap page, then start onboarding
-    router.push('/swap');
+    // Determine which page to navigate to based on current location
+    const currentPath = typeof window !== 'undefined' ? window.location.pathname : '/swap';
+    const targetPath = currentPath.includes('/transfer') ? '/transfer' : '/swap';
+
+    // Navigate to appropriate page, then start onboarding
+    router.push(targetPath);
     setTimeout(() => {
       startOnboarding();
     }, 100);

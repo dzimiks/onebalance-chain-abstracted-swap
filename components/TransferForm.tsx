@@ -284,120 +284,126 @@ export const TransferForm = () => {
   }
 
   return (
-    <Card className="w-full max-w-lg mx-auto p-6">
+    <Card className="w-full max-w-lg mx-auto p-6" data-onboarding="transfer-card">
       <div className="space-y-6">
         <h2 className="text-center text-2xl font-bold text-foreground">Transfer Tokens</h2>
 
         <div className="space-y-4">
           {/* Token Input */}
-          <TokenInput
-            label="You're sending"
-            assets={assets}
-            selectedAsset={selectedAsset}
-            onAssetChange={value => {
-              setSelectedAsset(value);
-              if (amount && value !== selectedAsset) {
-                // Update parsed amount when asset changes
-                const asset = assets.find(a => a.aggregatedAssetId === value);
-                if (asset) {
-                  const parsed = parseTokenAmount(amount, asset.decimals || 18);
+          <div data-onboarding="transfer-token">
+            <TokenInput
+              label="You're sending"
+              assets={assets}
+              selectedAsset={selectedAsset}
+              onAssetChange={value => {
+                setSelectedAsset(value);
+                if (amount && value !== selectedAsset) {
+                  // Update parsed amount when asset changes
+                  const asset = assets.find(a => a.aggregatedAssetId === value);
+                  if (asset) {
+                    const parsed = parseTokenAmount(amount, asset.decimals || 18);
+                    setParsedAmount(parsed);
+
+                    // Refresh quote if recipient is provided
+                    if (
+                      authenticated &&
+                      embeddedWallet &&
+                      recipientAddress &&
+                      isValidAddress(recipientAddress)
+                    ) {
+                      debouncedGetQuote({
+                        fromTokenAmount: parsed,
+                        fromAggregatedAssetId: value,
+                        toAggregatedAssetId: value, // Same asset for transfers
+                        recipientAddress: `${recipientChain}:${recipientAddress}`,
+                      });
+                    }
+                  }
+                }
+              }}
+              amount={amount}
+              onAmountChange={handleAmountChange}
+              balance={assetBalance}
+              showPercentageButtons={true}
+              onPercentageClick={percentage => {
+                if (assetBalance && selectedAssetData) {
+                  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                  // @ts-expect-error
+                  const balance = assetBalance.balance;
+                  const decimals = selectedAssetData.decimals || 18;
+                  const maxAmount = formatTokenAmount(balance, decimals);
+                  const targetAmount = ((parseFloat(maxAmount) * percentage) / 100).toString();
+
+                  setAmount(targetAmount);
+
+                  // Update parsed amount and trigger quote
+                  const parsed = parseTokenAmount(targetAmount, decimals);
                   setParsedAmount(parsed);
 
-                  // Refresh quote if recipient is provided
                   if (
                     authenticated &&
                     embeddedWallet &&
+                    selectedAsset &&
                     recipientAddress &&
                     isValidAddress(recipientAddress)
                   ) {
                     debouncedGetQuote({
                       fromTokenAmount: parsed,
-                      fromAggregatedAssetId: value,
-                      toAggregatedAssetId: value, // Same asset for transfers
+                      fromAggregatedAssetId: selectedAsset,
+                      toAggregatedAssetId: selectedAsset, // Same asset for transfers
                       recipientAddress: `${recipientChain}:${recipientAddress}`,
                     });
                   }
                 }
-              }
-            }}
-            amount={amount}
-            onAmountChange={handleAmountChange}
-            balance={assetBalance}
-            showPercentageButtons={true}
-            onPercentageClick={percentage => {
-              if (assetBalance && selectedAssetData) {
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-expect-error
-                const balance = assetBalance.balance;
-                const decimals = selectedAssetData.decimals || 18;
-                const maxAmount = formatTokenAmount(balance, decimals);
-                const targetAmount = ((parseFloat(maxAmount) * percentage) / 100).toString();
-
-                setAmount(targetAmount);
-
-                // Update parsed amount and trigger quote
-                const parsed = parseTokenAmount(targetAmount, decimals);
-                setParsedAmount(parsed);
-
-                if (
-                  authenticated &&
-                  embeddedWallet &&
-                  selectedAsset &&
-                  recipientAddress &&
-                  isValidAddress(recipientAddress)
-                ) {
-                  debouncedGetQuote({
-                    fromTokenAmount: parsed,
-                    fromAggregatedAssetId: selectedAsset,
-                    toAggregatedAssetId: selectedAsset, // Same asset for transfers
-                    recipientAddress: `${recipientChain}:${recipientAddress}`,
-                  });
-                }
-              }
-            }}
-            disabled={loading}
-            balances={balances?.balanceByAggregatedAsset}
-          />
+              }}
+              disabled={loading}
+              balances={balances?.balanceByAggregatedAsset}
+            />
+          </div>
 
           {/* Recipient Address Input */}
-          <div className="space-y-2">
-            <label className="block text-sm font-medium text-foreground">To</label>
-            <div className="relative bg-muted/50 rounded-2xl p-4 border border-border hover:border-muted-foreground/20 transition-colors">
-              <Input
-                type="text"
-                placeholder="Wallet address or ENS name"
-                value={recipientAddress}
-                onChange={handleRecipientChange}
-                disabled={loading}
-                className="text-lg bg-transparent border-none p-0 h-auto shadow-none focus-visible:ring-0 placeholder:text-muted-foreground/50 text-foreground"
-              />
-              {recipientAddress && !isValidAddress(recipientAddress) && (
-                <div className="mt-2 text-sm text-red-600 dark:text-red-400">
-                  Please enter a valid Ethereum address or ENS name
-                </div>
-              )}
+          <div data-onboarding="transfer-recipient">
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-foreground">To</label>
+              <div className="relative bg-muted/50 rounded-2xl p-4 border border-border hover:border-muted-foreground/20 transition-colors">
+                <Input
+                  type="text"
+                  placeholder="Wallet address or ENS name"
+                  value={recipientAddress}
+                  onChange={handleRecipientChange}
+                  disabled={loading}
+                  className="text-lg bg-transparent border-none p-0 h-auto shadow-none focus-visible:ring-0 placeholder:text-muted-foreground/50 text-foreground"
+                />
+                {recipientAddress && !isValidAddress(recipientAddress) && (
+                  <div className="mt-2 text-sm text-red-600 dark:text-red-400">
+                    Please enter a valid Ethereum address or ENS name
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 
           {/* Recipient Network Picker */}
-          <div className="space-y-2">
-            <label className="block text-sm font-medium text-foreground">Recipient network</label>
-            <Select
-              value={recipientChain}
-              onValueChange={handleRecipientChainChange}
-              disabled={loading}
-            >
-              <SelectTrigger className="bg-muted/50 rounded-2xl border-border hover:border-muted-foreground/20 transition-colors">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {chains.map(chain => (
-                  <SelectItem key={chain.chain.reference} value={chain.chain.chain}>
-                    {getChainName(chain.chain.reference)}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+          <div data-onboarding="transfer-network">
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-foreground">Recipient network</label>
+              <Select
+                value={recipientChain}
+                onValueChange={handleRecipientChainChange}
+                disabled={loading}
+              >
+                <SelectTrigger className="bg-muted/50 rounded-2xl border-border hover:border-muted-foreground/20 transition-colors">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {chains.map(chain => (
+                    <SelectItem key={chain.chain.reference} value={chain.chain.chain}>
+                      {getChainName(chain.chain.reference)}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
 
           {/* Quote Loading Alert */}
@@ -417,7 +423,7 @@ export const TransferForm = () => {
             )}
 
           {/* Transfer Button */}
-          <div className="space-y-2">
+          <div className="space-y-2" data-onboarding="transfer-button">
             <Button
               className="w-full"
               onClick={executeQuote}

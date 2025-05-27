@@ -17,13 +17,13 @@ export const WelcomeModal = () => {
     {
       icon: <Sparkles className="h-8 w-8 text-blue-500" />,
       title: 'Welcome to OneBalance! ✨',
-      description: 'Swap tokens across different blockchains in seconds, without the complexity.',
-      highlight: 'No network switching, no gas worries, just simple swaps.',
+      description: 'Move tokens across different blockchains in seconds, without the complexity.',
+      highlight: 'No network switching, no gas worries, just simple transactions.',
     },
     {
       icon: <Zap className="h-8 w-8 text-emerald-500" />,
-      title: 'Lightning Fast Swaps ⚡',
-      description: 'Get quotes in real-time and execute swaps in under 30 seconds.',
+      title: 'Lightning Fast Transactions ⚡',
+      description: 'Get quotes in real-time and execute transactions in under 30 seconds.',
       highlight: 'We handle all the blockchain complexity for you.',
     },
     {
@@ -35,7 +35,7 @@ export const WelcomeModal = () => {
     {
       icon: <Globe className="h-8 w-8 text-orange-500" />,
       title: 'Cross-Chain Magic 🌍',
-      description: 'Swap between Ethereum, Polygon, Arbitrum, and more - all in one place.',
+      description: 'Move tokens between Ethereum, Polygon, Arbitrum, and more - all in one place.',
       highlight: 'One interface, multiple blockchains.',
     },
   ];
@@ -59,8 +59,12 @@ export const WelcomeModal = () => {
   };
 
   const handleStartTour = () => {
-    // Navigate to swap page first, then start onboarding
-    router.push('/swap');
+    // Determine which page to navigate to based on current location
+    const currentPath = typeof window !== 'undefined' ? window.location.pathname : '/swap';
+    const targetPath = currentPath.includes('/transfer') ? '/transfer' : '/swap';
+
+    // Navigate to appropriate page first, then start onboarding
+    router.push(targetPath);
     // Small delay to ensure navigation completes
     setTimeout(() => {
       startOnboarding();
@@ -141,7 +145,7 @@ export const WelcomeModal = () => {
               </div>
 
               <div className="space-y-4">
-                <h2 className="text-2xl font-bold text-foreground">Ready to Start Swapping? 🚀</h2>
+                <h2 className="text-2xl font-bold text-foreground">Ready to Get Started? 🚀</h2>
                 <p className="text-muted-foreground leading-relaxed">
                   Choose how you would like to begin your OneBalance journey.
                 </p>

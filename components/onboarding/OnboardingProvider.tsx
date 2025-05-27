@@ -34,7 +34,7 @@ interface OnboardingContextType {
 
 const OnboardingContext = createContext<OnboardingContextType | null>(null);
 
-const ONBOARDING_STEPS: OnboardingStep[] = [
+const SWAP_ONBOARDING_STEPS: OnboardingStep[] = [
   {
     id: 'welcome',
     title: 'Welcome to OneBalance! 👋',
@@ -104,6 +104,75 @@ const ONBOARDING_STEPS: OnboardingStep[] = [
   },
 ];
 
+const TRANSFER_ONBOARDING_STEPS: OnboardingStep[] = [
+  {
+    id: 'transfer-welcome',
+    title: 'Welcome to Transfers! 💸',
+    description: 'Send tokens to any address across different blockchains quickly and securely.',
+    target: '[data-onboarding="transfer-card"]',
+    position: 'bottom',
+    completed: false,
+  },
+  {
+    id: 'connect-wallet',
+    title: 'Connect Your Wallet',
+    description:
+      "Click here to connect your wallet. Don't worry - we'll create one for you if you don't have one!",
+    target: '[data-onboarding="connect-button"]',
+    position: 'bottom',
+    action: 'click',
+    completed: false,
+  },
+  {
+    id: 'select-transfer-token',
+    title: 'Choose Token to Send',
+    description:
+      'Select which token you want to transfer. We support popular tokens across multiple blockchains.',
+    target: '[data-onboarding="transfer-token"]',
+    position: 'right',
+    action: 'click',
+    completed: false,
+  },
+  {
+    id: 'enter-recipient',
+    title: 'Enter Recipient Address',
+    description: 'Type the wallet address or ENS name where you want to send the tokens.',
+    target: '[data-onboarding="transfer-recipient"]',
+    position: 'top',
+    action: 'focus',
+    completed: false,
+  },
+  {
+    id: 'select-network',
+    title: 'Choose Destination Network',
+    description: 'Pick which blockchain network the recipient should receive the tokens on.',
+    target: '[data-onboarding="transfer-network"]',
+    position: 'top',
+    action: 'click',
+    completed: false,
+  },
+  {
+    id: 'execute-transfer',
+    title: 'Send Your Transfer',
+    description: "Click to confirm your transfer. We'll handle the cross-chain routing for you.",
+    target: '[data-onboarding="transfer-button"]',
+    position: 'top',
+    action: 'click',
+    completed: false,
+  },
+];
+
+// Helper function to get appropriate steps based on current page
+const getOnboardingSteps = () => {
+  if (typeof window !== 'undefined') {
+    const pathname = window.location.pathname;
+    if (pathname.includes('/transfer')) {
+      return TRANSFER_ONBOARDING_STEPS;
+    }
+  }
+  return SWAP_ONBOARDING_STEPS; // Default to swap steps
+};
+
 export const OnboardingProvider = ({ children }: { children: ReactNode }) => {
   const [state, setState] = useState<OnboardingState>(() => {
     // Load from localStorage if available
@@ -113,6 +182,7 @@ export const OnboardingProvider = ({ children }: { children: ReactNode }) => {
         const parsed = JSON.parse(saved);
         return {
           ...parsed,
+          steps: getOnboardingSteps(), // Always use current page steps
           completedActions: new Set(parsed.completedActions || []),
         };
       }
@@ -121,7 +191,7 @@ export const OnboardingProvider = ({ children }: { children: ReactNode }) => {
     return {
       isActive: false,
       currentStep: 0,
-      steps: ONBOARDING_STEPS,
+      steps: getOnboardingSteps(),
       hasSeenWelcome: false,
       completedActions: new Set<string>(),
     };
@@ -144,6 +214,7 @@ export const OnboardingProvider = ({ children }: { children: ReactNode }) => {
       isActive: true,
       currentStep: 0,
       hasSeenWelcome: true,
+      steps: getOnboardingSteps(), // Refresh steps for current page
     }));
   };
 
@@ -191,7 +262,7 @@ export const OnboardingProvider = ({ children }: { children: ReactNode }) => {
     setState({
       isActive: false,
       currentStep: 0,
-      steps: ONBOARDING_STEPS,
+      steps: getOnboardingSteps(),
       hasSeenWelcome: false,
       completedActions: new Set<string>(),
     });
