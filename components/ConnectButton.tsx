@@ -72,7 +72,7 @@ export const ConnectButton = () => {
       <Button
         size="sm"
         onClick={login}
-        className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105"
+        className="shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105"
       >
         <Wallet className="mr-2 h-4 w-4" />
         Connect Wallet
