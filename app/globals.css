@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 @plugin "tailwindcss-animate";
 
@@ -34,7 +34,7 @@
   --chart-3: oklch(0.398 0.07 227.392);
   --chart-4: oklch(0.828 0.189 84.429);
   --chart-5: oklch(0.769 0.188 70.08);
-  --radius: 0.625rem;;
+  --radius: 0.625rem;
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
   --sidebar-primary: oklch(0.205 0 0);
@@ -125,5 +125,44 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+/* Onboarding highlight styles */
+@layer components {
+  .onboarding-highlight {
+    animation: onboarding-pulse 2s infinite;
+    box-shadow:
+      0 0 0 4px hsl(var(--primary) / 0.4),
+      0 0 30px hsl(var(--primary) / 0.3);
+    border-radius: 8px;
+    /* Remove any backdrop blur/filter effects */
+    backdrop-filter: none !important;
+    filter: none !important;
+  }
+
+  @keyframes onboarding-pulse {
+    0%,
+    100% {
+      box-shadow:
+        0 0 0 4px hsl(var(--primary) / 0.4),
+        0 0 30px hsl(var(--primary) / 0.3);
+    }
+    50% {
+      box-shadow:
+        0 0 0 8px hsl(var(--primary) / 0.3),
+        0 0 40px hsl(var(--primary) / 0.4);
+    }
+  }
+
+  /* Create a clear "spotlight" effect */
+  .onboarding-highlight::before {
+    content: '';
+    position: absolute;
+    inset: -12px;
+    background: hsl(var(--background));
+    border-radius: 16px;
+    z-index: -1;
+    box-shadow: 0 0 0 2px hsl(var(--primary) / 0.2);
   }
 }

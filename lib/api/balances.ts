@@ -6,7 +6,9 @@ import { BalancesResponse } from '@/lib/types/balances';
  */
 export const balancesApi = {
   getAggregatedBalance: async (address: string): Promise<BalancesResponse> => {
-    const response = await apiClient.get(`?endpoint=/api/balances/aggregated-balance?address=${address}`);
+    const response = await apiClient.get(
+      `?endpoint=/api/v2/balances/aggregated-balance?address=${address}`
+    );
     return response.data;
   },
 };

@@ -1,22 +1,20 @@
 'use client';
 
-import Link from 'next/link';
-import { SwapForm } from '@/components/SwapForm';
-import { ConnectButton } from '@/components/ConnectButton';
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function Home() {
+  const router = useRouter();
+
+  useEffect(() => {
+    // Redirect to swap page by default
+    router.replace('/swap');
+  }, [router]);
+
   return (
-    <div className="flex flex-col min-h-screen justify-between font-[family-name:var(--font-geist-sans)]">
-      <header className="flex items-center justify-between gap-2 flex-wrap bg-gray-100 p-4">
-        <h1 className="font-semibold text-lg">OneBalance Cross-Chain Swap Task - February 2025</h1>
-        <ConnectButton />
-      </header>
-      <div className="p-4">
-        <SwapForm />
-      </div>
-      <footer className="text-center bg-gray-100 p-4">
-        <span>Made by <Link className="text-blue-500 hover:underline" href="https://twitter.com/dzimiks">@dzimiks</Link></span>
-      </footer>
+    <div className="flex flex-col min-h-screen justify-center items-center font-[family-name:var(--font-geist-sans)] bg-background transition-colors">
+      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      <p className="mt-4 text-muted-foreground">Redirecting...</p>
     </div>
   );
 }

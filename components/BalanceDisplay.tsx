@@ -10,11 +10,11 @@ interface BalanceDisplayProps {
 }
 
 export const BalanceDisplay = ({
-                                 balances,
-                                 loading,
-                                 error,
-                                 selectedAssetId,
-                               }: BalanceDisplayProps) => {
+  balances,
+  loading,
+  error,
+  selectedAssetId,
+}: BalanceDisplayProps) => {
   if (loading) {
     return (
       <div className="space-y-2">
@@ -38,9 +38,9 @@ export const BalanceDisplay = ({
 
   // Find balance for selected asset if specified
   let selectedBalance = null;
-  if (selectedAssetId && balances.balanceByAsset) {
-    selectedBalance = balances.balanceByAsset.find(
-      (b: any) => b.aggregatedAssetId === selectedAssetId,
+  if (selectedAssetId && balances.balanceByAggregatedAsset) {
+    selectedBalance = balances.balanceByAggregatedAsset.find(
+      (b: any) => b.aggregatedAssetId === selectedAssetId
     );
   }
 
@@ -57,11 +57,10 @@ export const BalanceDisplay = ({
             <h3 className="text-sm font-medium">Selected Asset</h3>
             <div className="text-right">
               <div className="font-medium">
-                {parseFloat(selectedBalance.balance) / 10 ** 18} {selectedBalance.aggregatedAssetId.split(':')[1]}
+                {parseFloat(selectedBalance.balance) / 10 ** 18}{' '}
+                {selectedBalance.aggregatedAssetId.split(':')[1]}
               </div>
-              <div className="text-xs text-gray-500">
-                ${selectedBalance.fiatValue?.toFixed(2)}
-              </div>
+              <div className="text-xs text-gray-500">${selectedBalance.fiatValue?.toFixed(2)}</div>
             </div>
           </div>
         )}

@@ -2,7 +2,8 @@ import { Address, createWalletClient, custom, Hash } from 'viem';
 import { ConnectedWallet } from '@privy-io/react-auth';
 import { ChainOperation, Quote } from '@/lib/types/quote';
 
-export const signTypedDataWithPrivy = (embeddedWallet: ConnectedWallet) =>
+export const signTypedDataWithPrivy =
+  (embeddedWallet: ConnectedWallet) =>
   async (typedData: any): Promise<Hash> => {
     const provider = await embeddedWallet.getEthereumProvider();
     const walletClient = createWalletClient({
@@ -13,8 +14,10 @@ export const signTypedDataWithPrivy = (embeddedWallet: ConnectedWallet) =>
     return walletClient.signTypedData(typedData);
   };
 
-export const signOperation = (embeddedWallet: ConnectedWallet) =>
-  (operation: ChainOperation): (() => Promise<ChainOperation>) => async () => {
+export const signOperation =
+  (embeddedWallet: ConnectedWallet) =>
+  (operation: ChainOperation): (() => Promise<ChainOperation>) =>
+  async () => {
     const signature = await signTypedDataWithPrivy(embeddedWallet)(operation.typedDataToSign);
 
     return {
@@ -31,12 +34,12 @@ export const signQuote = async (quote: Quote, embeddedWallet: ConnectedWallet) =
   };
 
   signedQuote.originChainsOperations = await sequentialPromises(
-    quote.originChainsOperations.map(signWithEmbeddedWallet),
+    quote.originChainsOperations.map(signWithEmbeddedWallet)
   );
 
   if (quote.destinationChainOperation) {
     signedQuote.destinationChainOperation = await signWithEmbeddedWallet(
-      quote.destinationChainOperation,
+      quote.destinationChainOperation
     )();
   }
 
@@ -46,8 +49,7 @@ export const signQuote = async (quote: Quote, embeddedWallet: ConnectedWallet) =
 // Helper to run an array of lazy promises in sequence
 export const sequentialPromises = (promises: (() => Promise<any>)[]): Promise<any[]> => {
   return promises.reduce<Promise<any[]>>(
-    (acc, curr) =>
-      acc.then((results) => curr().then((result) => [...results, result])),
-    Promise.resolve([]),
+    (acc, curr) => acc.then(results => curr().then(result => [...results, result])),
+    Promise.resolve([])
   );
 };
