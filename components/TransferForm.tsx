@@ -368,7 +368,7 @@ export const TransferForm = () => {
               <div className="relative bg-muted/50 rounded-2xl p-4 border border-border hover:border-muted-foreground/20 transition-colors">
                 <Input
                   type="text"
-                  placeholder="Wallet address or ENS name"
+                  placeholder="Wallet address"
                   value={recipientAddress}
                   onChange={handleRecipientChange}
                   disabled={loading}
@@ -376,7 +376,7 @@ export const TransferForm = () => {
                 />
                 {recipientAddress && !isValidAddress(recipientAddress) && (
                   <div className="mt-2 text-sm text-red-600 dark:text-red-400">
-                    Please enter a valid Ethereum address or ENS name
+                    Please enter a valid Ethereum address
                   </div>
                 )}
               </div>

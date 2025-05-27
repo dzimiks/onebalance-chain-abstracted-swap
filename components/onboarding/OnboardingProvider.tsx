@@ -136,7 +136,7 @@ const TRANSFER_ONBOARDING_STEPS: OnboardingStep[] = [
   {
     id: 'enter-recipient',
     title: 'Enter Recipient Address',
-    description: 'Type the wallet address or ENS name where you want to send the tokens.',
+    description: 'Type the wallet address where you want to send the tokens.',
     target: '[data-onboarding="transfer-recipient"]',
     position: 'top',
     action: 'focus',
