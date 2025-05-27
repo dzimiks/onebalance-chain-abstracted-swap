@@ -15,6 +15,7 @@ export const TabNavigation = ({ className }: TabNavigationProps) => {
   const tabs = [
     { id: 'swap', label: 'Swap', path: '/swap' },
     { id: 'transfer', label: 'Transfer', path: '/transfer' },
+    { id: 'history', label: 'History', path: '/history' },
   ];
 
   const handleTabClick = (path: string) => {
