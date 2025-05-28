@@ -307,28 +307,28 @@ const TransactionCard = ({
 
   return (
     <Collapsible open={isExpanded} onOpenChange={onToggleExpanded}>
-      <Card className="border border-border hover:border-muted-foreground/20 transition-all duration-200 hover:shadow-md">
+      <Card className="border border-border hover:border-muted-foreground/20 py-4 transition-all duration-200 hover:shadow-md">
         <CollapsibleTrigger asChild>
-          <div className="px-4 cursor-pointer transition-colors">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
+          <div className="px-3 cursor-pointer transition-colors">
+            <div className="flex items-center justify-between gap-3">
+              <div className="flex items-center gap-3 flex-1 min-w-0">
                 {/* Transaction Type Icon */}
                 <div className="flex-shrink-0">
                   {transaction.type === 'SWAP' ? (
-                    <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/20 flex items-center justify-center">
-                      <ArrowUpRight className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                    <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-blue-100 dark:bg-blue-900/20 flex items-center justify-center">
+                      <ArrowUpRight className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600 dark:text-blue-400" />
                     </div>
                   ) : (
-                    <div className="w-10 h-10 rounded-full bg-purple-100 dark:bg-purple-900/20 flex items-center justify-center">
-                      <ArrowDownLeft className="h-5 w-5 text-purple-600 dark:text-purple-400" />
+                    <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-purple-100 dark:bg-purple-900/20 flex items-center justify-center">
+                      <ArrowDownLeft className="h-4 w-4 sm:h-5 sm:w-5 text-purple-600 dark:text-purple-400" />
                     </div>
                   )}
                 </div>
 
                 {/* Transaction Details */}
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="font-medium text-foreground">
+                  <div className="flex items-center gap-2 mb-1 flex-wrap">
+                    <span className="font-medium text-foreground text-sm sm:text-base">
                       {transaction.type === 'SWAP' ? 'Swap' : 'Transfer'}
                     </span>
                     <Badge className={getStatusColor(transaction.status)} variant="secondary">
@@ -339,31 +339,37 @@ const TransactionCard = ({
                     </Badge>
                   </div>
 
-                  <div className="text-sm text-muted-foreground">
-                    <span className="font-medium">
-                      {originAmount} {originSymbol}
-                    </span>
-                    {transaction.type === 'SWAP' && transaction.destinationToken && (
-                      <>
-                        <span className="mx-2">→</span>
-                        <span className="font-medium">
-                          {destinationAmount} {destinationSymbol}
-                        </span>
-                      </>
-                    )}
+                  <div className="text-xs sm:text-sm text-muted-foreground">
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
+                      <span className="font-medium">
+                        {originAmount} {originSymbol}
+                      </span>
+                      {transaction.type === 'SWAP' && transaction.destinationToken && (
+                        <>
+                          <span className="hidden sm:inline mx-1">→</span>
+                          <span className="sm:hidden text-xs text-muted-foreground/70">to</span>
+                          <span className="font-medium">
+                            {destinationAmount} {destinationSymbol}
+                          </span>
+                        </>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
 
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
                 <div className="text-right">
-                  <div className="text-lg font-semibold text-foreground">
+                  <div className="text-sm sm:text-lg font-semibold text-foreground">
                     {originFiat || `${originAmount} ${originSymbol}`}
                   </div>
                   <div className="text-xs text-muted-foreground">
-                    {format(new Date(transaction.timestamp), 'MMM dd, yyyy')}
+                    {format(new Date(transaction.timestamp), 'MMM dd')}
                   </div>
-                  <div className="text-xs text-muted-foreground">
+                  <div className="text-xs text-muted-foreground sm:hidden">
+                    {format(new Date(transaction.timestamp), 'HH:mm')}
+                  </div>
+                  <div className="hidden sm:block text-xs text-muted-foreground">
                     {format(new Date(transaction.timestamp), 'HH:mm')}
                   </div>
                 </div>
@@ -379,10 +385,10 @@ const TransactionCard = ({
         </CollapsibleTrigger>
 
         <CollapsibleContent>
-          <div className="px-4 pb-4 border-t border-border/50">
-            <div className="pt-4 space-y-6">
+          <div className="px-3 sm:px-4 pb-3 sm:pb-4 border-t border-border/50">
+            <div className="pt-3 sm:pt-4 space-y-4 sm:space-y-6">
               {/* Quote ID */}
-              <div className="bg-muted/20 rounded-lg p-3">
+              <div className="bg-muted/40 rounded-lg p-2 sm:p-3">
                 <div className="text-xs text-muted-foreground mb-1">Quote ID</div>
                 <div className="font-mono text-xs text-foreground break-all">
                   {transaction.quoteId}
@@ -393,116 +399,111 @@ const TransactionCard = ({
               <div className="space-y-3">
                 <h4 className="text-sm font-medium text-foreground">Transaction Details</h4>
 
-                {/* From Token */}
-                <div className="bg-gradient-to-r from-muted/30 to-muted/10 rounded-lg p-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <div className="text-xs text-muted-foreground mb-1">From</div>
-                      <div className="text-lg font-semibold text-foreground">
-                        {originAmount} {originSymbol}
-                      </div>
-                      {originFiat && (
-                        <div className="text-sm text-muted-foreground">{originFiat}</div>
-                      )}
-                    </div>
-                    <div className="text-right">
-                      <div className="text-xs text-muted-foreground mb-1">Network</div>
-                      <div className="text-sm font-medium text-foreground">
-                        {getChainName(transaction.originChainOperations[0]?.chainId)}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Arrow for swaps */}
-                {transaction.type === 'SWAP' && transaction.destinationToken && (
-                  <div className="flex justify-center">
-                    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-                      <ArrowDownLeft className="h-4 w-4 text-primary rotate-180" />
-                    </div>
-                  </div>
-                )}
-
-                {/* To Token (for swaps) */}
-                {transaction.destinationToken && (
-                  <div className="bg-gradient-to-r from-muted/10 to-muted/30 rounded-lg p-4">
-                    <div className="flex items-center justify-between">
+                <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr] gap-4 items-center">
+                  {/* From Token */}
+                  <div className="bg-muted/40 rounded-lg p-3">
+                    <div className="space-y-2">
                       <div>
-                        <div className="text-xs text-muted-foreground mb-1">To</div>
-                        <div className="text-lg font-semibold text-foreground">
-                          {destinationAmount} {destinationSymbol}
+                        <div className="text-xs text-muted-foreground mb-1">Sold</div>
+                        <div className="text-base sm:text-lg font-semibold text-foreground">
+                          {originAmount} {originSymbol}
                         </div>
-                        {destinationFiat && (
-                          <div className="text-sm text-muted-foreground">{destinationFiat}</div>
+                        {originFiat && (
+                          <div className="text-sm text-muted-foreground">{originFiat}</div>
                         )}
                       </div>
-                      <div className="text-right">
+                      <div>
                         <div className="text-xs text-muted-foreground mb-1">Network</div>
                         <div className="text-sm font-medium text-foreground">
-                          {getChainName(
-                            transaction.destinationChainOperations?.[0]?.chainId ||
-                              transaction.originChainOperations[0]?.chainId
-                          )}
+                          {getChainName(transaction.originChainOperations[0]?.chainId)}
                         </div>
                       </div>
+                      {/* Origin Transaction Links */}
+                      {transaction.originChainOperations.map((op, index) => (
+                        <div key={index} className="pt-2 border-t border-border/30">
+                          <div className="flex items-center justify-between gap-2">
+                            <div className="flex-1 min-w-0">
+                              <div className="text-xs text-muted-foreground">Transaction</div>
+                              <div className="font-mono text-xs text-foreground">
+                                {op.hash.slice(0, 6)}...{op.hash.slice(-6)}
+                              </div>
+                            </div>
+                            <Button variant="outline" size="sm" asChild className="h-7 px-2">
+                              <a
+                                href={op.explorerUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex items-center gap-1"
+                              >
+                                <span className="text-xs">View</span>
+                                <ExternalLink className="h-3 w-3" />
+                              </a>
+                            </Button>
+                          </div>
+                        </div>
+                      ))}
                     </div>
                   </div>
-                )}
-              </div>
 
-              {/* Transaction Links */}
-              <div className="space-y-3">
-                <h4 className="text-sm font-medium text-foreground">Blockchain Transactions</h4>
-
-                {transaction.originChainOperations.map((op, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center justify-between p-3 bg-muted/20 rounded-lg"
-                  >
-                    <div>
-                      <div className="text-xs text-muted-foreground">Origin Transaction</div>
-                      <div className="font-mono text-sm text-foreground">
-                        {op.hash.slice(0, 8)}...{op.hash.slice(-8)}
+                  {/* Arrow for swaps */}
+                  {transaction.type === 'SWAP' && transaction.destinationToken && (
+                    <div className="flex justify-center">
+                      <div className="w-10 h-10 rounded-full bg-muted/40 flex items-center justify-center">
+                        <ArrowDownLeft className="h-5 w-5 text-primary rotate-180" />
                       </div>
                     </div>
-                    <Button variant="outline" size="sm" asChild className="h-8">
-                      <a
-                        href={op.explorerUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-2"
-                      >
-                        <span className="text-xs">View</span>
-                        <ExternalLink className="h-3 w-3" />
-                      </a>
-                    </Button>
-                  </div>
-                ))}
+                  )}
 
-                {transaction.destinationChainOperations?.map((op, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center justify-between p-3 bg-muted/20 rounded-lg"
-                  >
-                    <div>
-                      <div className="text-xs text-muted-foreground">Destination Transaction</div>
-                      <div className="font-mono text-sm text-foreground">
-                        {op.hash.slice(0, 8)}...{op.hash.slice(-8)}
+                  {/* To Token (for swaps) */}
+                  {transaction.destinationToken && (
+                    <div className="bg-muted/40 rounded-lg p-3">
+                      <div className="space-y-2">
+                        <div>
+                          <div className="text-xs text-muted-foreground mb-1">Bought</div>
+                          <div className="text-base sm:text-lg font-semibold text-foreground">
+                            {destinationAmount} {destinationSymbol}
+                          </div>
+                          {destinationFiat && (
+                            <div className="text-sm text-muted-foreground">{destinationFiat}</div>
+                          )}
+                        </div>
+                        <div>
+                          <div className="text-xs text-muted-foreground mb-1">Network</div>
+                          <div className="text-sm font-medium text-foreground">
+                            {getChainName(
+                              transaction.destinationChainOperations?.[0]?.chainId ||
+                                transaction.originChainOperations[0]?.chainId
+                            )}
+                          </div>
+                        </div>
+                        {/* Destination Transaction Links */}
+                        {transaction.destinationChainOperations?.map((op, index) => (
+                          <div key={index} className="pt-2 border-t border-border/30">
+                            <div className="flex items-center justify-between gap-2">
+                              <div className="flex-1 min-w-0">
+                                <div className="text-xs text-muted-foreground">Transaction</div>
+                                <div className="font-mono text-xs text-foreground">
+                                  {op.hash.slice(0, 6)}...{op.hash.slice(-6)}
+                                </div>
+                              </div>
+                              <Button variant="outline" size="sm" asChild className="h-7 px-2">
+                                <a
+                                  href={op.explorerUrl}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="flex items-center gap-1"
+                                >
+                                  <span className="text-xs">View</span>
+                                  <ExternalLink className="h-3 w-3" />
+                                </a>
+                              </Button>
+                            </div>
+                          </div>
+                        ))}
                       </div>
                     </div>
-                    <Button variant="outline" size="sm" asChild className="h-8">
-                      <a
-                        href={op.explorerUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-2"
-                      >
-                        <span className="text-xs">View</span>
-                        <ExternalLink className="h-3 w-3" />
-                      </a>
-                    </Button>
-                  </div>
-                ))}
+                  )}
+                </div>
               </div>
             </div>
           </div>
