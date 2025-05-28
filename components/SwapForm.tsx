@@ -20,7 +20,7 @@ export const SwapForm = () => {
 
   // Asset state
   const [sourceAsset, setSourceAsset] = useState<string>('ds:usdc');
-  const [targetAsset, setTargetAsset] = useState<string>('ds:usdt');
+  const [targetAsset, setTargetAsset] = useState<string>('ds:eth');
 
   // Amount state
   const [fromAmount, setFromAmount] = useState<string>('');

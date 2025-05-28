@@ -53,7 +53,7 @@ cd one-balance-cross-chain-swap
 2. Install dependencies:
 
 ```bash
-npm install
+pnpm install
 ```
 
 3. Set up environment variables:
@@ -72,7 +72,7 @@ ONEBALANCE_API_KEY=your_onebalance_api_key
 5. Run the development server:
 
 ```bash
-npm run dev
+pnpm dev
 ```
 
 6. Open [http://localhost:3000](http://localhost:3000) in your browser.
