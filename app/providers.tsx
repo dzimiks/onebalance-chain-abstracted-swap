@@ -23,10 +23,10 @@ export const Providers = ({ children }: ProvidersProps) => (
             // Create embedded wallets for users who don't have a wallet
             createOnLogin: 'users-without-wallets',
           },
-          loginMethods: ['email'],
+          loginMethods: ['email', 'passkey', 'wallet'],
           appearance: {
             theme: 'light',
-            accentColor: '#7c3aed',
+            accentColor: '#FFAB40',
           },
         }}
       >

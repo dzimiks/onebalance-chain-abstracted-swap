@@ -25,6 +25,7 @@ interface TokenInputProps {
   disabled?: boolean;
   readOnly?: boolean;
   balances?: TokenBalance[];
+  usdValue?: string | null;
 }
 
 export const TokenInput = ({
@@ -40,6 +41,7 @@ export const TokenInput = ({
   disabled = false,
   readOnly = false,
   balances = [],
+  usdValue = null,
 }: TokenInputProps) => {
   const selectedAssetData = assets.find(asset => asset.aggregatedAssetId === selectedAsset);
 
@@ -113,7 +115,7 @@ export const TokenInput = ({
             />
             {/* USD Value */}
             <div className="text-sm text-muted-foreground">
-              {getUSDValue() ? `$${getUSDValue()}` : '$0.00'}
+              {usdValue ? `$${usdValue}` : getUSDValue() ? `$${getUSDValue()}` : '$0.00'}
             </div>
           </div>
 

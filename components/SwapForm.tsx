@@ -64,6 +64,18 @@ export const SwapForm = () => {
     }
   };
 
+  // Calculate USD value for destination token from quote
+  const getDestinationUSDValue = () => {
+    if (quote && !(quote as any)?.error && (quote as any)?.destinationToken && toAmount) {
+      const fiatValue = (quote as any).destinationToken.fiatValue;
+      if (fiatValue) {
+        const numericValue = typeof fiatValue === 'number' ? fiatValue : parseFloat(fiatValue);
+        return !isNaN(numericValue) ? numericValue.toFixed(2) : null;
+      }
+    }
+    return null;
+  };
+
   // Get selected assets
   const selectedSourceAsset: Asset | null =
     assets.find(asset => asset.aggregatedAssetId === sourceAsset) ?? null;
@@ -377,6 +389,7 @@ export const SwapForm = () => {
               amount={toAmount}
               onAmountChange={() => {}} // No-op since it's read-only
               balance={targetBalance}
+              usdValue={getDestinationUSDValue()}
               showPercentageButtons={false}
               disabled={loading}
               readOnly={true}
