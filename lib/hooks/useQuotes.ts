@@ -2,9 +2,9 @@ import { useState, useCallback, useRef, useEffect } from 'react';
 import { usePrivy } from '@privy-io/react-auth';
 import { signQuote } from '@/lib/utils/privySigningUtils';
 import { Quote, QuoteRequest } from '@/lib/types/quote';
-import { accountApi } from '@/lib/api/account';
 import { quotesApi } from '@/lib/api/quotes';
 import { useEmbeddedWallet } from './useEmbeddedWallet';
+import { usePredictedAddress } from '@/lib/contexts/PredictedAddressContext';
 
 interface QuoteState {
   quote: Quote | null;
@@ -25,6 +25,7 @@ interface SimpleQuoteRequest {
 export const useQuotes = () => {
   const { authenticated } = usePrivy();
   const embeddedWallet = useEmbeddedWallet();
+  const { predictedAddress, getPredictedAddress } = usePredictedAddress();
   const statusPollingRef = useRef<NodeJS.Timeout | null>(null);
 
   const [state, setState] = useState<QuoteState>({
@@ -34,26 +35,6 @@ export const useQuotes = () => {
     error: null,
     isPolling: false,
   });
-
-  const [predictedAddress, setPredictedAddress] = useState<string | null>(null);
-
-  // Get the predicted address for the account
-  const getPredictedAddress = useCallback(async () => {
-    if (!embeddedWallet || !embeddedWallet.address) {
-      return null;
-    }
-
-    try {
-      // Use the same wallet address for both session and admin
-      const address = embeddedWallet.address;
-      const predicted = await accountApi.predictAddress(address, address);
-      setPredictedAddress(predicted);
-      return predicted;
-    } catch (err) {
-      console.error('Failed to predict address:', err);
-      return null;
-    }
-  }, [embeddedWallet]);
 
   const resetQuote = useCallback(() => {
     // Clear any active polling

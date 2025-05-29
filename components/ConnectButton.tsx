@@ -7,7 +7,8 @@ import { Button } from '@/components/ui/button';
 import { Wallet, ChevronRight, LogOut } from 'lucide-react';
 import { useBalances } from '@/lib/hooks/useBalances';
 import { useAssets } from '@/lib/hooks/useAssets';
-import { useQuotes, useEmbeddedWallet } from '@/lib/hooks';
+import { useEmbeddedWallet } from '@/lib/hooks';
+import { usePredictedAddress } from '@/lib/contexts/PredictedAddressContext';
 import { WalletHeader } from '@/components/wallet/WalletHeader';
 import { AccountAddress } from '@/components/wallet/AccountAddress';
 import { PortfolioSummary } from '@/components/wallet/PortfolioSummary';
@@ -16,9 +17,9 @@ import { AssetList } from '@/components/wallet/AssetList';
 export const ConnectButton = () => {
   const { login, logout, authenticated, ready } = usePrivy();
   const embeddedWallet = useEmbeddedWallet();
+  const { predictedAddress, getPredictedAddress } = usePredictedAddress();
   const [open, setOpen] = useState(false);
 
-  const { predictedAddress, getPredictedAddress } = useQuotes();
   const { balances, loading: balancesLoading, fetchBalances } = useBalances(predictedAddress);
   const { assets } = useAssets();
 

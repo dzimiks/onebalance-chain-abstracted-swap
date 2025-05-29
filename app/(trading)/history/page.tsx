@@ -4,14 +4,13 @@ import { useEffect } from 'react';
 import { usePrivy } from '@privy-io/react-auth';
 import { TransactionHistory } from '@/components/TransactionHistory';
 import { TabNavigation } from '@/components/TabNavigation';
-import { useQuotes, useEmbeddedWallet } from '@/lib/hooks';
+import { useEmbeddedWallet } from '@/lib/hooks';
+import { usePredictedAddress } from '@/lib/contexts/PredictedAddressContext';
 
 export default function HistoryPage() {
   const { authenticated } = usePrivy();
   const embeddedWallet = useEmbeddedWallet();
-
-  // Use the predicted address (smart account) for transaction history
-  const { predictedAddress, getPredictedAddress } = useQuotes();
+  const { predictedAddress, getPredictedAddress } = usePredictedAddress();
 
   // Get predicted address when wallet connects
   useEffect(() => {

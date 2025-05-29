@@ -26,7 +26,7 @@ export async function GET(
     const data = await response.json();
     return NextResponse.json(data);
   } catch (error) {
-    return NextResponse.json({ message: 'Failed to fetch data', error }, { status: 500 });
+    return NextResponse.json({ message: 'Failed to fetch data', error }, { status: 400 });
   }
 }
 
@@ -52,6 +52,6 @@ export async function POST(
     const data = await response.json();
     return NextResponse.json(data);
   } catch (error) {
-    return NextResponse.json({ message: 'Failed to fetch data', error }, { status: 500 });
+    return NextResponse.json({ message: 'Failed to fetch data', error }, { status: 400 });
   }
 }
