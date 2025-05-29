@@ -1,4 +1,4 @@
-import { Info, Clock, TrendingUp } from 'lucide-react';
+import { Info, Clock } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Quote } from '@/lib/types/quote';
 import { ContextualHelp, helpContent } from '@/components/onboarding/ContextualHelp';
@@ -13,13 +13,49 @@ export const QuoteDetails = ({ quote }: QuoteDetailsProps) => {
     return assetId.split(':')[1]?.toUpperCase() || assetId;
   };
 
-  // Calculate exchange rate
-  const getExchangeRate = () => {
-    const fromAmount = parseFloat(quote.originToken.amount);
-    const toAmount = parseFloat(quote.destinationToken.amount);
-    if (fromAmount === 0) return '0';
-    const rate = toAmount / fromAmount;
-    return rate.toFixed(6);
+  // Calculate price per token
+  const getTokenPrice = (tokenType: 'origin' | 'destination') => {
+    if (tokenType === 'origin') {
+      const amount = parseFloat(quote.originToken.amount);
+      // Handle both single fiat value and array of fiat values
+      const fiatValue = quote.originToken.fiatValue as any;
+      const totalFiatValue = Array.isArray(fiatValue)
+        ? parseFloat(fiatValue[0]?.fiatValue || '0')
+        : parseFloat(fiatValue || '0');
+
+      if (amount === 0 || totalFiatValue === 0) return '0';
+      const pricePerToken = totalFiatValue / amount;
+
+      // Format large numbers with proper decimals
+      if (pricePerToken >= 1000) {
+        return pricePerToken.toLocaleString(undefined, {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        });
+      } else if (pricePerToken >= 1) {
+        return pricePerToken.toFixed(2);
+      } else {
+        return pricePerToken.toFixed(4);
+      }
+    } else {
+      const amount = parseFloat(quote.destinationToken.amount);
+      const fiatValue = parseFloat((quote.destinationToken.fiatValue as any) || '0');
+
+      if (amount === 0 || fiatValue === 0) return '0';
+      const pricePerToken = fiatValue / amount;
+
+      // Format based on value
+      if (pricePerToken >= 1000) {
+        return pricePerToken.toLocaleString(undefined, {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        });
+      } else if (pricePerToken >= 1) {
+        return pricePerToken.toFixed(2);
+      } else {
+        return pricePerToken.toFixed(4);
+      }
+    }
   };
 
   // Format the expiration time
@@ -31,6 +67,9 @@ export const QuoteDetails = ({ quote }: QuoteDetailsProps) => {
       second: '2-digit',
     });
   };
+
+  const originSymbol = getAssetSymbol(quote.originToken.aggregatedAssetId);
+  const destinationSymbol = getAssetSymbol(quote.destinationToken.aggregatedAssetId);
 
   return (
     <Card className="p-4 bg-muted/50 border-border">
@@ -51,35 +90,44 @@ export const QuoteDetails = ({ quote }: QuoteDetailsProps) => {
 
         {/* Key Details Grid */}
         <div className="grid grid-cols-1 gap-3 text-sm">
-          {/* Exchange Rate */}
-          <div className="bg-background rounded-lg p-3 border border-border">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <TrendingUp className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
-                <span className="text-muted-foreground">Exchange Rate</span>
+          {/* Token Prices */}
+          <div className="grid grid-cols-2 gap-3">
+            {/* From Token Price */}
+            <div className="bg-background rounded-lg p-3 border border-border">
+              <div className="flex items-center gap-1 text-muted-foreground mb-1">
+                <span className="text-xs">{originSymbol} Price</span>
               </div>
               <div className="font-medium text-foreground">
-                1 {getAssetSymbol(quote.originToken.aggregatedAssetId)} = {getExchangeRate()}{' '}
-                {getAssetSymbol(quote.destinationToken.aggregatedAssetId)}
+                1 {originSymbol} = ${getTokenPrice('origin')}
+              </div>
+            </div>
+
+            {/* To Token Price */}
+            <div className="bg-background rounded-lg p-3 border border-border">
+              <div className="flex items-center gap-1 text-muted-foreground mb-1">
+                <span className="text-xs">{destinationSymbol} Price</span>
+              </div>
+              <div className="font-medium text-foreground">
+                1 {destinationSymbol} = ${getTokenPrice('destination')}
               </div>
             </div>
           </div>
 
           {/* Quote ID and Expiration */}
           <div className="grid grid-cols-2 gap-3">
-            <div className="bg-background rounded-lg p-2 border border-border">
-              <div className="text-muted-foreground">Quote ID</div>
-              <div className="font-mono text-xs text-foreground truncate">
+            <div className="bg-background rounded-lg p-3 border border-border">
+              <div className="text-muted-foreground text-xs">Quote ID</div>
+              <div className="font-mono text-sm text-foreground truncate">
                 {quote.id.slice(0, 8)}...{quote.id.slice(-8)}
               </div>
             </div>
 
-            <div className="bg-background rounded-lg p-2 border border-border">
+            <div className="bg-background rounded-lg p-3 border border-border">
               <div className="text-muted-foreground flex items-center gap-1">
                 <Clock className="h-3 w-3" />
-                Expires at
+                <span className="text-xs">Expires at</span>
               </div>
-              <div className="font-medium text-foreground">{formatExpirationTime()}</div>
+              <div className="font-medium text-foreground text-sm">{formatExpirationTime()}</div>
             </div>
           </div>
         </div>
