@@ -455,7 +455,7 @@ export const SwapForm = () => {
           {/* Quote Details */}
           {/*  eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
           {/*@ts-expect-error*/}
-          {!quote?.error && quote?.originToken && (
+          {!quote?.error && quote?.originToken && !status?.status && (
             <div className="space-y-4" data-onboarding="quote-details">
               <QuoteCountdown
                 expirationTimestamp={parseInt(quote.expirationTimestamp)}
