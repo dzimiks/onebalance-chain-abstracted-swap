@@ -9,6 +9,7 @@ import {
   ExternalLink,
   Sparkles,
   RotateCcw,
+  Globe,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -32,9 +33,10 @@ export const HelpMenu = () => {
       content: 'Select tokens, enter amount, and click "Swap". We handle the rest!',
     },
     {
-      icon: '⚡',
-      title: 'Cross-Chain',
-      content: 'Swap between different blockchains without switching networks.',
+      icon: <Globe className="h-4 w-4" />,
+      title: 'Chain-Abstracted',
+      description:
+        'Trade tokens across multiple blockchains seamlessly. OneBalance handles all the complex routing behind the scenes.',
     },
     {
       icon: '💰',

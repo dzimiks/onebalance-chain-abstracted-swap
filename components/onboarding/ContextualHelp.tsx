@@ -8,7 +8,7 @@ import { Card } from '@/components/ui/card';
 interface ContextualHelpProps {
   title: string;
   content: string;
-  type?: 'info' | 'warning' | 'tip';
+  type?: 'info' | 'warning' | 'tip' | 'feature';
   trigger?: 'hover' | 'click';
   position?: 'top' | 'bottom' | 'left' | 'right';
   className?: string;
@@ -35,6 +35,8 @@ export const ContextualHelp = ({
         return <AlertCircle className="h-4 w-4 text-amber-500" />;
       case 'tip':
         return <Info className="h-4 w-4 text-blue-500" />;
+      case 'feature':
+        return <Info className="h-4 w-4 text-green-500" />;
       default:
         return <HelpCircle className="h-4 w-4 text-muted-foreground" />;
     }
@@ -46,6 +48,8 @@ export const ContextualHelp = ({
         return 'border-amber-200 dark:border-amber-800/30 bg-amber-50 dark:bg-amber-950/20';
       case 'tip':
         return 'border-blue-200 dark:border-blue-800/30 bg-blue-50 dark:bg-blue-950/20';
+      case 'feature':
+        return 'border-green-200 dark:border-green-800/30 bg-green-50 dark:bg-green-950/20';
       default:
         return 'border-border bg-background';
     }
@@ -182,11 +186,11 @@ export const helpContent = {
       'We sponsor the blockchain fees for you! No need to hold ETH or worry about gas prices.',
     type: 'tip' as const,
   },
-  crossChain: {
-    title: 'Cross-Chain Swap',
+  swap: {
+    title: 'Chain-Abstracted Swap',
     content:
-      'Swap tokens between different blockchains (like Ethereum to Polygon) in a single transaction.',
-    type: 'info' as const,
+      'Seamlessly exchange tokens across different blockchains. OneBalance finds the best rates and handles all the complex routing for you.',
+    type: 'feature' as const,
   },
   aggregatedBalance: {
     title: 'Aggregated Balance',

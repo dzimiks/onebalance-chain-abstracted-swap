@@ -1,18 +1,15 @@
-import type { Metadata } from 'next';
+import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Swap Tokens',
+  title: 'Swap',
   description:
-    'Swap tokens across multiple blockchains instantly. Exchange cryptocurrencies with the best rates using OneBalance cross-chain technology.',
+    'Swap tokens across multiple blockchains instantly. Exchange cryptocurrencies with the best rates using OneBalance chain-abstracted technology.',
   keywords: [
     'token swap',
-    'crypto exchange',
-    'cross-chain swap',
-    'DeFi trading',
+    'chain-abstracted swap',
     'cryptocurrency exchange',
-    'multi-chain trading',
-    'instant swap',
-    'best rates',
+    'defi',
+    'blockchain',
   ],
   openGraph: {
     title: 'Swap Tokens | OneBalance',

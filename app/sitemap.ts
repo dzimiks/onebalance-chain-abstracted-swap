@@ -1,7 +1,7 @@
 import { MetadataRoute } from 'next';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://one-balance-cross-chain-swap.vercel.app';
+  const baseUrl = 'https://onebalance-chain-abstracted-swap.vercel.app';
 
   return [
     {

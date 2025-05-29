@@ -1,18 +1,15 @@
-import type { Metadata } from 'next';
+import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Transfer Tokens',
+  title: 'Transfer',
   description:
-    'Send tokens across different blockchains securely and efficiently. Transfer cryptocurrencies to any address on supported networks with OneBalance.',
+    'Send tokens to any address across multiple blockchains. Fast, secure chain-abstracted transfers with OneBalance.',
   keywords: [
     'token transfer',
-    'cross-chain transfer',
+    'chain-abstracted transfer',
     'send crypto',
     'blockchain transfer',
-    'multi-chain send',
-    'cryptocurrency transfer',
-    'secure transfer',
-    'instant transfer',
+    'multi-chain',
   ],
   openGraph: {
     title: 'Transfer Tokens | OneBalance',

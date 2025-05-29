@@ -15,63 +15,72 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: 'OneBalance Cross-Chain Swap',
+    default: 'OneBalance Chain-Abstracted Swap',
     template: '%s | OneBalance',
   },
   description:
-    'Modern cross-chain token swap and transfer application built with OneBalance Chain Abstraction Toolkit. Swap tokens across multiple blockchains with a unified interface.',
+    'Modern chain-abstracted token swap and transfer application built with OneBalance Chain Abstraction Toolkit. Swap tokens across multiple blockchains with a unified interface.',
   keywords: [
-    'cross-chain',
-    'token swap',
-    'DeFi',
+    'chain-abstracted',
+    'defi',
+    'crypto',
     'blockchain',
-    'cryptocurrency',
-    'OneBalance',
-    'multi-chain',
-    'crypto exchange',
-    'decentralized finance',
-    'Web3',
+    'ethereum',
+    'swap',
+    'transfer',
+    'onebalance',
+    'web3',
   ],
-  authors: [{ name: 'dzimiks', url: 'https://github.com/dzimiks' }],
-  creator: 'dzimiks',
+  authors: [
+    {
+      name: 'OneBalance Team',
+    },
+  ],
+  creator: 'OneBalance Team',
   publisher: 'OneBalance',
   formatDetection: {
     email: false,
     address: false,
     telephone: false,
   },
-  metadataBase: new URL('https://one-balance-cross-chain-swap.vercel.app'),
+  metadataBase: new URL('https://onebalance-chain-abstracted-swap.vercel.app'),
   alternates: {
     canonical: '/',
   },
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: 'https://one-balance-cross-chain-swap.vercel.app',
-    title: 'OneBalance Cross-Chain Swap',
+    url: 'https://onebalance-chain-abstracted-swap.vercel.app',
+    title: 'OneBalance Chain-Abstracted Swap',
     description:
-      'Modern cross-chain token swap and transfer application built with OneBalance Chain Abstraction Toolkit.',
-    siteName: 'OneBalance Cross-Chain Swap',
+      'Modern chain-abstracted token swap and transfer application built with OneBalance Chain Abstraction Toolkit.',
+    siteName: 'OneBalance Chain-Abstracted Swap',
     images: [
       {
         url: '/og-image.png',
         width: 1200,
         height: 630,
-        alt: 'OneBalance Cross-Chain Swap',
+        alt: 'OneBalance Chain-Abstracted Swap',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'OneBalance Cross-Chain Swap',
+    title: 'OneBalance Chain-Abstracted Swap',
     description:
-      'Modern cross-chain token swap and transfer application built with OneBalance Chain Abstraction Toolkit.',
+      'Modern chain-abstracted token swap and transfer application built with OneBalance Chain Abstraction Toolkit.',
     images: ['/og-image.png'],
-    creator: '@dzimiks',
   },
   robots: {
     index: true,
     follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
   },
 };
 

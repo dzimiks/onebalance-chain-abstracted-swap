@@ -1,115 +1,143 @@
 <img width="1200" alt="image" src="https://github.com/user-attachments/assets/e4408961-6fa5-41b2-b0c5-0f59cfbfb381" />
 
-# OneBalance Cross-Chain Swap
+# OneBalance Chain-Abstracted Swap
 
-A modern, user-friendly cross-chain token swap and transfer application built with the OneBalance Chain Abstraction Toolkit. Seamlessly swap and transfer tokens across multiple blockchains with a unified interface.
+A modern, user-friendly chain-abstracted token swap and transfer application built with the OneBalance Chain Abstraction Toolkit. Seamlessly swap and transfer tokens across multiple blockchains with a unified interface.
 
-## 🚀 Features
+## Features
 
-- **Cross-Chain Token Swapping**: Exchange tokens across different blockchains instantly
-- **Multi-Chain Transfers**: Send tokens to any address on supported networks
+- **Chain-Abstracted Token Swapping**: Exchange tokens across different blockchains instantly
+- **Token Transfers**: Send tokens to any address on supported networks
+- **Real-time Quotes**: Get live exchange rates and transaction previews
 - **Transaction History**: Track all your swaps and transfers in one place
-- **Real-Time Quotes**: Get the best rates with live price updates
-- **Secure Wallet Integration**: Connect with popular wallets securely
-- **Dark/Light Mode**: Beautiful UI that adapts to your preference
-- **Mobile Responsive**: Works perfectly on all devices
+- **Responsive Design**: Beautiful UI that works on desktop and mobile
+- **Web2-style Authentication**: Login using social accounts (no wallet required initially)
+- **Embedded Wallet**: Automatically generated wallet for seamless onboarding
+- **Multi-chain Support**: Works across Ethereum, Arbitrum, Optimism, Base, Polygon, and more
 
-## 🛠 Technology Stack
+## Tech Stack
 
-- **Frontend**: Next.js 14, React 18, TypeScript
-- **Styling**: Tailwind CSS, Radix UI
-- **Blockchain Integration**: OneBalance API, Privy Auth
-- **State Management**: TanStack Query
-- **Development**: ESLint, Prettier, Husky
+- **Next.js 14** - React framework with App Router
+- **TypeScript** - Type-safe development
+- **Tailwind CSS** - Utility-first CSS framework
+- **Privy** - Web3 authentication and embedded wallets
+- **OneBalance API** - Chain abstraction and token swapping
+- **Radix UI** - Accessible UI components
 
-## 🌐 Supported Networks
-
-The application supports multiple blockchain networks through OneBalance's chain abstraction technology:
-
-- Ethereum Mainnet
-- Polygon
-- Arbitrum
-- Optimism
-- Base
-- And more...
-
-## 🔧 Getting Started
+## Quick Start
 
 ### Prerequisites
 
-- Node.js 18+
-- npm or yarn
-- Git
+- Node.js 18+ and npm/yarn
+- OneBalance API key
+- Privy app credentials
 
 ### Installation
 
-1. Clone the repository:
-
 ```bash
-git clone https://github.com/dzimiks/one-balance-cross-chain-swap.git
-cd one-balance-cross-chain-swap
-```
-
-2. Install dependencies:
-
-```bash
+git clone https://github.com/dzimiks/onebalance-chain-abstracted-swap.git
+cd onebalance-chain-abstracted-swap
 pnpm install
 ```
 
-3. Set up environment variables:
+### Environment Setup
 
-```bash
-cp .env.example .env.local
-```
-
-4. Add your API keys to `.env.local`:
+Create a `.env.local` file:
 
 ```env
+NEXT_PUBLIC_API_URL=https://be.onebalance.io
+NEXT_PUBLIC_API_KEY=your_onebalance_api_key
 NEXT_PUBLIC_PRIVY_APP_ID=your_privy_app_id
-ONEBALANCE_API_KEY=your_onebalance_api_key
 ```
 
-5. Run the development server:
+### Development
 
 ```bash
 pnpm dev
 ```
 
-6. Open [http://localhost:3000](http://localhost:3000) in your browser.
+Open [http://localhost:3000](http://localhost:3000) to see the application.
 
-## 📱 Usage
+## Project Structure
 
-### Token Swapping
+```
+src/
+├── app/                    # Next.js App Router pages
+│   ├── (trading)/         # Trading route group
+│   │   ├── swap/          # Token swap page
+│   │   ├── transfer/      # Token transfer page
+│   │   └── history/       # Transaction history
+│   └── layout.tsx         # Root layout
+├── components/            # React components
+│   ├── ui/               # Base UI components
+│   ├── onboarding/       # User onboarding flow
+│   └── [feature]/        # Feature-specific components
+├── lib/                  # Utilities and configurations
+│   ├── api/             # API client functions
+│   ├── hooks/           # Custom React hooks
+│   ├── types/           # TypeScript type definitions
+│   └── utils/           # Helper functions
+└── styles/              # Global styles
+```
 
-1. Connect your wallet
-2. Select the token you want to swap from
-3. Choose the destination token
-4. Enter the amount
-5. Review the quote and execute the swap
+## Key Features
 
-### Token Transfers
+### 🔄 Token Swapping
 
-1. Navigate to the Transfer tab
-2. Select the token to send
-3. Enter the recipient address
-4. Choose the destination network
-5. Confirm and send
+- Exchange tokens across multiple blockchains
+- Real-time quotes with price impact
+- Slippage protection
+- Gas optimization
 
-### Transaction History
+### 💸 Token Transfers
 
-View all your past transactions in the History tab, including:
+- Send tokens to any address
+- Cross-network transfers
+- Address validation
+- Transfer history
 
-- Swap details and rates
-- Transfer confirmations
-- Transaction status
-- Blockchain explorer links
+### 📊 Portfolio Management
 
-## 🔒 Security
+- View aggregated balances across chains
+- Track asset values in USD
+- Transaction history
+- Real-time balance updates
 
-- All transactions are secured by blockchain technology
-- Private keys never leave your device
-- Smart contract interactions are audited
-- No personal data is stored on our servers
+### 🎯 User Experience
+
+- Guided onboarding for new users
+- Contextual help system
+- Progressive disclosure
+- Mobile-responsive design
+
+## API Integration
+
+The app integrates with the OneBalance API for:
+
+- Asset management and pricing
+- Quote generation and execution
+- Transaction status monitoring
+- Balance aggregation across chains
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature-name`
+3. Commit your changes: `git commit -m 'Add feature'`
+4. Push to the branch: `git push origin feature-name`
+5. Submit a pull request
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Support
+
+For support and questions:
+
+- Open an issue on GitHub
+- Check the OneBalance documentation
+- Join our community Discord
 
 ## 🤝 Contributing
 

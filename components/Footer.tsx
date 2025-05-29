@@ -33,7 +33,7 @@ export const Footer = () => {
 
           <Button variant="outline" size="sm" asChild>
             <Link
-              href="https://github.com/dzimiks/one-balance-cross-chain-swap"
+              href="https://github.com/dzimiks/onebalance-chain-abstracted-swap"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-2"

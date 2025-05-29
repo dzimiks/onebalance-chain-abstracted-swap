@@ -152,7 +152,8 @@ const TRANSFER_ONBOARDING_STEPS: OnboardingStep[] = [
   {
     id: 'execute-transfer',
     title: 'Send Your Transfer',
-    description: "Click to confirm your transfer. We'll handle the cross-chain routing for you.",
+    description:
+      "Click to confirm your transfer. We'll handle the chain-abstracted routing for you.",
     target: '[data-onboarding="transfer-button"]',
     position: 'top',
     action: 'click',

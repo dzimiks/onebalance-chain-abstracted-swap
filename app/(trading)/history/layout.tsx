@@ -1,18 +1,15 @@
-import type { Metadata } from 'next';
+import { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'Transaction History',
   description:
-    'View your complete transaction history across all supported blockchains. Track swaps, transfers, and all cross-chain activities in one place.',
+    'View your complete transaction history across all supported blockchains. Track swaps, transfers, and all chain-abstracted activities in one place.',
   keywords: [
     'transaction history',
     'crypto history',
     'blockchain transactions',
-    'swap history',
-    'transfer history',
-    'cross-chain history',
-    'DeFi activity',
-    'portfolio tracking',
+    'chain-abstracted history',
+    'trading history',
   ],
   openGraph: {
     title: 'Transaction History | OneBalance',

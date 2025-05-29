@@ -33,10 +33,9 @@ export const WelcomeModal = () => {
       highlight: "Login with your email and we'll create everything for you.",
     },
     {
-      icon: <Globe className="h-8 w-8 text-orange-500" />,
-      title: 'Cross-Chain Magic 🌍',
-      description: 'Move tokens between Ethereum, Polygon, Arbitrum, and more - all in one place.',
-      highlight: 'One interface, multiple blockchains.',
+      icon: <Globe className="h-8 w-8 text-emerald-600" />,
+      title: 'Chain-Abstracted Magic 🌍',
+      description: "Trade across blockchains without ever thinking about which chain you're on.",
     },
   ];
 
