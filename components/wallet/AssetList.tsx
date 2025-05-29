@@ -27,6 +27,13 @@ export const AssetList = ({ balances, assets, loading }: AssetListProps) => {
     return asset?.decimals || 18;
   };
 
+  const getAssetsWithPositiveValue = () => {
+    if (!balances) return [];
+    return balances.filter(asset => asset.fiatValue && asset.fiatValue > 0);
+  };
+
+  const hasAssets = getAssetsWithPositiveValue().length > 0;
+
   const getTokenIconColor = (symbol: string) => {
     const colors = [
       'bg-blue-500',
@@ -115,10 +122,9 @@ export const AssetList = ({ balances, assets, loading }: AssetListProps) => {
             </div>
           ))}
         </div>
-      ) : balances && balances.length > 0 ? (
+      ) : hasAssets ? (
         <div className="space-y-2 max-h-64 overflow-y-auto pr-1">
-          {balances
-            .filter(asset => asset.fiatValue && asset.fiatValue > 0)
+          {getAssetsWithPositiveValue()
             .sort((a, b) => (b.fiatValue || 0) - (a.fiatValue || 0))
             .map(asset => {
               const symbol = getAssetSymbol(asset.aggregatedAssetId);
@@ -239,10 +245,31 @@ export const AssetList = ({ balances, assets, loading }: AssetListProps) => {
             })}
         </div>
       ) : (
-        <div className="text-center py-8 text-muted-foreground">
-          <Wallet className="h-12 w-12 mx-auto mb-3 text-muted-foreground/50" />
-          <div className="font-medium">No assets found</div>
-          <div className="text-xs mt-1">Your balances will appear here</div>
+        <div className="text-center space-y-4">
+          {/* Icon and main message */}
+          <div className="flex justify-center">
+            <div className="w-12 h-12 rounded-full bg-muted/40 flex items-center justify-center">
+              <Wallet className="h-6 w-6 text-muted-foreground/60" />
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <h4 className="font-semibold text-foreground">No assets yet</h4>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              Your token balances and portfolio will appear here once you have assets in your
+              account.
+            </p>
+          </div>
+
+          {/* Getting started tips */}
+          <div className="bg-muted/30 text-left rounded-lg p-4 space-y-3 border border-border/50">
+            <h5 className="text-sm font-medium text-foreground">Getting started:</h5>
+            <ol className="list-decimal list-inside space-y-2 text-xs text-muted-foreground marker:text-primary marker:font-semibold">
+              <li>Send assets directly to your Account Address above</li>
+              <li>Your balances will sync across all supported chains</li>
+              <li>View detailed breakdowns by expanding each asset</li>
+            </ol>
+          </div>
         </div>
       )}
     </div>

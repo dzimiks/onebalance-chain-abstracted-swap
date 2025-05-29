@@ -14,7 +14,7 @@ export const WalletHeader = ({ address }: WalletHeaderProps) => {
 
   return (
     <div className="flex items-center gap-4 pb-4 border-b border-border">
-      <div className="w-12 h-12 bg-muted/50 rounded-lg flex items-center justify-center shadow-lg">
+      <div className="w-12 h-12 bg-muted/50 rounded-lg flex items-center justify-center border">
         <Wallet className="h-6 w-6 text-muted-foreground" />
       </div>
       <div>
