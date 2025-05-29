@@ -1,9 +1,10 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
-import { usePrivy, useWallets } from '@privy-io/react-auth';
+import { usePrivy } from '@privy-io/react-auth';
 import { signQuote } from '@/lib/utils/privySigningUtils';
 import { Quote, QuoteRequest } from '@/lib/types/quote';
 import { accountApi } from '@/lib/api/account';
 import { quotesApi } from '@/lib/api/quotes';
+import { useEmbeddedWallet } from './useEmbeddedWallet';
 
 interface QuoteState {
   quote: Quote | null;
@@ -23,8 +24,7 @@ interface SimpleQuoteRequest {
 
 export const useQuotes = () => {
   const { authenticated } = usePrivy();
-  const { wallets } = useWallets();
-  const embeddedWallet = wallets.find(wallet => wallet.walletClientType === 'privy');
+  const embeddedWallet = useEmbeddedWallet();
   const statusPollingRef = useRef<NodeJS.Timeout | null>(null);
 
   const [state, setState] = useState<QuoteState>({

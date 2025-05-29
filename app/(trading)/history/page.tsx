@@ -1,15 +1,14 @@
 'use client';
 
 import { useEffect } from 'react';
-import { usePrivy, useWallets } from '@privy-io/react-auth';
+import { usePrivy } from '@privy-io/react-auth';
 import { TransactionHistory } from '@/components/TransactionHistory';
 import { TabNavigation } from '@/components/TabNavigation';
-import { useQuotes } from '@/lib/hooks';
+import { useQuotes, useEmbeddedWallet } from '@/lib/hooks';
 
 export default function HistoryPage() {
   const { authenticated } = usePrivy();
-  const { wallets } = useWallets();
-  const embeddedWallet = wallets.find(wallet => wallet.walletClientType === 'privy');
+  const embeddedWallet = useEmbeddedWallet();
 
   // Use the predicted address (smart account) for transaction history
   const { predictedAddress, getPredictedAddress } = useQuotes();

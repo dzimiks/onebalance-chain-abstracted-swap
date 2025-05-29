@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { usePrivy, useWallets } from '@privy-io/react-auth';
+import { usePrivy } from '@privy-io/react-auth';
 import { Send, TriangleAlert } from 'lucide-react';
 import { TokenInput } from '@/components/TokenInput';
 import { QuoteDetails } from '@/components/QuoteDetails';
@@ -16,15 +16,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { useAssets, useChains, useQuotes, useBalances } from '@/lib/hooks';
+import { useAssets, useChains, useQuotes, useBalances, useEmbeddedWallet } from '@/lib/hooks';
 import { Asset } from '@/lib/types/assets';
 import { formatTokenAmount, parseTokenAmount } from '@/lib/utils/token';
 import debounce from 'lodash.debounce';
 
 export const TransferForm = () => {
   const { authenticated } = usePrivy();
-  const { wallets } = useWallets();
-  const embeddedWallet = wallets.find(wallet => wallet.walletClientType === 'privy');
+  const embeddedWallet = useEmbeddedWallet();
 
   // Asset state
   const [selectedAsset, setSelectedAsset] = useState<string>('ds:usdc');

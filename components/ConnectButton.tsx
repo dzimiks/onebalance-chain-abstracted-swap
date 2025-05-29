@@ -1,13 +1,13 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { usePrivy, useWallets } from '@privy-io/react-auth';
+import { usePrivy } from '@privy-io/react-auth';
 import { Dialog, DialogContent, DialogTrigger, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Wallet, ChevronRight, LogOut } from 'lucide-react';
 import { useBalances } from '@/lib/hooks/useBalances';
 import { useAssets } from '@/lib/hooks/useAssets';
-import { useQuotes } from '@/lib/hooks';
+import { useQuotes, useEmbeddedWallet } from '@/lib/hooks';
 import { WalletHeader } from '@/components/wallet/WalletHeader';
 import { AccountAddress } from '@/components/wallet/AccountAddress';
 import { PortfolioSummary } from '@/components/wallet/PortfolioSummary';
@@ -15,8 +15,7 @@ import { AssetList } from '@/components/wallet/AssetList';
 
 export const ConnectButton = () => {
   const { login, logout, authenticated, ready } = usePrivy();
-  const { wallets } = useWallets();
-  const embeddedWallet = wallets.find(wallet => wallet.walletClientType === 'privy');
+  const embeddedWallet = useEmbeddedWallet();
   const [open, setOpen] = useState(false);
 
   const { predictedAddress, getPredictedAddress } = useQuotes();
