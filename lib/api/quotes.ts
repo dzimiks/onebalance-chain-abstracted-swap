@@ -6,19 +6,17 @@ import type { QuoteRequest, Quote, QuoteStatus } from '@/lib/types/quote';
  */
 export const quotesApi = {
   getQuote: async (request: QuoteRequest): Promise<Quote> => {
-    const response = await apiClient.post('?endpoint=/api/v1/quote', request);
+    const response = await apiClient.post('/v1/quote', request);
     return response.data;
   },
 
   executeQuote: async (quote: Quote): Promise<any> => {
-    const response = await apiClient.post('?endpoint=/api/quotes/execute-quote', quote);
+    const response = await apiClient.post('/quotes/execute-quote', quote);
     return response.data;
   },
 
   getQuoteStatus: async (quoteId: string): Promise<QuoteStatus> => {
-    const response = await apiClient.get(
-      `?endpoint=/api/status/get-execution-status?quoteId=${quoteId}`
-    );
+    const response = await apiClient.get(`/status/get-execution-status?quoteId=${quoteId}`);
     return response.data;
   },
 };

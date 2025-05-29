@@ -5,7 +5,7 @@ import { apiClient } from '@/lib/api';
  */
 export const accountApi = {
   predictAddress: async (sessionAddress: string, adminAddress: string): Promise<string> => {
-    const response = await apiClient.post('?endpoint=/api/account/predict-address', {
+    const response = await apiClient.post('/account/predict-address', {
       sessionAddress,
       adminAddress,
     });

@@ -6,7 +6,7 @@ import { Chain } from '@/lib/types/chains';
  */
 export const chainsApi = {
   getChains: async (): Promise<Chain[]> => {
-    const response = await apiClient.get('?endpoint=/api/chains/supported-list');
+    const response = await apiClient.get('/chains/supported-list');
     return response.data;
   },
 };

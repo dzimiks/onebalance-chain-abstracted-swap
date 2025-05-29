@@ -17,9 +17,7 @@ export const transactionsApi = {
       queryParams.append('continuation', params.continuation);
     }
 
-    const response = await apiClient.get(
-      `?endpoint=/api/status/get-tx-history?${queryParams.toString()}`
-    );
+    const response = await apiClient.get(`/status/get-tx-history?${queryParams.toString()}`);
     return response.data;
   },
 };

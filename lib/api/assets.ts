@@ -6,7 +6,7 @@ import { Asset } from '@/lib/types/assets';
  */
 export const assetsApi = {
   getAssets: async (): Promise<Asset[]> => {
-    const response = await apiClient.get('?endpoint=/api/assets/list');
+    const response = await apiClient.get('/assets/list');
     return response.data;
   },
 };
