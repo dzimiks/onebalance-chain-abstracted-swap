@@ -46,9 +46,8 @@ const SWAP_ONBOARDING_STEPS: OnboardingStep[] = [
   },
   {
     id: 'connect-wallet',
-    title: 'Connect Your Wallet',
-    description:
-      "Click here to connect your wallet. Don't worry - we'll create one for you if you don't have one!",
+    title: 'Login to Get Started',
+    description: "Click here to create your account. We'll set up everything for you securely!",
     target: '[data-onboarding="connect-button"]',
     position: 'bottom',
     action: 'click',
@@ -115,9 +114,8 @@ const TRANSFER_ONBOARDING_STEPS: OnboardingStep[] = [
   },
   {
     id: 'connect-wallet',
-    title: 'Connect Your Wallet',
-    description:
-      "Click here to connect your wallet. Don't worry - we'll create one for you if you don't have one!",
+    title: 'Login to Get Started',
+    description: "Click here to create your account. We'll set up everything for you securely!",
     target: '[data-onboarding="connect-button"]',
     position: 'bottom',
     action: 'click',

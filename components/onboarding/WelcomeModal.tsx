@@ -30,7 +30,7 @@ export const WelcomeModal = () => {
       icon: <Shield className="h-8 w-8 text-purple-500" />,
       title: 'Secure & Simple 🛡️',
       description: 'Your funds are always secure. We never hold your assets.',
-      highlight: 'Connect with any wallet or let us create one for you.',
+      highlight: "Login with your email and we'll create everything for you.",
     },
     {
       icon: <Globe className="h-8 w-8 text-orange-500" />,

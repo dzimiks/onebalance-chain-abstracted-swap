@@ -75,7 +75,7 @@ export const ConnectButton = () => {
         className="shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105"
       >
         <Wallet className="mr-2 h-4 w-4" />
-        Connect Wallet
+        Login
       </Button>
     );
   }
@@ -132,7 +132,7 @@ export const ConnectButton = () => {
             onClick={logout}
           >
             <LogOut className="mr-2 h-4 w-4" />
-            Disconnect Wallet
+            Logout
           </Button>
         </div>
       </DialogContent>

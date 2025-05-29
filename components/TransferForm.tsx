@@ -214,7 +214,7 @@ export const TransferForm = () => {
   // Get transfer button state
   const getTransferButtonState = () => {
     if (!authenticated) {
-      return { disabled: true, text: 'Connect Wallet to Transfer' };
+      return { disabled: true, text: 'Login to Transfer' };
     }
 
     if (loading && status?.status === 'PENDING') {

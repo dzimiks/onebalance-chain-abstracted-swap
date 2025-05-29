@@ -154,7 +154,7 @@ export const TransactionHistory = ({ userAddress }: TransactionHistoryProps) => 
         <div className="text-center py-8">
           <History className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
           <h3 className="text-lg font-semibold text-foreground mb-2">Transaction History</h3>
-          <p className="text-muted-foreground">Connect your wallet to view transaction history</p>
+          <p className="text-muted-foreground">Login to view transaction history</p>
         </div>
       </Card>
     );

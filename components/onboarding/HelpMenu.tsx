@@ -23,8 +23,8 @@ export const HelpMenu = () => {
   const quickHelp = [
     {
       icon: '🔗',
-      title: 'Connect Wallet',
-      content: 'Click "Connect Wallet" in the top right. We support all major wallets.',
+      title: 'Login',
+      content: 'Click "Login" in the top right. We\'ll create a secure account for you instantly.',
     },
     {
       icon: '🔄',

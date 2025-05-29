@@ -180,7 +180,7 @@ export const SwapForm = () => {
   // Get swap button state
   const getSwapButtonState = () => {
     if (!authenticated) {
-      return { disabled: true, text: 'Connect Wallet to Swap' };
+      return { disabled: true, text: 'Login to Swap' };
     }
 
     if (loading && status?.status === 'PENDING') {
