@@ -55,6 +55,20 @@ export const TransferForm = () => {
   // Use state for dynamically tracking balance
   const [assetBalance, setAssetBalance] = useState(null);
 
+  // Helper function to check if user has sufficient balance
+  const hasSufficientBalance = (amount: string) => {
+    if (!assetBalance || !selectedAssetData || !amount) return false;
+
+    try {
+      const parsedAmount = parseTokenAmount(amount, selectedAssetData.decimals || 18);
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-expect-error
+      return BigInt(assetBalance.balance) >= BigInt(parsedAmount);
+    } catch {
+      return false;
+    }
+  };
+
   // Get selected asset
   const selectedAssetData: Asset | null =
     assets.find(asset => asset.aggregatedAssetId === selectedAsset) ?? null;
@@ -122,13 +136,14 @@ export const TransferForm = () => {
       const parsed = parseTokenAmount(value, selectedAssetData.decimals || 18);
       setParsedAmount(parsed);
 
-      // Auto-refresh quote for transfer if recipient is provided
+      // Only fetch quote if user has sufficient balance and recipient is provided
       if (
         authenticated &&
         embeddedWallet &&
         selectedAsset &&
         recipientAddress &&
-        isValidAddress(recipientAddress)
+        isValidAddress(recipientAddress) &&
+        hasSufficientBalance(value)
       ) {
         debouncedGetQuote({
           fromTokenAmount: parsed,
@@ -136,6 +151,9 @@ export const TransferForm = () => {
           toAggregatedAssetId: selectedAsset, // Same asset for transfers
           recipientAddress: `${recipientChain}:${recipientAddress}`,
         });
+      } else {
+        // Clear quote if insufficient balance or missing recipient
+        resetQuote();
       }
     } else {
       setParsedAmount('');
@@ -156,7 +174,8 @@ export const TransferForm = () => {
       parsedAmount &&
       authenticated &&
       embeddedWallet &&
-      selectedAsset
+      selectedAsset &&
+      hasSufficientBalance(amount)
     ) {
       debouncedGetQuote({
         fromTokenAmount: parsedAmount,
@@ -181,7 +200,8 @@ export const TransferForm = () => {
       parsedAmount &&
       authenticated &&
       embeddedWallet &&
-      selectedAsset
+      selectedAsset &&
+      hasSufficientBalance(amount)
     ) {
       debouncedGetQuote({
         fromTokenAmount: parsedAmount,
@@ -223,6 +243,11 @@ export const TransferForm = () => {
 
     if (loading) {
       return { disabled: true, text: 'Getting Quote...' };
+    }
+
+    // Check for insufficient balance first
+    if (amount && !hasSufficientBalance(amount)) {
+      return { disabled: true, text: 'Insufficient Balance' };
     }
 
     const isDisabled =
@@ -304,12 +329,13 @@ export const TransferForm = () => {
                     const parsed = parseTokenAmount(amount, asset.decimals || 18);
                     setParsedAmount(parsed);
 
-                    // Refresh quote if recipient is provided
+                    // Check balance before fetching quote if recipient is provided
                     if (
                       authenticated &&
                       embeddedWallet &&
                       recipientAddress &&
-                      isValidAddress(recipientAddress)
+                      isValidAddress(recipientAddress) &&
+                      hasSufficientBalance(amount)
                     ) {
                       debouncedGetQuote({
                         fromTokenAmount: parsed,
@@ -317,6 +343,8 @@ export const TransferForm = () => {
                         toAggregatedAssetId: value, // Same asset for transfers
                         recipientAddress: `${recipientChain}:${recipientAddress}`,
                       });
+                    } else {
+                      resetQuote();
                     }
                   }
                 }
@@ -340,12 +368,14 @@ export const TransferForm = () => {
                   const parsed = parseTokenAmount(targetAmount, decimals);
                   setParsedAmount(parsed);
 
+                  // Check balance before fetching quote (should always be sufficient for percentage clicks)
                   if (
                     authenticated &&
                     embeddedWallet &&
                     selectedAsset &&
                     recipientAddress &&
-                    isValidAddress(recipientAddress)
+                    isValidAddress(recipientAddress) &&
+                    hasSufficientBalance(targetAmount)
                   ) {
                     debouncedGetQuote({
                       fromTokenAmount: parsed,

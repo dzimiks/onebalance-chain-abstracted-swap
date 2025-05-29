@@ -50,6 +50,20 @@ export const SwapForm = () => {
   const [sourceBalance, setSourceBalance] = useState(null);
   const [targetBalance, setTargetBalance] = useState(null);
 
+  // Helper function to check if user has sufficient balance
+  const hasSufficientBalance = (amount: string) => {
+    if (!sourceBalance || !selectedSourceAsset || !amount) return false;
+
+    try {
+      const parsedAmount = parseTokenAmount(amount, selectedSourceAsset.decimals || 18);
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-expect-error
+      return BigInt(sourceBalance.balance) >= BigInt(parsedAmount);
+    } catch {
+      return false;
+    }
+  };
+
   // Get selected assets
   const selectedSourceAsset: Asset | null =
     assets.find(asset => asset.aggregatedAssetId === sourceAsset) ?? null;
@@ -125,13 +139,22 @@ export const SwapForm = () => {
       const parsed = parseTokenAmount(value, selectedSourceAsset.decimals || 18);
       setParsedFromAmount(parsed);
 
-      // Auto-refresh quote
-      if (authenticated && embeddedWallet && sourceAsset && targetAsset) {
+      // Only fetch quote if user has sufficient balance
+      if (
+        authenticated &&
+        embeddedWallet &&
+        sourceAsset &&
+        targetAsset &&
+        hasSufficientBalance(value)
+      ) {
         debouncedGetQuote({
           fromTokenAmount: parsed,
           fromAggregatedAssetId: sourceAsset,
           toAggregatedAssetId: targetAsset,
         });
+      } else {
+        // Clear quote if insufficient balance
+        resetQuote();
       }
     } else {
       setParsedFromAmount('');
@@ -189,6 +212,11 @@ export const SwapForm = () => {
 
     if (loading) {
       return { disabled: true, text: 'Getting Quote...' };
+    }
+
+    // Check for insufficient balance first
+    if (fromAmount && !hasSufficientBalance(fromAmount)) {
+      return { disabled: true, text: 'Insufficient Balance' };
     }
 
     const isDisabled =
@@ -256,12 +284,20 @@ export const SwapForm = () => {
                     const parsed = parseTokenAmount(fromAmount, asset.decimals || 18);
                     setParsedFromAmount(parsed);
 
-                    if (authenticated && embeddedWallet && targetAsset) {
+                    // Check balance before fetching quote
+                    if (
+                      authenticated &&
+                      embeddedWallet &&
+                      targetAsset &&
+                      hasSufficientBalance(fromAmount)
+                    ) {
                       debouncedGetQuote({
                         fromTokenAmount: parsed,
                         fromAggregatedAssetId: value,
                         toAggregatedAssetId: targetAsset,
                       });
+                    } else {
+                      resetQuote();
                     }
                   }
                 }
@@ -285,7 +321,14 @@ export const SwapForm = () => {
                   const parsed = parseTokenAmount(targetAmount, decimals);
                   setParsedFromAmount(parsed);
 
-                  if (authenticated && embeddedWallet && sourceAsset && targetAsset) {
+                  // Check balance before fetching quote (should always be sufficient for percentage clicks)
+                  if (
+                    authenticated &&
+                    embeddedWallet &&
+                    sourceAsset &&
+                    targetAsset &&
+                    hasSufficientBalance(targetAmount)
+                  ) {
                     debouncedGetQuote({
                       fromTokenAmount: parsed,
                       fromAggregatedAssetId: sourceAsset,
