@@ -35,7 +35,7 @@ export const HelpMenu = () => {
     {
       icon: <Globe className="h-4 w-4" />,
       title: 'Chain-Abstracted',
-      description:
+      content:
         'Trade tokens across multiple blockchains seamlessly. OneBalance handles all the complex routing behind the scenes.',
     },
     {
@@ -136,13 +136,17 @@ export const HelpMenu = () => {
 
             {/* Contact Support */}
             <Card className="p-4 bg-muted/30">
-              <h3 className="font-semibold text-foreground mb-2">Need more help?</h3>
-              <p className="text-sm text-muted-foreground mb-3">
+              <h3 className="font-semibold text-foreground">Need more help?</h3>
+              <p className="text-sm text-muted-foreground">
                 Join our community or contact support for assistance.
               </p>
               <div className="flex gap-2">
                 <Button size="sm" asChild className="flex-1">
-                  <a href="https://discord.gg/onebalance" target="_blank" rel="noopener noreferrer">
+                  <a
+                    href="https://discord.com/invite/vHkw7rpdT8"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     <MessageCircle className="h-4 w-4 mr-2" />
                     Discord
                   </a>
