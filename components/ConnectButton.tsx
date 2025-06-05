@@ -98,7 +98,7 @@ export const ConnectButton = () => {
       </DialogTrigger>
 
       <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-hidden">
-        <DialogTitle className="sr-only">Wallet Details</DialogTitle>
+        <DialogTitle className="sr-only">Account Details</DialogTitle>
         <div className="space-y-6 overflow-y-auto max-h-[80vh] pr-2">
           {/* Wallet Header */}
           <WalletHeader address={predictedAddress || ''} />

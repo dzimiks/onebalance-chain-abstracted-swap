@@ -18,7 +18,7 @@ export const WalletHeader = ({ address }: WalletHeaderProps) => {
         <Wallet className="h-6 w-6 text-muted-foreground" />
       </div>
       <div>
-        <h2 className="text-xl font-bold text-foreground">Wallet Details</h2>
+        <h2 className="text-xl font-bold text-foreground">Account Details</h2>
         <p className="text-sm text-muted-foreground">
           {address ? formatAddress(address) : 'Connected'}
         </p>
