@@ -2,6 +2,7 @@
 
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
+import { DemoBanner } from '@/components/DemoBanner';
 import { WelcomeModal } from '@/components/onboarding/WelcomeModal';
 import { OnboardingTooltip } from '@/components/onboarding/OnboardingTooltip';
 import { HelpMenu } from '@/components/onboarding/HelpMenu';
@@ -9,7 +10,10 @@ import { HelpMenu } from '@/components/onboarding/HelpMenu';
 export default function TradingLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex flex-col min-h-screen justify-between font-[family-name:var(--font-geist-sans)] bg-background transition-colors">
-      <Header />
+      <div>
+        <DemoBanner />
+        <Header />
+      </div>
       {children}
       <Footer />
 
