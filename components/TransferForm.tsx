@@ -19,6 +19,7 @@ import {
 import { useAssets, useChains, useQuotes, useBalances, useEmbeddedWallet } from '@/lib/hooks';
 import { Asset } from '@/lib/types/assets';
 import { formatTokenAmount, parseTokenAmount } from '@/lib/utils/token';
+import { getChainName, getChainLogoUrl, extractChainIdFromCAIP } from '@/lib/types/chains';
 import debounce from 'lodash.debounce';
 
 export const TransferForm = () => {
@@ -71,20 +72,6 @@ export const TransferForm = () => {
   // Get selected asset
   const selectedAssetData: Asset | null =
     assets.find(asset => asset.aggregatedAssetId === selectedAsset) ?? null;
-
-  // Chain names mapping
-  const getChainName = (chainId: string) => {
-    const chainNames: Record<string, string> = {
-      '1': 'Ethereum',
-      '10': 'Optimism',
-      '137': 'Polygon',
-      '8453': 'Base',
-      '42161': 'Arbitrum',
-      '43114': 'Avalanche',
-      '59144': 'Linea',
-    };
-    return chainNames[chainId] || `Chain ${chainId}`;
-  };
 
   // Update balance state when balances or selected asset change
   useEffect(() => {
@@ -422,12 +409,60 @@ export const TransferForm = () => {
                 disabled={loading}
               >
                 <SelectTrigger className="bg-muted/50 rounded-2xl border-border hover:border-muted-foreground/20 transition-colors">
-                  <SelectValue />
+                  <SelectValue>
+                    {recipientChain && (
+                      <div className="flex items-center gap-2">
+                        <div className="w-5 h-5 rounded-full overflow-hidden bg-muted flex items-center justify-center">
+                          {getChainLogoUrl(extractChainIdFromCAIP(recipientChain)) ? (
+                            <img
+                              src={getChainLogoUrl(extractChainIdFromCAIP(recipientChain))}
+                              alt={getChainName(extractChainIdFromCAIP(recipientChain))}
+                              className="w-full h-full object-contain"
+                              onError={e => {
+                                const target = e.target as HTMLImageElement;
+                                target.style.display = 'none';
+                                target.nextElementSibling?.classList.remove('hidden');
+                              }}
+                            />
+                          ) : null}
+                          <span
+                            className={`text-muted-foreground text-xs font-bold ${getChainLogoUrl(extractChainIdFromCAIP(recipientChain)) ? 'hidden' : ''}`}
+                          >
+                            {getChainName(extractChainIdFromCAIP(recipientChain)).charAt(0)}
+                          </span>
+                        </div>
+                        <span className="text-foreground">
+                          {getChainName(extractChainIdFromCAIP(recipientChain))}
+                        </span>
+                      </div>
+                    )}
+                  </SelectValue>
                 </SelectTrigger>
                 <SelectContent>
                   {chains.map(chain => (
                     <SelectItem key={chain.chain.reference} value={chain.chain.chain}>
-                      {getChainName(chain.chain.reference)}
+                      <div className="flex items-center gap-2">
+                        <div className="w-5 h-5 rounded-full overflow-hidden bg-muted flex items-center justify-center">
+                          {getChainLogoUrl(chain.chain.reference) ? (
+                            <img
+                              src={getChainLogoUrl(chain.chain.reference)}
+                              alt={getChainName(chain.chain.reference)}
+                              className="w-full h-full object-contain"
+                              onError={e => {
+                                const target = e.target as HTMLImageElement;
+                                target.style.display = 'none';
+                                target.nextElementSibling?.classList.remove('hidden');
+                              }}
+                            />
+                          ) : null}
+                          <span
+                            className={`text-muted-foreground text-xs font-bold ${getChainLogoUrl(chain.chain.reference) ? 'hidden' : ''}`}
+                          >
+                            {getChainName(chain.chain.reference).charAt(0)}
+                          </span>
+                        </div>
+                        <span>{getChainName(chain.chain.reference)}</span>
+                      </div>
                     </SelectItem>
                   ))}
                 </SelectContent>

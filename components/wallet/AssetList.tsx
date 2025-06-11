@@ -7,6 +7,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { BalanceByAssetDto } from '@/lib/types/balances';
 import { Asset } from '@/lib/types/assets';
 import { formatTokenAmount } from '@/lib/utils/token';
+import { getChainName, getChainLogoUrl, extractChainIdFromAssetType } from '@/lib/types/chains';
 
 interface AssetListProps {
   balances?: BalanceByAssetDto[];
@@ -49,32 +50,13 @@ export const AssetList = ({ balances, assets, loading }: AssetListProps) => {
     return colors[index];
   };
 
-  const getChainName = (assetType: string) => {
-    const chainNames: Record<string, string> = {
-      'eip155:1': 'Ethereum',
-      'eip155:10': 'Optimism',
-      'eip155:137': 'Polygon',
-      'eip155:8453': 'Base',
-      'eip155:42161': 'Arbitrum',
-      'eip155:43114': 'Avalanche',
-      'eip155:59144': 'Linea',
+  const getChainInfo = (assetType: string) => {
+    const chainId = extractChainIdFromAssetType(assetType);
+    return {
+      name: getChainName(chainId),
+      logoUrl: getChainLogoUrl(chainId),
+      chainId,
     };
-
-    const chainId = assetType.split('/')[0];
-    return chainNames[chainId] || chainId.split(':')[1] || 'Unknown';
-  };
-
-  const getChainIconColor = (chainName: string) => {
-    const chainColors: Record<string, string> = {
-      Ethereum: 'bg-blue-600',
-      Optimism: 'bg-red-500',
-      Polygon: 'bg-purple-600',
-      Base: 'bg-blue-500',
-      Arbitrum: 'bg-blue-400',
-      Avalanche: 'bg-red-600',
-      Linea: 'bg-black',
-    };
-    return chainColors[chainName] || 'bg-gray-500';
   };
 
   const toggleAssetExpansion = (assetId: string) => {
@@ -190,8 +172,7 @@ export const AssetList = ({ balances, assets, loading }: AssetListProps) => {
                         {asset.individualAssetBalances
                           .sort((a, b) => (b.fiatValue || 0) - (a.fiatValue || 0))
                           .map((individualAsset, index) => {
-                            const chainName = getChainName(individualAsset.assetType);
-                            const chainIconColor = getChainIconColor(chainName);
+                            const chainInfo = getChainInfo(individualAsset.assetType);
 
                             return (
                               <div
@@ -199,16 +180,29 @@ export const AssetList = ({ balances, assets, loading }: AssetListProps) => {
                                 className="flex items-center justify-between py-2 px-3 bg-background rounded-lg border border-border hover:border-muted-foreground/20 transition-colors"
                               >
                                 <div className="flex items-center gap-3">
-                                  <div
-                                    className={`w-6 h-6 ${chainIconColor} rounded-full flex items-center justify-center`}
-                                  >
-                                    <span className="text-white text-xs font-bold">
-                                      {chainName.charAt(0)}
+                                  <div className="w-6 h-6 rounded-full overflow-hidden bg-muted flex items-center justify-center">
+                                    {chainInfo.logoUrl ? (
+                                      <img
+                                        src={chainInfo.logoUrl}
+                                        alt={chainInfo.name}
+                                        className="w-full h-full object-contain"
+                                        onError={e => {
+                                          // Fallback to text icon if image fails to load
+                                          const target = e.target as HTMLImageElement;
+                                          target.style.display = 'none';
+                                          target.nextElementSibling?.classList.remove('hidden');
+                                        }}
+                                      />
+                                    ) : null}
+                                    <span
+                                      className={`text-muted-foreground text-xs font-bold ${chainInfo.logoUrl ? 'hidden' : ''}`}
+                                    >
+                                      {chainInfo.name.charAt(0)}
                                     </span>
                                   </div>
                                   <div>
                                     <div className="text-sm font-medium text-foreground">
-                                      {chainName}
+                                      {chainInfo.name}
                                     </div>
                                     <div className="text-xs text-muted-foreground">
                                       {formatTokenAmount(

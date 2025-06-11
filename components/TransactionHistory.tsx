@@ -21,6 +21,7 @@ import { useTransactionHistory } from '@/lib/hooks/useTransactionHistory';
 import { useAssets } from '@/lib/hooks';
 import { Transaction } from '@/lib/types/transaction';
 import { formatTokenAmount } from '@/lib/utils/token';
+import { getChainName, getChainLogoUrl } from '@/lib/types/chains';
 
 interface TransactionHistoryProps {
   userAddress?: string;
@@ -96,19 +97,6 @@ export const TransactionHistory = ({ userAddress }: TransactionHistoryProps) => 
         Transfer
       </Badge>
     );
-  };
-
-  const getChainName = (chainId: number) => {
-    const chainNames: Record<number, string> = {
-      1: 'Ethereum',
-      10: 'Optimism',
-      137: 'Polygon',
-      8453: 'Base',
-      42161: 'Arbitrum',
-      43114: 'Avalanche',
-      59144: 'Linea',
-    };
-    return chainNames[chainId] || `Chain ${chainId}`;
   };
 
   const formatFiatValue = (fiatValue?: string | { assetType: string; fiatValue: string }[]) => {
@@ -414,8 +402,31 @@ const TransactionCard = ({
                       </div>
                       <div>
                         <div className="text-xs text-muted-foreground mb-1">Network</div>
-                        <div className="text-sm font-medium text-foreground">
-                          {getChainName(transaction.originChainOperations[0]?.chainId)}
+                        <div className="flex items-center gap-2">
+                          <div className="w-5 h-5 rounded-full overflow-hidden bg-muted flex items-center justify-center">
+                            {getChainLogoUrl(transaction.originChainOperations[0]?.chainId) ? (
+                              <img
+                                src={getChainLogoUrl(transaction.originChainOperations[0]?.chainId)}
+                                alt={getChainName(transaction.originChainOperations[0]?.chainId)}
+                                className="w-full h-full object-contain"
+                                onError={e => {
+                                  const target = e.target as HTMLImageElement;
+                                  target.style.display = 'none';
+                                  target.nextElementSibling?.classList.remove('hidden');
+                                }}
+                              />
+                            ) : null}
+                            <span
+                              className={`text-muted-foreground text-xs font-bold ${getChainLogoUrl(transaction.originChainOperations[0]?.chainId) ? 'hidden' : ''}`}
+                            >
+                              {getChainName(transaction.originChainOperations[0]?.chainId).charAt(
+                                0
+                              )}
+                            </span>
+                          </div>
+                          <div className="text-sm font-medium text-foreground">
+                            {getChainName(transaction.originChainOperations[0]?.chainId)}
+                          </div>
                         </div>
                       </div>
                       {/* Origin Transaction Links */}
@@ -469,11 +480,51 @@ const TransactionCard = ({
                         </div>
                         <div>
                           <div className="text-xs text-muted-foreground mb-1">Network</div>
-                          <div className="text-sm font-medium text-foreground">
-                            {getChainName(
-                              transaction.destinationChainOperations?.[0]?.chainId ||
-                                transaction.originChainOperations[0]?.chainId
-                            )}
+                          <div className="flex items-center gap-2">
+                            <div className="w-5 h-5 rounded-full overflow-hidden bg-muted flex items-center justify-center">
+                              {getChainLogoUrl(
+                                transaction.destinationChainOperations?.[0]?.chainId ||
+                                  transaction.originChainOperations[0]?.chainId
+                              ) ? (
+                                <img
+                                  src={getChainLogoUrl(
+                                    transaction.destinationChainOperations?.[0]?.chainId ||
+                                      transaction.originChainOperations[0]?.chainId
+                                  )}
+                                  alt={getChainName(
+                                    transaction.destinationChainOperations?.[0]?.chainId ||
+                                      transaction.originChainOperations[0]?.chainId
+                                  )}
+                                  className="w-full h-full object-contain"
+                                  onError={e => {
+                                    const target = e.target as HTMLImageElement;
+                                    target.style.display = 'none';
+                                    target.nextElementSibling?.classList.remove('hidden');
+                                  }}
+                                />
+                              ) : null}
+                              <span
+                                className={`text-muted-foreground text-xs font-bold ${
+                                  getChainLogoUrl(
+                                    transaction.destinationChainOperations?.[0]?.chainId ||
+                                      transaction.originChainOperations[0]?.chainId
+                                  )
+                                    ? 'hidden'
+                                    : ''
+                                }`}
+                              >
+                                {getChainName(
+                                  transaction.destinationChainOperations?.[0]?.chainId ||
+                                    transaction.originChainOperations[0]?.chainId
+                                ).charAt(0)}
+                              </span>
+                            </div>
+                            <div className="text-sm font-medium text-foreground">
+                              {getChainName(
+                                transaction.destinationChainOperations?.[0]?.chainId ||
+                                  transaction.originChainOperations[0]?.chainId
+                              )}
+                            </div>
                           </div>
                         </div>
                         {/* Destination Transaction Links */}
