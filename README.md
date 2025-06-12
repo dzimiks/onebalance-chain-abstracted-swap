@@ -7,9 +7,14 @@
   A modern chain-abstracted token swap and transfer app. Powered by OneBalance.
 </p>
 
+<p align="center">
+  <a href="https://onebalance-chain-abstracted-swap.vercel.app"><strong>View Demo</strong></a> · 
+  <a href="https://docs.onebalance.io/guides/chain-abstracted-swap-with-privy"><strong>Tech Guide</strong></a>
+</p>
+
 ## Tech stack
 
-- [OneBalance API](https://onebalance.io) for chain abstraction and token swapping
+- [OneBalance API](https://docs.onebalance.io/api-reference/introduction) for chain abstraction and token swapping
 - [Privy](https://privy.io) for Web3 authentication and embedded wallets
 - Next.js 15 with App Router and TypeScript
 - Tailwind CSS with shadcn UI components
@@ -36,7 +41,13 @@
 ## Features
 
 - **Chain-abstracted swaps**: Trade tokens across blockchains without network switching
-- **Token transfers**: Send tokens to any address on supported networks
+- **Cross-chain transfers**: Send tokens to any address on supported networks
 - **Real-time quotes**: Live exchange rates with 30-second validity
+- **Portfolio tracking**: View aggregated balances across all chains
 - **Transaction history**: Track all swaps and transfers in one place
-- **Gasless transactions**: No need to worry about gas fees
+- **Interactive onboarding**: Guided tutorials for new users
+- **Gasless transactions**: No need to worry about gas fees or holding native tokens
+
+## Learn more
+
+Read the complete [**technical implementation guide**](https://docs.onebalance.io/guides/chain-abstracted-swap-with-privy) to understand the architecture and build your own chain-abstracted application.
