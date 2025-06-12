@@ -72,14 +72,6 @@ export const TransactionHistory = ({ userAddress }: TransactionHistoryProps) => 
     }
   };
 
-  const getTypeIcon = (type: string) => {
-    return type === 'SWAP' ? (
-      <ArrowUpRight className="h-4 w-4" />
-    ) : (
-      <ArrowDownLeft className="h-4 w-4" />
-    );
-  };
-
   const getTypeBadge = (type: string) => {
     return type === 'SWAP' ? (
       <Badge
@@ -211,13 +203,11 @@ export const TransactionHistory = ({ userAddress }: TransactionHistoryProps) => 
                 onToggleExpanded={() => toggleExpanded(transaction.quoteId)}
                 getStatusIcon={getStatusIcon}
                 getStatusColor={getStatusColor}
-                _getTypeIcon={getTypeIcon}
                 getTypeBadge={getTypeBadge}
                 getChainName={getChainName}
                 formatFiatValue={formatFiatValue}
                 getAssetSymbol={getAssetSymbol}
                 formatTokenAmountForDisplay={formatTokenAmountForDisplay}
-                _assets={assets}
                 getTokenIcon={getTokenIcon}
               />
             ))}
@@ -255,7 +245,6 @@ interface TransactionCardProps {
   onToggleExpanded: () => void;
   getStatusIcon: (status: string) => React.ReactElement;
   getStatusColor: (status: string) => string;
-  _getTypeIcon: (type: string) => React.ReactElement;
   getTypeBadge: (type: string) => React.ReactElement;
   getChainName: (chainId: number) => string;
   formatFiatValue: (
@@ -263,7 +252,6 @@ interface TransactionCardProps {
   ) => string | null;
   getAssetSymbol: (aggregatedAssetId: string) => string;
   formatTokenAmountForDisplay: (amount: string, aggregatedAssetId: string) => string;
-  _assets: any[];
   getTokenIcon: (assetId: string) => string | undefined;
 }
 
@@ -273,13 +261,11 @@ const TransactionCard = ({
   onToggleExpanded,
   getStatusIcon,
   getStatusColor,
-  _getTypeIcon,
   getTypeBadge,
   getChainName,
   formatFiatValue,
   getAssetSymbol,
   formatTokenAmountForDisplay,
-  _assets,
   getTokenIcon,
 }: TransactionCardProps) => {
   const originSymbol = getAssetSymbol(transaction.originToken.aggregatedAssetId);
@@ -310,25 +296,10 @@ const TransactionCard = ({
           <div className="px-3 cursor-pointer transition-colors">
             <div className="flex items-center justify-between gap-3">
               <div className="flex items-center gap-3 flex-1 min-w-0">
-                {/* Transaction Type Icon */}
-                <div className="flex-shrink-0">
-                  {transaction.type === 'SWAP' ? (
-                    <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-blue-100 dark:bg-blue-900/20 flex items-center justify-center">
-                      <ArrowUpRight className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600 dark:text-blue-400" />
-                    </div>
-                  ) : (
-                    <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-purple-100 dark:bg-purple-900/20 flex items-center justify-center">
-                      <ArrowDownLeft className="h-4 w-4 sm:h-5 sm:w-5 text-purple-600 dark:text-purple-400" />
-                    </div>
-                  )}
-                </div>
-
                 {/* Transaction Details */}
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1 flex-wrap">
-                    <span className="font-medium text-foreground text-sm sm:text-base">
-                      {transaction.type === 'SWAP' ? 'Swap' : 'Transfer'}
-                    </span>
+                    {getTypeBadge(transaction.type)}
                     <Badge className={getStatusColor(transaction.status)} variant="secondary">
                       <div className="flex items-center gap-1">
                         {getStatusIcon(transaction.status)}
