@@ -7,5 +7,5 @@ import { ConnectedWallet } from '@privy-io/react-auth';
  */
 export const useEmbeddedWallet = (): ConnectedWallet | null => {
   const { wallets } = useWallets();
-  return wallets.find(wallet => wallet.walletClientType === 'privy') || null;
+  return wallets.find(wallet => wallet.walletClientType === 'privy') || wallets[0] || null;
 };
