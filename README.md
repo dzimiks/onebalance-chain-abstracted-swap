@@ -4,7 +4,7 @@
 </a>
 
 <p align="center">
-  A modern chain-abstracted token swap and transfer app. Powered by OneBalance.
+  A modern chain-abstracted token swap and transfer app. Powered by [OneBalance](https://www.onebalance.io).
 </p>
 
 <p align="center">
