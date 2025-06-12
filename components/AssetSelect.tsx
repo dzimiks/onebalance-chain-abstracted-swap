@@ -11,6 +11,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Asset } from '@/lib/types/assets';
 import { formatTokenAmount } from '@/lib/utils/token';
+import { findTokenByAggregatedAssetId } from '@/lib/constants';
 
 interface AssetBalance {
   aggregatedAssetId: string;
@@ -46,6 +47,13 @@ export function AssetSelect({
     return balances.find(b => b.aggregatedAssetId === assetId);
   };
 
+  // Get token icon for display
+  const getTokenIcon = (assetId: string) => {
+    const token = findTokenByAggregatedAssetId(assetId);
+    console.log({ token, assetId });
+    return token?.icon;
+  };
+
   // Get asset symbol for display
   const getAssetSymbol = (assetId: string) => {
     return assetId.split(':')[1]?.toUpperCase() || assetId;
@@ -71,8 +79,22 @@ export function AssetSelect({
           <SelectValue>
             {selectedAsset && (
               <div className="flex items-center gap-2">
-                <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center">
-                  <span className="text-white text-xs font-bold">
+                <div className="w-6 h-6 rounded-full flex items-center justify-center overflow-hidden border">
+                  {getTokenIcon(selectedAsset.aggregatedAssetId) ? (
+                    <img
+                      src={getTokenIcon(selectedAsset.aggregatedAssetId)}
+                      alt={getAssetSymbol(selectedAsset.aggregatedAssetId)}
+                      className="w-full h-full object-cover"
+                      onError={e => {
+                        const target = e.target as HTMLImageElement;
+                        target.style.display = 'none';
+                        target.nextElementSibling?.classList.remove('hidden');
+                      }}
+                    />
+                  ) : null}
+                  <span
+                    className={`text-white text-xs font-bold ${getTokenIcon(selectedAsset.aggregatedAssetId) ? 'hidden' : ''}`}
+                  >
                     {getAssetSymbol(selectedAsset.aggregatedAssetId).charAt(0)}
                   </span>
                 </div>
@@ -147,8 +169,22 @@ export function AssetSelect({
                     >
                       <div className="flex gap-4 items-center justify-between md:w-[250px] lg:w-[400px] max-w-full">
                         <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
-                            <span className="text-white text-sm font-bold">
+                          <div className="w-8 h-8 rounded-full flex items-center justify-center overflow-hidden border">
+                            {getTokenIcon(asset.aggregatedAssetId) ? (
+                              <img
+                                src={getTokenIcon(asset.aggregatedAssetId)}
+                                alt={getAssetSymbol(asset.aggregatedAssetId)}
+                                className="w-full h-full object-cover"
+                                onError={e => {
+                                  const target = e.target as HTMLImageElement;
+                                  target.style.display = 'none';
+                                  target.nextElementSibling?.classList.remove('hidden');
+                                }}
+                              />
+                            ) : null}
+                            <span
+                              className={`text-white text-sm font-bold ${getTokenIcon(asset.aggregatedAssetId) ? 'hidden' : ''}`}
+                            >
                               {getAssetSymbol(asset.aggregatedAssetId).charAt(0)}
                             </span>
                           </div>
