@@ -50,7 +50,6 @@ export function AssetSelect({
   // Get token icon for display
   const getTokenIcon = (assetId: string) => {
     const token = findTokenByAggregatedAssetId(assetId);
-    console.log({ token, assetId });
     return token?.icon;
   };
 
