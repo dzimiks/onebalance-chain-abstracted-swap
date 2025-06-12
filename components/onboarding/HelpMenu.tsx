@@ -70,7 +70,7 @@ export const HelpMenu = () => {
       <Button
         variant="ghost"
         size="sm"
-        className="h-9 w-9 p-0"
+        className="h-9 w-9 p-0 border"
         onClick={() => setShowHelpDialog(true)}
       >
         <HelpCircle className="h-4 w-4" />
