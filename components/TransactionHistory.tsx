@@ -22,6 +22,7 @@ import { useAssets } from '@/lib/hooks';
 import { Transaction } from '@/lib/types/transaction';
 import { formatTokenAmount } from '@/lib/utils/token';
 import { getChainName, getChainLogoUrl } from '@/lib/types/chains';
+import { findTokenByAggregatedAssetId } from '@/lib/constants';
 
 interface TransactionHistoryProps {
   userAddress?: string;
@@ -118,6 +119,12 @@ export const TransactionHistory = ({ userAddress }: TransactionHistoryProps) => 
     return aggregatedAssetId.split(':')[1]?.toUpperCase() || aggregatedAssetId;
   };
 
+  // Get token icon for display
+  const getTokenIcon = (assetId: string) => {
+    const token = findTokenByAggregatedAssetId(assetId);
+    return token?.icon;
+  };
+
   const formatTokenAmountForDisplay = (amount: string, aggregatedAssetId: string) => {
     // Find the asset to get proper decimals
     const asset = assets.find(a => a.aggregatedAssetId === aggregatedAssetId);
@@ -211,6 +218,7 @@ export const TransactionHistory = ({ userAddress }: TransactionHistoryProps) => 
                 getAssetSymbol={getAssetSymbol}
                 formatTokenAmountForDisplay={formatTokenAmountForDisplay}
                 _assets={assets}
+                getTokenIcon={getTokenIcon}
               />
             ))}
 
@@ -256,6 +264,7 @@ interface TransactionCardProps {
   getAssetSymbol: (aggregatedAssetId: string) => string;
   formatTokenAmountForDisplay: (amount: string, aggregatedAssetId: string) => string;
   _assets: any[];
+  getTokenIcon: (assetId: string) => string | undefined;
 }
 
 const TransactionCard = ({
@@ -271,6 +280,7 @@ const TransactionCard = ({
   getAssetSymbol,
   formatTokenAmountForDisplay,
   _assets,
+  getTokenIcon,
 }: TransactionCardProps) => {
   const originSymbol = getAssetSymbol(transaction.originToken.aggregatedAssetId);
   const destinationSymbol = transaction.destinationToken
@@ -329,16 +339,60 @@ const TransactionCard = ({
 
                   <div className="text-xs sm:text-sm text-muted-foreground">
                     <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
-                      <span className="font-medium">
-                        {originAmount} {originSymbol}
-                      </span>
+                      <div className="flex items-center gap-1">
+                        <div className="w-4 h-4 rounded-full flex items-center justify-center overflow-hidden border">
+                          {getTokenIcon(transaction.originToken.aggregatedAssetId) ? (
+                            <img
+                              src={getTokenIcon(transaction.originToken.aggregatedAssetId)}
+                              alt={originSymbol}
+                              className="w-full h-full object-cover"
+                              onError={e => {
+                                const target = e.target as HTMLImageElement;
+                                target.style.display = 'none';
+                                target.nextElementSibling?.classList.remove('hidden');
+                              }}
+                            />
+                          ) : null}
+                          <span
+                            className={`text-white text-xs font-bold ${getTokenIcon(transaction.originToken.aggregatedAssetId) ? 'hidden' : ''}`}
+                            style={{ fontSize: '6px' }}
+                          >
+                            {originSymbol.charAt(0)}
+                          </span>
+                        </div>
+                        <span className="font-medium">
+                          {originAmount} {originSymbol}
+                        </span>
+                      </div>
                       {transaction.type === 'SWAP' && transaction.destinationToken && (
                         <>
                           <span className="hidden sm:inline mx-1">→</span>
                           <span className="sm:hidden text-xs text-muted-foreground/70">to</span>
-                          <span className="font-medium">
-                            {destinationAmount} {destinationSymbol}
-                          </span>
+                          <div className="flex items-center gap-1">
+                            <div className="w-4 h-4 rounded-full flex items-center justify-center overflow-hidden border">
+                              {getTokenIcon(transaction.destinationToken.aggregatedAssetId) ? (
+                                <img
+                                  src={getTokenIcon(transaction.destinationToken.aggregatedAssetId)}
+                                  alt={destinationSymbol}
+                                  className="w-full h-full object-cover"
+                                  onError={e => {
+                                    const target = e.target as HTMLImageElement;
+                                    target.style.display = 'none';
+                                    target.nextElementSibling?.classList.remove('hidden');
+                                  }}
+                                />
+                              ) : null}
+                              <span
+                                className={`text-white text-xs font-bold ${getTokenIcon(transaction.destinationToken.aggregatedAssetId) ? 'hidden' : ''}`}
+                                style={{ fontSize: '6px' }}
+                              >
+                                {destinationSymbol.charAt(0)}
+                              </span>
+                            </div>
+                            <span className="font-medium">
+                              {destinationAmount} {destinationSymbol}
+                            </span>
+                          </div>
                         </>
                       )}
                     </div>
@@ -393,8 +447,29 @@ const TransactionCard = ({
                     <div className="space-y-2">
                       <div>
                         <div className="text-xs text-muted-foreground mb-1">Sold</div>
-                        <div className="text-base sm:text-lg font-semibold text-foreground">
-                          {originAmount} {originSymbol}
+                        <div className="flex items-center gap-2 mb-1">
+                          <div className="w-5 h-5 rounded-full flex items-center justify-center overflow-hidden border">
+                            {getTokenIcon(transaction.originToken.aggregatedAssetId) ? (
+                              <img
+                                src={getTokenIcon(transaction.originToken.aggregatedAssetId)}
+                                alt={originSymbol}
+                                className="w-full h-full object-cover"
+                                onError={e => {
+                                  const target = e.target as HTMLImageElement;
+                                  target.style.display = 'none';
+                                  target.nextElementSibling?.classList.remove('hidden');
+                                }}
+                              />
+                            ) : null}
+                            <span
+                              className={`text-white text-xs font-bold ${getTokenIcon(transaction.originToken.aggregatedAssetId) ? 'hidden' : ''}`}
+                            >
+                              {originSymbol.charAt(0)}
+                            </span>
+                          </div>
+                          <div className="text-base sm:text-lg font-semibold text-foreground">
+                            {originAmount} {originSymbol}
+                          </div>
                         </div>
                         {originFiat && (
                           <div className="text-sm text-muted-foreground">{originFiat}</div>
@@ -471,8 +546,29 @@ const TransactionCard = ({
                       <div className="space-y-2">
                         <div>
                           <div className="text-xs text-muted-foreground mb-1">Bought</div>
-                          <div className="text-base sm:text-lg font-semibold text-foreground">
-                            {destinationAmount} {destinationSymbol}
+                          <div className="flex items-center gap-2 mb-1">
+                            <div className="w-5 h-5 rounded-full flex items-center justify-center overflow-hidden border">
+                              {getTokenIcon(transaction.destinationToken.aggregatedAssetId) ? (
+                                <img
+                                  src={getTokenIcon(transaction.destinationToken.aggregatedAssetId)}
+                                  alt={destinationSymbol}
+                                  className="w-full h-full object-cover"
+                                  onError={e => {
+                                    const target = e.target as HTMLImageElement;
+                                    target.style.display = 'none';
+                                    target.nextElementSibling?.classList.remove('hidden');
+                                  }}
+                                />
+                              ) : null}
+                              <span
+                                className={`text-white text-xs font-bold ${getTokenIcon(transaction.destinationToken.aggregatedAssetId) ? 'hidden' : ''}`}
+                              >
+                                {destinationSymbol.charAt(0)}
+                              </span>
+                            </div>
+                            <div className="text-base sm:text-lg font-semibold text-foreground">
+                              {destinationAmount} {destinationSymbol}
+                            </div>
                           </div>
                           {destinationFiat && (
                             <div className="text-sm text-muted-foreground">{destinationFiat}</div>
