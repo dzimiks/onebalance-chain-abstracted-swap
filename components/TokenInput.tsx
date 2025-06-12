@@ -131,11 +131,11 @@ export const TokenInput = ({
               balances={balances}
             />
             {/* Balance in asset */}
-            {balance && selectedAssetData && (
-              <div className="text-xs text-muted-foreground">
-                {formatBalance(balance, selectedAssetData)} {getAssetSymbol(selectedAsset)}
-              </div>
-            )}
+            <div className="text-xs text-muted-foreground">
+              {balance && selectedAssetData
+                ? `${formatBalance(balance, selectedAssetData)} ${getAssetSymbol(selectedAsset)}`
+                : `0 ${selectedAssetData ? getAssetSymbol(selectedAsset) : ''}`}
+            </div>
           </div>
         </div>
       </div>

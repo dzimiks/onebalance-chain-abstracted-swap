@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Search } from 'lucide-react';
+import { Search, Coins } from 'lucide-react';
 import {
   Select,
   SelectContent,
@@ -83,7 +83,7 @@ export function AssetSelect({
             )}
           </SelectValue>
         </SelectTrigger>
-        <SelectContent className="max-h-80">
+        <SelectContent className="max-h-80 max-w-120">
           <div className="sticky -top-1 bg-background p-2 z-10">
             <div className="relative">
               <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
@@ -101,8 +101,31 @@ export function AssetSelect({
 
           <SelectGroup>
             {displayAssets.length === 0 ? (
-              <div className="py-6 text-center text-muted-foreground">
-                No assets found matching <span className="font-semibold">{searchTerm}</span>
+              <div className="py-8 px-4 text-center text-muted-foreground">
+                <div className="flex justify-center mb-3">
+                  <div className="w-12 h-12 bg-muted rounded-full flex items-center justify-center">
+                    <Coins className="h-6 w-6 text-muted-foreground" />
+                  </div>
+                </div>
+                <div className="font-medium">
+                  No assets found matching{' '}
+                  <span className="font-semibold text-foreground">{searchTerm}</span>
+                </div>
+                <div className="text-xs mt-4 mb-2">
+                  This demo has limited assets for testing purposes
+                </div>
+                <div className="text-xs">
+                  For the full experience with <span className="font-semibold">14M+ assets</span>,
+                  visit{' '}
+                  <a
+                    href="https://app.onebalance.io/swap"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="underline font-medium"
+                  >
+                    app.onebalance.io
+                  </a>
+                </div>
               </div>
             ) : (
               displayAssets
@@ -137,13 +160,15 @@ export function AssetSelect({
                           </div>
                         </div>
 
-                        {showBalances && assetBalance && (
+                        {showBalances && (
                           <div className="flex flex-col text-right text-sm">
                             <div className="font-medium text-foreground">
-                              ${assetBalance.fiatValue?.toFixed(2) || '0.00'}
+                              ${assetBalance?.fiatValue?.toFixed(2) || '0.00'}
                             </div>
                             <div className="text-xs text-muted-foreground">
-                              {formatTokenAmount(assetBalance.balance, asset.decimals)}
+                              {assetBalance
+                                ? formatTokenAmount(assetBalance.balance, asset.decimals)
+                                : '0'}
                             </div>
                           </div>
                         )}
