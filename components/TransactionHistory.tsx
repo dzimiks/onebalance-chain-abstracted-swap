@@ -86,7 +86,7 @@ export const TransactionHistory = ({ userAddress }: TransactionHistoryProps) => 
         variant="secondary"
         className="bg-purple-100 text-purple-800 dark:bg-purple-900/20 dark:text-purple-400"
       >
-        <ArrowDownLeft className="h-3 w-3 mr-1" />
+        <ArrowDownLeft className="h-3 w-3 mr-1 rotate-240" />
         Transfer
       </Badge>
     );
@@ -256,7 +256,7 @@ interface TransactionCardProps {
 }
 
 const TransactionCard = ({
-  transaction,
+  transaction: initialTransaction,
   isExpanded,
   onToggleExpanded,
   getStatusIcon,
@@ -268,6 +268,12 @@ const TransactionCard = ({
   formatTokenAmountForDisplay,
   getTokenIcon,
 }: TransactionCardProps) => {
+  // Small fix
+  const transaction =
+    initialTransaction.originToken.aggregatedAssetId ===
+    initialTransaction.destinationToken?.aggregatedAssetId
+      ? { ...initialTransaction, type: 'TRANSFER' }
+      : { ...initialTransaction };
   const originSymbol = getAssetSymbol(transaction.originToken.aggregatedAssetId);
   const destinationSymbol = transaction.destinationToken
     ? getAssetSymbol(transaction.destinationToken.aggregatedAssetId)
@@ -507,6 +513,15 @@ const TransactionCard = ({
                     <div className="flex justify-center">
                       <div className="w-10 h-10 rounded-full bg-muted/40 flex items-center justify-center">
                         <ArrowDownLeft className="h-5 w-5 text-primary rotate-180" />
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Arrow for transfers */}
+                  {transaction.type === 'TRANSFER' && transaction.destinationToken && (
+                    <div className="flex justify-center">
+                      <div className="w-10 h-10 rounded-full bg-muted/40 flex items-center justify-center">
+                        <ArrowDownLeft className="h-5 w-5 text-primary rotate-240" />
                       </div>
                     </div>
                   )}
