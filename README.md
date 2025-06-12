@@ -51,3 +51,7 @@
 ## Learn more
 
 Read the complete [**technical implementation guide**](https://docs.onebalance.io/guides/chain-abstracted-swap-with-privy) to understand the architecture and build your own chain-abstracted application.
+
+## Demo
+
+https://github.com/user-attachments/assets/6b6a5087-9d18-4f92-90e1-094c4fb9917c
