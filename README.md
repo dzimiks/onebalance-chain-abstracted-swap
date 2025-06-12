@@ -1,5 +1,5 @@
 <a href="https://onebalance-chain-abstracted-swap.vercel.app">
-  <img alt="OneBalance Chain-Abstracted Swap" src="https://github.com/user-attachments/assets/11a5a4db-f7e7-4079-84bd-37d2b95698a0">
+  <img alt="OneBalance Chain-Abstracted Swap" src="https://storage.googleapis.com/onebalance-public-assets/docs/guides/chain-abstracted-swap-with-privy/swap-hero.png">
   <h1 align="center">OneBalance Chain-Abstracted Swap</h1>
 </a>
 

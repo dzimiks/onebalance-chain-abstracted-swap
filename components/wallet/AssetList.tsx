@@ -8,6 +8,7 @@ import { BalanceByAssetDto } from '@/lib/types/balances';
 import { Asset } from '@/lib/types/assets';
 import { formatTokenAmount } from '@/lib/utils/token';
 import { getChainName, getChainLogoUrl, extractChainIdFromAssetType } from '@/lib/types/chains';
+import { findTokenByAggregatedAssetId } from '@/lib/constants';
 
 interface AssetListProps {
   balances?: BalanceByAssetDto[];
@@ -21,6 +22,12 @@ export const AssetList = ({ balances, assets, loading }: AssetListProps) => {
   // Helper functions
   const getAssetSymbol = (assetId: string) => {
     return assetId.split(':')[1]?.toUpperCase() || assetId;
+  };
+
+  // Get token icon for display
+  const getTokenIcon = (assetId: string) => {
+    const token = findTokenByAggregatedAssetId(assetId);
+    return token?.icon;
   };
 
   const getAssetDecimals = (aggregatedAssetId: string) => {
@@ -48,6 +55,20 @@ export const AssetList = ({ balances, assets, loading }: AssetListProps) => {
     ];
     const index = symbol.charCodeAt(0) % colors.length;
     return colors[index];
+  };
+
+  const getTokenIconBgColor = (symbol: string) => {
+    const colorMap: Record<string, string> = {
+      'bg-blue-500': '#3b82f6',
+      'bg-emerald-500': '#10b981',
+      'bg-purple-500': '#8b5cf6',
+      'bg-orange-500': '#f97316',
+      'bg-pink-500': '#ec4899',
+      'bg-indigo-500': '#6366f1',
+      'bg-teal-500': '#14b8a6',
+      'bg-red-500': '#ef4444',
+    };
+    return colorMap[getTokenIconColor(symbol)] || '#3b82f6';
   };
 
   const getChainInfo = (assetType: string) => {
@@ -122,10 +143,27 @@ export const AssetList = ({ balances, assets, loading }: AssetListProps) => {
                   <div className="px-4 py-1 transition-colors duration-200">
                     <div className="flex justify-between items-center">
                       <div className="flex items-center gap-3">
-                        <div
-                          className={`w-10 h-10 ${getTokenIconColor(symbol)} rounded-full flex items-center justify-center shadow-sm`}
-                        >
-                          <span className="text-white text-sm font-bold">{symbol.charAt(0)}</span>
+                        <div className="w-10 h-10 rounded-full flex items-center justify-center overflow-hidden border shadow-sm">
+                          {getTokenIcon(asset.aggregatedAssetId) ? (
+                            <img
+                              src={getTokenIcon(asset.aggregatedAssetId)}
+                              alt={symbol}
+                              className="w-full h-full object-cover"
+                              onError={e => {
+                                const target = e.target as HTMLImageElement;
+                                target.style.display = 'none';
+                                target.nextElementSibling?.classList.remove('hidden');
+                              }}
+                            />
+                          ) : null}
+                          <div
+                            className={`w-full h-full rounded-full flex items-center justify-center ${getTokenIcon(asset.aggregatedAssetId) ? 'hidden' : ''}`}
+                            style={{
+                              backgroundColor: getTokenIconBgColor(symbol),
+                            }}
+                          >
+                            <span className="text-white text-sm font-bold">{symbol.charAt(0)}</span>
+                          </div>
                         </div>
                         <div>
                           <div className="font-semibold text-foreground">{symbol}</div>
