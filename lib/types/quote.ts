@@ -93,14 +93,45 @@ export interface SolanaAccount {
   accountAddress: string;
 }
 
-export interface EVMAccount {
+// EVM Account - kernel-v3.1-ecdsa format
+export interface EVMKernelAccount {
   type: 'kernel-v3.1-ecdsa';
   accountAddress: string;
   deploymentType: 'ERC4337';
   signerAddress: string;
 }
 
+// EVM Account - role-based format
+export interface EVMRoleBasedAccount {
+  sessionAddress: string;
+  adminAddress: string;
+  accountAddress: string;
+}
+
+export type EVMAccount = EVMKernelAccount | EVMRoleBasedAccount;
 export type AccountV3 = SolanaAccount | EVMAccount;
+
+// Type guards for account types
+export function isSolanaAccount(account: AccountV3): account is SolanaAccount {
+  return 'type' in account && account.type === 'solana';
+}
+
+export function isEVMKernelAccount(account: AccountV3): account is EVMKernelAccount {
+  return 'type' in account && account.type === 'kernel-v3.1-ecdsa';
+}
+
+export function isEVMRoleBasedAccount(account: AccountV3): account is EVMRoleBasedAccount {
+  return (
+    'sessionAddress' in account &&
+    'adminAddress' in account &&
+    'accountAddress' in account &&
+    !('type' in account)
+  );
+}
+
+export function isEVMAccount(account: AccountV3): account is EVMAccount {
+  return isEVMKernelAccount(account) || isEVMRoleBasedAccount(account);
+}
 
 export interface SolanaOperation {
   type: 'solana';

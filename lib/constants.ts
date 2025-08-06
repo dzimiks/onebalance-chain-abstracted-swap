@@ -1344,3 +1344,41 @@ export const findTokenBySymbol = (symbol: string): LEGACY_Token | null =>
 
 export const findTokenByAggregatedAssetId = (aggregatedAssetId: string): LEGACY_Token | null =>
   tokenList.find(token => token.aggregatedAssetId === aggregatedAssetId) || null;
+
+// Enhanced asset list for Solana swaps - includes SOL + all aggregated assets
+export const ENHANCED_SOLANA_ASSETS = [
+  // Always include SOL as the primary Solana asset
+  {
+    aggregatedAssetId: SOLANA_ASSETS.SOL,
+    symbol: 'SOL',
+    name: 'Solana',
+    icon: 'https://storage.googleapis.com/onebalance-public-assets/networks/solana.svg',
+    decimals: 9,
+    chainIds: ['solana'],
+    aggregatedEntities: [
+      {
+        assetType: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+        decimals: 9,
+        name: 'Solana',
+        symbol: 'SOL',
+      },
+    ],
+  },
+  // Add all aggregated assets from tokenList (cross-chain capable)
+  ...tokenList.map(token => ({
+    aggregatedAssetId: token.aggregatedAssetId,
+    symbol: token.symbol,
+    name: token.name || token.symbol,
+    icon: token.icon || 'https://assets.coingecko.com/coins/images/1/large/bitcoin.png', // fallback icon
+    decimals: token.decimals,
+    chainIds: Object.keys(token.address || {}),
+    aggregatedEntities: [
+      {
+        assetType: token.aggregatedAssetId, // Use aggregated asset ID for cross-chain
+        decimals: token.decimals,
+        name: token.name || token.symbol,
+        symbol: token.symbol,
+      },
+    ],
+  })),
+] as const;

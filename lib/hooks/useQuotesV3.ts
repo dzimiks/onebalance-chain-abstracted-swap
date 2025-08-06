@@ -1,7 +1,14 @@
 import { useState, useCallback } from 'react';
 import { quotesApi } from '@/lib/api/quotes';
-import { QuoteRequestV3, QuoteV3, QuoteStatusV3 } from '@/lib/types/quote';
-import { signSolanaQuote } from '@/lib/utils/solanaSigning';
+import {
+  QuoteRequestV3,
+  QuoteV3,
+  QuoteStatusV3,
+  SolanaOperation,
+  EVMOperation,
+} from '@/lib/types/quote';
+import { signSolanaOperation } from '@/lib/utils/solanaSigning';
+import { signTypedDataWithPrivy } from '@/lib/utils/privySigningUtils';
 
 /**
  * Hook for managing v3 quotes (Solana and cross-chain operations)
@@ -33,35 +40,112 @@ export const useQuotesV3 = () => {
     }
   }, []);
 
+  // Mixed signing function for both Solana and EVM operations
+  const signMixedQuote = useCallback(
+    async (quote: QuoteV3, solanaWallet?: any, evmWallet?: any): Promise<QuoteV3> => {
+      console.log('Signing mixed quote with operations:', quote.originChainsOperations);
+
+      const signedOperations = await Promise.all(
+        quote.originChainsOperations.map(async operation => {
+          // Handle Solana operations
+          if ('type' in operation && operation.type === 'solana') {
+            const solanaOp = operation as SolanaOperation;
+
+            // Skip if already signed
+            if (solanaOp.signature && solanaOp.signature !== '0x' && solanaOp.signature !== '') {
+              console.log('Solana operation already signed:', solanaOp.signature);
+              return solanaOp;
+            }
+
+            if (!solanaWallet) {
+              throw new Error('Solana wallet required for Solana operations');
+            }
+
+            console.log('Signing Solana operation with dataToSign:', solanaOp.dataToSign);
+            const signature = await signSolanaOperation(solanaOp.dataToSign, solanaWallet);
+
+            return {
+              ...solanaOp,
+              signature: signature,
+            };
+          }
+
+          // Handle EVM operations
+          else if ('userOp' in operation && 'typedDataToSign' in operation) {
+            const evmOp = operation as EVMOperation;
+
+            // Skip if already signed
+            if (
+              evmOp.userOp.signature &&
+              evmOp.userOp.signature !== '0x' &&
+              evmOp.userOp.signature !== ''
+            ) {
+              console.log('EVM operation already signed:', evmOp.userOp.signature);
+              return evmOp;
+            }
+
+            if (!evmWallet) {
+              throw new Error('EVM wallet required for EVM operations');
+            }
+
+            console.log('Signing EVM operation with typedData:', evmOp.typedDataToSign);
+            const signature = await signTypedDataWithPrivy(evmWallet)(evmOp.typedDataToSign);
+
+            return {
+              ...evmOp,
+              userOp: {
+                ...evmOp.userOp,
+                signature: signature,
+              },
+            };
+          }
+
+          // Unknown operation type
+          else {
+            console.warn('Unknown operation type:', operation);
+            return operation;
+          }
+        })
+      );
+
+      const signedQuote = {
+        ...quote,
+        originChainsOperations: signedOperations,
+      };
+
+      console.log('Mixed quote signed successfully:', signedQuote);
+      return signedQuote;
+    },
+    []
+  );
+
   const executeQuote = useCallback(
-    async (quoteToExecute: QuoteV3, solanaWallet?: any): Promise<boolean> => {
+    async (quoteToExecute: QuoteV3, solanaWallet?: any, evmWallet?: any): Promise<boolean> => {
       setLoading(true);
       setError(null);
 
       try {
         console.log('Executing v3 quote:', quoteToExecute);
 
-        if (!solanaWallet) {
-          throw new Error('Solana wallet required for Solana operations');
-        }
-
-        // Sign the quote (following working implementation pattern)
-        console.log('Signing Solana quote...');
-        const signedQuote = await signSolanaQuote(quoteToExecute, solanaWallet);
-        console.log('Solana quote signed successfully');
+        // Sign the quote using mixed signing approach
+        console.log('Signing mixed quote (Solana + EVM)...');
+        const signedQuote = await signMixedQuote(quoteToExecute, solanaWallet, evmWallet);
+        console.log('Mixed quote signed successfully');
 
         // Add a sanity check before execution
         console.log('Pre-execution validation:');
         console.log('- Quote ID exists:', !!signedQuote.id);
         console.log('- Has operations:', signedQuote.originChainsOperations?.length > 0);
-        console.log(
-          '- First operation has signature:',
-          !!signedQuote.originChainsOperations[0]?.signature
-        );
-        console.log(
-          '- Signature length:',
-          signedQuote.originChainsOperations[0]?.signature?.length
-        );
+
+        signedQuote.originChainsOperations.forEach((op, index) => {
+          if ('type' in op && op.type === 'solana') {
+            console.log(`- Solana operation ${index} signature:`, !!op.signature);
+            console.log(`- Solana signature length:`, op.signature?.length);
+          } else if ('userOp' in op) {
+            console.log(`- EVM operation ${index} signature:`, !!op.userOp.signature);
+            console.log(`- EVM signature length:`, op.userOp.signature?.length);
+          }
+        });
 
         console.log('About to execute signed quote. Final payload:', signedQuote);
         const result = await quotesApi.executeQuoteV3(signedQuote);
@@ -80,7 +164,7 @@ export const useQuotesV3 = () => {
         setLoading(false);
       }
     },
-    []
+    [signMixedQuote]
   );
 
   const startPolling = useCallback((quoteId: string) => {

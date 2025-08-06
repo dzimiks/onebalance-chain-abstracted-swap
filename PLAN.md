@@ -103,13 +103,15 @@ Integrate Solana network support into the existing OneBalance codebase and showc
 
 Based on the OneBalance docs, create showcase components:
 
-- [x] **Example 1**: `components/SolanaSwapForm.tsx` ✅ **COMPLETED**
-  - SOL ↔ USDC on Solana with asset selection dropdown
+- [x] **Example 1**: `components/SolanaSwapForm.tsx` ✅ **COMPLETED & ENHANCED**
+  - SOL ↔ ANY TOKEN cross-chain swaps with comprehensive asset selection
   - Real-time quote display with auto-refresh
   - v3 aggregated balance integration
   - Percentage buttons for balance utilization
   - Enhanced UI matching SwapForm.tsx design
   - Transaction monitoring with status updates
+  - Cross-chain indicator for multi-blockchain swaps
+  - Support for all aggregated assets (USDT, WETH, ETH, DAI, etc.)
 
 - [ ] **Example 2**: `components/examples/SolToUsdcCrossChain.tsx`
   - SOL (Solana) → USDC (Arbitrum)

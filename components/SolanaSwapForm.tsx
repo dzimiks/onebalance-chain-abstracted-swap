@@ -13,8 +13,10 @@ import { Card } from '@/components/ui/card';
 import { useSolanaWallet } from '@/lib/hooks/useSolanaWallet';
 import { useQuotesV3 } from '@/lib/hooks/useQuotesV3';
 import { useBalancesV3 } from '@/lib/hooks/useBalancesV3';
-import { SOLANA_ASSETS, SOLANA_UI_ASSETS } from '@/lib/constants';
-import { QuoteRequestV3 } from '@/lib/types/quote';
+import { useEmbeddedWallet } from '@/lib/hooks/useEmbeddedWallet';
+import { usePredictedAddress } from '@/lib/contexts/PredictedAddressContext';
+import { SOLANA_ASSETS, ENHANCED_SOLANA_ASSETS } from '@/lib/constants';
+import { QuoteRequestV3, AccountV3, SolanaAccount, EVMRoleBasedAccount } from '@/lib/types/quote';
 import { getReadableStatus } from '@/lib/utils/solanaSigning';
 import { formatTokenAmount, parseTokenAmount } from '@/lib/utils/token';
 import debounce from 'lodash.debounce';
@@ -22,6 +24,8 @@ import debounce from 'lodash.debounce';
 export const SolanaSwapForm = () => {
   const { authenticated } = usePrivy();
   const { embeddedWallet, isReady, connected } = useSolanaWallet();
+  const evmWallet = useEmbeddedWallet();
+  const { predictedAddress, getPredictedAddress } = usePredictedAddress();
   const { quote, status, loading, error, isPolling, getQuote, executeQuote, resetQuote } =
     useQuotesV3();
   const {
@@ -39,28 +43,55 @@ export const SolanaSwapForm = () => {
   const [toAsset, setToAsset] = useState<string>(SOLANA_ASSETS.USDC); // ds:usdc
 
   // Get selected assets
-  const selectedFromAsset = SOLANA_UI_ASSETS.find(asset => asset.aggregatedAssetId === fromAsset);
-  const selectedToAsset = SOLANA_UI_ASSETS.find(asset => asset.aggregatedAssetId === toAsset);
+  const selectedFromAsset = ENHANCED_SOLANA_ASSETS.find(
+    asset => asset.aggregatedAssetId === fromAsset
+  );
+  const selectedToAsset = ENHANCED_SOLANA_ASSETS.find(asset => asset.aggregatedAssetId === toAsset);
 
   // Get balances for selected assets
   const fromBalance = getBalanceForAsset(fromAsset);
   const toBalance = getBalanceForAsset(toAsset);
 
-  // Fetch balances when wallet connects
+  // Determine if this is a cross-chain swap
+  const isCrossChain =
+    selectedFromAsset?.aggregatedAssetId === SOLANA_ASSETS.SOL &&
+    selectedToAsset?.aggregatedAssetId !== SOLANA_ASSETS.SOL &&
+    selectedToAsset?.aggregatedAssetId !== SOLANA_ASSETS.USDC;
+
+  // Get predicted address when EVM wallet connects
   useEffect(() => {
-    if (authenticated && embeddedWallet?.address) {
+    if (authenticated && evmWallet && !predictedAddress) {
+      getPredictedAddress();
+    }
+  }, [authenticated, evmWallet, predictedAddress, getPredictedAddress]);
+
+  // Fetch balances when wallets connect - include both Solana and EVM accounts
+  useEffect(() => {
+    if (authenticated && embeddedWallet?.address && predictedAddress) {
+      const accounts = [
+        `solana:${embeddedWallet.address}`,
+        `eip155:10:${predictedAddress}`, // EVM account (already has proper format)
+      ];
+      fetchAggregatedBalance(accounts);
+    } else if (authenticated && embeddedWallet?.address) {
+      // Fallback to just Solana if EVM not ready yet
       const solanaAccount = `solana:${embeddedWallet.address}`;
       fetchAggregatedBalance([solanaAccount]);
     }
-  }, [authenticated, embeddedWallet?.address, fetchAggregatedBalance]);
+  }, [authenticated, embeddedWallet?.address, predictedAddress, fetchAggregatedBalance]);
 
   // Manual balance refresh function (following working implementation pattern)
   const refreshBalances = useCallback(() => {
-    if (embeddedWallet?.address) {
+    if (embeddedWallet?.address && predictedAddress) {
+      const accounts = [`solana:${embeddedWallet.address}`, `eip155:10:${predictedAddress}`];
+      console.log('Manual refresh for:', accounts);
+      fetchAggregatedBalance(accounts);
+    } else if (embeddedWallet?.address) {
       const solanaAccount = `solana:${embeddedWallet.address}`;
+      console.log('Manual refresh (Solana only):', solanaAccount);
       fetchAggregatedBalance([solanaAccount]);
     }
-  }, [embeddedWallet?.address, fetchAggregatedBalance]);
+  }, [embeddedWallet?.address, predictedAddress, fetchAggregatedBalance]);
 
   // Update toAmount when quote is received
   useEffect(() => {
@@ -105,6 +136,35 @@ export const SolanaSwapForm = () => {
     await getQuote(request);
   }, 500);
 
+  // Helper function to create accounts array for quotes
+  const createAccountsArray = (): AccountV3[] => {
+    const accounts: AccountV3[] = [];
+
+    // Always include Solana account if available
+    if (embeddedWallet?.address) {
+      const solanaAccount: SolanaAccount = {
+        type: 'solana',
+        accountAddress: embeddedWallet.address,
+      };
+      accounts.push(solanaAccount);
+      console.log('Added Solana account:', solanaAccount);
+    }
+
+    // Include EVM account if available (for cross-chain swaps) - using role-based format
+    if (evmWallet?.address && predictedAddress) {
+      const evmAccount: EVMRoleBasedAccount = {
+        sessionAddress: evmWallet.address,
+        adminAddress: evmWallet.address,
+        accountAddress: predictedAddress,
+      };
+      accounts.push(evmAccount);
+      console.log('Added EVM role-based account:', evmAccount);
+    }
+
+    console.log('Total accounts for quote request:', accounts.length);
+    return accounts;
+  };
+
   const handleGetQuote = async () => {
     if (!embeddedWallet?.address || !fromAmount || !selectedFromAsset) return;
 
@@ -113,12 +173,7 @@ export const SolanaSwapForm = () => {
 
     const request: QuoteRequestV3 = {
       from: {
-        accounts: [
-          {
-            type: 'solana',
-            accountAddress: embeddedWallet.address,
-          },
-        ],
+        accounts: createAccountsArray(),
         asset: {
           assetId: fromAsset,
         },
@@ -131,6 +186,8 @@ export const SolanaSwapForm = () => {
       },
     };
 
+    console.log('Quote request with accounts:', request.from.accounts);
+    console.log('Role-based EVM account format being used (not kernel-v3.1-ecdsa)');
     await getQuote(request);
   };
 
@@ -149,12 +206,7 @@ export const SolanaSwapForm = () => {
 
       const request: QuoteRequestV3 = {
         from: {
-          accounts: [
-            {
-              type: 'solana',
-              accountAddress: embeddedWallet.address,
-            },
-          ],
+          accounts: createAccountsArray(),
           asset: {
             assetId: fromAsset,
           },
@@ -187,7 +239,11 @@ export const SolanaSwapForm = () => {
 
   const handleExecuteSwap = async () => {
     if (!quote || !embeddedWallet) return;
-    await executeQuote(quote, embeddedWallet);
+    console.log('Executing swap with both wallets:', {
+      solanaWallet: !!embeddedWallet,
+      evmWallet: !!evmWallet,
+    });
+    await executeQuote(quote, embeddedWallet, evmWallet);
   };
 
   // Loading state
@@ -216,11 +272,27 @@ export const SolanaSwapForm = () => {
   return (
     <Card className="w-full max-w-lg mx-auto p-6">
       <div className="space-y-6">
-        <h2 className="text-center text-2xl font-bold text-foreground">Swap Solana Tokens</h2>
+        <h2 className="text-center text-2xl font-bold text-foreground">Cross-Chain Token Swap</h2>
+        <div className="text-center space-y-2">
+          <p className="text-sm text-muted-foreground">
+            Swap SOL to any supported token across multiple blockchains
+          </p>
+          {isCrossChain && selectedToAsset && (
+            <div className="inline-flex items-center gap-2 px-3 py-1 bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-300 rounded-full text-xs font-medium">
+              <span className="w-2 h-2 bg-amber-500 rounded-full animate-pulse"></span>
+              Cross-Chain to {selectedToAsset.chainIds?.[0] || 'EVM'}
+              {!predictedAddress && (
+                <span className="text-amber-600 dark:text-amber-400 ml-1">
+                  (EVM wallet connecting...)
+                </span>
+              )}
+            </div>
+          )}
+        </div>
 
-        {/* Solana Address Display */}
+        {/* Account Addresses Display */}
         {embeddedWallet?.address && (
-          <div className="p-4 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
+          <div className="p-4 bg-blue-100 dark:bg-blue-900/30 rounded-lg space-y-3">
             <div className="text-sm">
               <p className="font-medium text-blue-900 dark:text-blue-300 mb-1">
                 Your Solana Address:
@@ -236,10 +308,36 @@ export const SolanaSwapForm = () => {
                   Copy
                 </button>
               </div>
-              <p className="text-blue-700 text-xs mt-1">
-                💡 Send SOL or USDC to this address to fund your account for testing
-              </p>
             </div>
+
+            {predictedAddress && (
+              <div className="text-sm border-t border-blue-200 dark:border-blue-800 pt-3">
+                <p className="font-medium text-blue-900 dark:text-blue-300 mb-1">
+                  Your EVM Account (Role-Based):
+                </p>
+                <div className="flex items-center justify-between">
+                  <code className="text-xs font-mono bg-blue-100 dark:bg-blue-900/30 px-2 py-1 rounded break-all">
+                    {predictedAddress}
+                  </code>
+                  <button
+                    onClick={() => navigator.clipboard.writeText(predictedAddress)}
+                    className="ml-2 px-2 py-1 text-xs bg-blue-700 text-white rounded hover:bg-blue-700"
+                  >
+                    Copy
+                  </button>
+                </div>
+                <p className="text-blue-600 dark:text-blue-400 text-xs mt-1">
+                  Session & Admin:{' '}
+                  {evmWallet?.address
+                    ? `${evmWallet.address.slice(0, 6)}...${evmWallet.address.slice(-4)}`
+                    : 'Loading...'}
+                </p>
+              </div>
+            )}
+
+            <p className="text-blue-700 dark:text-blue-400 text-xs">
+              💡 Both accounts are used for cross-chain swaps. Fund with SOL for swapping.
+            </p>
           </div>
         )}
 
@@ -248,7 +346,7 @@ export const SolanaSwapForm = () => {
           <div>
             <TokenInput
               label="Sell"
-              assets={SOLANA_UI_ASSETS as any}
+              assets={ENHANCED_SOLANA_ASSETS as any}
               selectedAsset={fromAsset}
               onAssetChange={value => {
                 setFromAsset(value);
@@ -285,12 +383,7 @@ export const SolanaSwapForm = () => {
                   if (authenticated && embeddedWallet?.address) {
                     const request: QuoteRequestV3 = {
                       from: {
-                        accounts: [
-                          {
-                            type: 'solana',
-                            accountAddress: embeddedWallet.address,
-                          },
-                        ],
+                        accounts: createAccountsArray(),
                         asset: {
                           assetId: fromAsset,
                         },
@@ -332,19 +425,14 @@ export const SolanaSwapForm = () => {
           <div>
             <TokenInput
               label="Buy"
-              assets={SOLANA_UI_ASSETS as any}
+              assets={ENHANCED_SOLANA_ASSETS as any}
               selectedAsset={toAsset}
               onAssetChange={value => {
                 setToAsset(value);
                 if (fromAmount && parsedFromAmount && authenticated && embeddedWallet?.address) {
                   const request: QuoteRequestV3 = {
                     from: {
-                      accounts: [
-                        {
-                          type: 'solana',
-                          accountAddress: embeddedWallet.address,
-                        },
-                      ],
+                      accounts: createAccountsArray(),
                       asset: {
                         assetId: fromAsset,
                       },

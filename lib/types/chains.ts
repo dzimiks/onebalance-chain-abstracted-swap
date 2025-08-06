@@ -43,6 +43,11 @@ export const CHAIN_CONFIG: Record<string, ChainConfig> = {
     name: 'Avalanche',
     logoUrl: 'https://storage.googleapis.com/onebalance-public-assets/networks/43114.svg',
   },
+  '1329': {
+    name: 'Sei',
+    logoUrl:
+      'https://assets.coingecko.com/coins/images/28205/large/Sei_Logo_-_Transparent.png?1696527207',
+  },
 };
 
 // Legacy support for existing code
