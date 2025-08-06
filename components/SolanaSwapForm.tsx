@@ -280,7 +280,7 @@ export const SolanaSwapForm = () => {
           {isCrossChain && selectedToAsset && (
             <div className="inline-flex items-center gap-2 px-3 py-1 bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-300 rounded-full text-xs font-medium">
               <span className="w-2 h-2 bg-amber-500 rounded-full animate-pulse"></span>
-              Cross-Chain to {selectedToAsset.chainIds?.[0] || 'EVM'}
+              Cross-Chain Swap
               {!predictedAddress && (
                 <span className="text-amber-600 dark:text-amber-400 ml-1">
                   (EVM wallet connecting...)

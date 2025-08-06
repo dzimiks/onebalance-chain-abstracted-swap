@@ -25,8 +25,6 @@ export async function signSolanaOperation(dataToSign: string, wallet: any): Prom
     // 5. Extract signature and encode as base58
     const signature = bs58.encode(Buffer.from(signedTx.signatures[signedTx.signatures.length - 1]));
 
-    console.log({ dataToSign, msgBuffer, message, transaction, signedTx, signature });
-
     return signature;
   } catch (error) {
     console.error('Error signing Solana operation:', error);
@@ -79,8 +77,6 @@ export function isValidSolanaAddress(address: string): boolean {
  */
 export async function signSolanaQuote(quote: QuoteV3, solanaWallet: any): Promise<QuoteV3> {
   try {
-    console.log('Original quote before signing:', quote);
-
     const signedOperations = await Promise.all(
       quote.originChainsOperations.map(async operation => {
         if ('type' in operation && operation.type === 'solana') {
@@ -88,11 +84,9 @@ export async function signSolanaQuote(quote: QuoteV3, solanaWallet: any): Promis
 
           // Skip if already signed (signature is not empty or "0x")
           if (solanaOp.signature && solanaOp.signature !== '0x' && solanaOp.signature !== '') {
-            console.log('Operation already signed:', solanaOp.signature);
             return solanaOp;
           }
 
-          console.log('Signing Solana operation with dataToSign:', solanaOp.dataToSign);
           const signature = await signSolanaOperation(solanaOp.dataToSign, solanaWallet);
 
           // Create the signed operation, ensuring we replace the signature properly
@@ -101,8 +95,6 @@ export async function signSolanaQuote(quote: QuoteV3, solanaWallet: any): Promis
             signature: signature, // Replace the "0x" placeholder with actual signature
           };
 
-          console.log('Generated signature:', signature);
-          console.log('Signed operation result:', signedOp);
           return signedOp;
         }
         return operation;
@@ -114,10 +106,6 @@ export async function signSolanaQuote(quote: QuoteV3, solanaWallet: any): Promis
       originChainsOperations: signedOperations,
     };
 
-    console.log('Final signed quote to send:');
-    console.log('- Quote ID:', signedQuote.id);
-    console.log('- Solana operation signature:', signedQuote.originChainsOperations[0]?.signature);
-    console.log('- Full signed quote:', signedQuote);
     return signedQuote;
   } catch (error) {
     console.error('Error signing Solana quote:', error);
