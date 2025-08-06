@@ -1,6 +1,49 @@
 export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://be.onebalance.io';
 export const API_KEY = process.env.NEXT_PUBLIC_API_KEY;
 
+// Solana Asset IDs for OneBalance v3 API
+export const SOLANA_ASSETS = {
+  SOL: 'ds:sol',
+  USDC: 'ds:usdc',
+} as const;
+
+// Solana Assets for UI (compatible with existing Asset interface)
+export const SOLANA_UI_ASSETS = [
+  {
+    aggregatedAssetId: SOLANA_ASSETS.SOL,
+    symbol: 'SOL',
+    name: 'Solana',
+    icon: 'https://storage.googleapis.com/onebalance-public-assets/networks/solana.svg',
+    decimals: 9,
+    chainIds: ['solana'],
+    aggregatedEntities: [
+      {
+        assetType: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+        decimals: 9,
+        name: 'Solana',
+        symbol: 'SOL',
+      },
+    ],
+  },
+  {
+    aggregatedAssetId: SOLANA_ASSETS.USDC,
+    symbol: 'USDC',
+    name: 'USDC (Solana)',
+    icon: 'https://assets.coingecko.com/coins/images/6319/large/usdc.png?1696506694',
+    decimals: 6,
+    chainIds: ['solana'],
+    aggregatedEntities: [
+      {
+        assetType:
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+        decimals: 6,
+        name: 'USDC (Solana)',
+        symbol: 'USDC',
+      },
+    ],
+  },
+] as const;
+
 export interface LEGACY_Token {
   aggregatedAssetId: string;
   symbol: string;

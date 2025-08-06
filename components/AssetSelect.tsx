@@ -49,13 +49,19 @@ export function AssetSelect({
 
   // Get token icon for display
   const getTokenIcon = (assetId: string) => {
+    // First check if it's in our assets array (for Solana assets)
+    const asset = assets.find(a => a.aggregatedAssetId === assetId);
+    if (asset?.icon) return asset.icon;
+
+    // Fallback to legacy token lookup
     const token = findTokenByAggregatedAssetId(assetId);
     return token?.icon;
   };
 
   // Get asset symbol for display
   const getAssetSymbol = (assetId: string) => {
-    return assetId.split(':')[1]?.toUpperCase() || assetId;
+    const asset = assets.find(a => a.aggregatedAssetId === assetId);
+    return asset?.symbol || assetId.split(':')[1]?.toUpperCase() || assetId;
   };
 
   // Filter assets by search term
