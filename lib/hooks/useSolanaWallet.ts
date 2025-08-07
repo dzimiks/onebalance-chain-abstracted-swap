@@ -8,7 +8,8 @@ export const useSolanaWallet = () => {
   const { wallets, ready } = useSolanaWallets();
 
   // Get the embedded Solana wallet
-  const embeddedWallet = wallets?.find(wallet => wallet.walletClientType === 'privy') || null;
+  const embeddedWallet =
+    wallets?.find(wallet => wallet.walletClientType === 'privy') || wallets[0] || null;
 
   // Validate Solana address
   const isValidSolanaAddress = (address: string): boolean => {

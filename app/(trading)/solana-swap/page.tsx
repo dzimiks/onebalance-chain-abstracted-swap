@@ -1,3 +1,5 @@
+'use client';
+
 import { SolanaSwapForm } from '@/components/SolanaSwapForm';
 import { TabNavigation } from '@/components/TabNavigation';
 
