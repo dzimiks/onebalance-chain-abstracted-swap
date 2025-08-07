@@ -290,7 +290,7 @@ export const SolanaSwapForm = () => {
   return (
     <Card className="w-full max-w-lg mx-auto p-6">
       <div className="space-y-6">
-        <h2 className="text-center text-2xl font-bold text-foreground">Cross-Chain Token Swap</h2>
+        <h2 className="text-center text-2xl font-bold text-foreground">Solana Swap TEST</h2>
 
         {/* Account Addresses Display - Useful for testing and funding */}
         {embeddedWallet?.address && (
@@ -315,7 +315,7 @@ export const SolanaSwapForm = () => {
             {predictedAddress && (
               <div className="text-sm border-t border-blue-200 dark:border-blue-800 pt-3">
                 <p className="font-medium text-blue-900 dark:text-blue-300 mb-1">
-                  Your EVM Account (Role-Based):
+                  Your EVM Account:
                 </p>
                 <div className="flex items-center justify-between">
                   <code className="text-xs font-mono bg-blue-100 dark:bg-blue-900/30 px-2 py-1 rounded break-all">

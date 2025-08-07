@@ -27,7 +27,9 @@ export const AssetList = ({ balances, assets, loading }: AssetListProps) => {
   // Get token icon for display
   const getTokenIcon = (assetId: string) => {
     const token = findTokenByAggregatedAssetId(assetId);
-    return token?.icon;
+    return (
+      token?.icon || 'https://storage.googleapis.com/onebalance-public-assets/networks/solana.svg'
+    );
   };
 
   const getAssetDecimals = (aggregatedAssetId: string) => {

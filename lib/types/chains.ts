@@ -48,6 +48,14 @@ export const CHAIN_CONFIG: Record<string, ChainConfig> = {
     logoUrl:
       'https://assets.coingecko.com/coins/images/28205/large/Sei_Logo_-_Transparent.png?1696527207',
   },
+  '792703809': {
+    name: 'Solana',
+    logoUrl: 'https://storage.googleapis.com/onebalance-public-assets/networks/solana.svg',
+  },
+  '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {
+    name: 'Solana',
+    logoUrl: 'https://storage.googleapis.com/onebalance-public-assets/networks/solana.svg',
+  },
 };
 
 // Legacy support for existing code
