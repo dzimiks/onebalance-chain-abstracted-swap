@@ -24,6 +24,17 @@ export async function GET(
     });
 
     const data = await response.json();
+
+    // Check if the response contains an error object and forward the status
+    if (data.error && data.statusCode) {
+      return NextResponse.json(data, { status: data.statusCode });
+    }
+
+    // Check for non-2xx status codes from the upstream API
+    if (!response.ok) {
+      return NextResponse.json(data, { status: response.status });
+    }
+
     return NextResponse.json(data);
   } catch (error) {
     return NextResponse.json({ message: 'Failed to fetch data', error }, { status: 400 });
@@ -50,6 +61,17 @@ export async function POST(
     });
 
     const data = await response.json();
+
+    // Check if the response contains an error object and forward the status
+    if (data.error && data.statusCode) {
+      return NextResponse.json(data, { status: data.statusCode });
+    }
+
+    // Check for non-2xx status codes from the upstream API
+    if (!response.ok) {
+      return NextResponse.json(data, { status: response.status });
+    }
+
     return NextResponse.json(data);
   } catch (error) {
     return NextResponse.json({ message: 'Failed to fetch data', error }, { status: 400 });

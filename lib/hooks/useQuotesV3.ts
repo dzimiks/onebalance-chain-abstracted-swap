@@ -9,6 +9,7 @@ import {
 } from '@/lib/types/quote';
 import { signSolanaQuote, signSolanaOperation } from '@/lib/utils/solanaSigning';
 import { signTypedDataWithPrivy, sequentialPromises } from '@/lib/utils/privySigningUtils';
+import { processApiError, type ProcessedError } from '@/lib/utils/errorHandling';
 
 /**
  * Hook for managing v3 quotes (Solana and cross-chain operations)
@@ -23,7 +24,7 @@ export const useQuotesV3 = () => {
   const [quote, setQuote] = useState<QuoteV3 | null>(null);
   const [status, setStatus] = useState<QuoteStatusV3 | null>(null);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<ProcessedError | null>(null);
   const [isPolling, setIsPolling] = useState(false);
 
   const getQuote = useCallback(async (request: QuoteRequestV3): Promise<QuoteV3 | null> => {
@@ -37,9 +38,9 @@ export const useQuotesV3 = () => {
       setQuote(newQuote);
       return newQuote;
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to get quote';
       console.error('Quote error:', err);
-      setError(errorMessage);
+      const processedError = processApiError(err);
+      setError(processedError);
       return null;
     } finally {
       setLoading(false);
@@ -210,9 +211,9 @@ export const useQuotesV3 = () => {
 
         return true;
       } catch (err) {
-        const errorMessage = err instanceof Error ? err.message : 'Failed to execute quote';
         console.error('Execution error:', err);
-        setError(errorMessage);
+        const processedError = processApiError(err);
+        setError(processedError);
         return false;
       } finally {
         setLoading(false);

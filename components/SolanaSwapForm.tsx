@@ -16,6 +16,7 @@ import { usePredictedAddress } from '@/lib/contexts/PredictedAddressContext';
 import { ENHANCED_SOLANA_ASSETS } from '@/lib/constants';
 import { QuoteRequestV3, AccountV3, SolanaAccount, EVMRoleBasedAccount } from '@/lib/types/quote';
 import { formatTokenAmount, parseTokenAmount } from '@/lib/utils/token';
+import { formatErrorForDisplay } from '@/lib/utils/errorHandling';
 import debounce from 'lodash.debounce';
 
 export const SolanaSwapForm = () => {
@@ -272,7 +273,12 @@ export const SolanaSwapForm = () => {
       return { disabled: true, text: 'Getting Quote...' };
     }
 
-    // Check for insufficient balance first
+    // Check for errors first
+    if (error) {
+      return { disabled: true, text: error.retryable ? 'Try Again' : 'Swap Not Available' };
+    }
+
+    // Check for insufficient balance
     if (fromAmount && !hasSufficientBalance(fromAmount)) {
       return { disabled: true, text: 'Insufficient Balance' };
     }
@@ -283,6 +289,25 @@ export const SolanaSwapForm = () => {
   };
 
   const handleExecuteSwap = async () => {
+    // If there's an error and it's retryable, retry the quote
+    if (error && error.retryable) {
+      if (sourceAsset && targetAsset && parsedFromAmount) {
+        const request: QuoteRequestV3 = {
+          from: {
+            accounts: createAccountsArray(),
+            asset: { assetId: sourceAsset },
+            amount: parsedFromAmount,
+          },
+          to: {
+            asset: { assetId: targetAsset },
+          },
+        };
+        await getQuote(request);
+      }
+      return;
+    }
+
+    // Normal swap execution
     if (!quote || !embeddedWallet) return;
     await executeQuote(quote, embeddedWallet, evmWallet);
   };
@@ -527,10 +552,10 @@ export const SolanaSwapForm = () => {
 
           {/* Error Handling */}
           {error && (
-            <Alert variant="destructive">
+            <Alert variant={formatErrorForDisplay(error).variant}>
               <TriangleAlert className="h-4 w-4" />
-              <AlertTitle>An error occurred</AlertTitle>
-              <AlertDescription>{error}</AlertDescription>
+              <AlertTitle>{formatErrorForDisplay(error).title}</AlertTitle>
+              <AlertDescription>{formatErrorForDisplay(error).message}</AlertDescription>
             </Alert>
           )}
 

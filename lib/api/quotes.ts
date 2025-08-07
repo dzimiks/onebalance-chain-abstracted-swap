@@ -30,8 +30,23 @@ export const quotesApi = {
 
   // New v3 API for Solana and cross-chain operations
   getQuoteV3: async (request: QuoteRequestV3): Promise<QuoteV3> => {
-    const response = await apiClient.post('/v3/quote', request);
-    return response.data;
+    try {
+      const response = await apiClient.post('/v3/quote', request);
+
+      // Check if response contains an error object even with 200 status
+      if (response.data.error && response.data.statusCode) {
+        console.log('API returned error in response body:', response.data);
+        // Create a proper error to be caught by the error handler
+        const error = new Error(`API Error: ${response.data.message}`);
+        (error as any).response = { data: response.data };
+        throw error;
+      }
+
+      return response.data;
+    } catch (error) {
+      console.log('Quote API error:', error);
+      throw error;
+    }
   },
 
   executeQuoteV3: async (quote: QuoteV3): Promise<any> => {
