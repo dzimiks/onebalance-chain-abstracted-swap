@@ -43,6 +43,14 @@ export const CHAIN_CONFIG: Record<string, ChainConfig> = {
     name: 'Avalanche',
     logoUrl: 'https://storage.googleapis.com/onebalance-public-assets/networks/43114.svg',
   },
+  '130': {
+    name: 'Unichain',
+    logoUrl: 'https://storage.googleapis.com/onebalance-public-assets/networks/130.svg',
+  },
+  '999': {
+    name: 'HyperEVM',
+    logoUrl: 'https://storage.googleapis.com/onebalance-public-assets/networks/999.svg',
+  },
   '1329': {
     name: 'Sei',
     logoUrl:

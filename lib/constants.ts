@@ -1337,6 +1337,141 @@ export const tokenList: LEGACY_Token[] = [
     icon: 'https://assets.coingecko.com/coins/images/28205/large/Sei_Logo_-_Transparent.png',
     decimals: 18,
   },
+  {
+    aggregatedAssetId: 'ds:hype',
+    symbol: 'HYPE',
+    name: 'Hype',
+    decimals: 18,
+    address: {
+      '999': '0x60',
+    },
+  },
+  {
+    aggregatedAssetId: 'ds:sthype',
+    symbol: 'stHYPE',
+    name: 'Staked HYPE',
+    address: {
+      '999': '0xffaa4a3d97fe9107cef8a3f48c069f577ff76cc1',
+    },
+    decimals: 18,
+  },
+  {
+    aggregatedAssetId: 'ds:khype',
+    symbol: 'kHYPE',
+    name: 'Kinetiq Staked HYPE',
+    address: {
+      '999': '0xfd739d4e423301ce9385c1fb8850539d657c296d',
+    },
+    decimals: 18,
+  },
+  {
+    aggregatedAssetId: 'ds:xsolvbtc',
+    symbol: 'xSolvBTC',
+    name: 'Solv Protocol Staked BTC',
+    address: {
+      '999': '0xc99f5c922dae05b6e2ff83463ce705ef7c91f077',
+    },
+    decimals: 18,
+  },
+  {
+    aggregatedAssetId: 'ds:ubtc',
+    symbol: 'UBTC',
+    name: 'Unit Bitcoin',
+    address: {
+      '999': '0x9fdbda0a5e284c32744d2f17ee5c74b284993463',
+    },
+    decimals: 8,
+  },
+  {
+    aggregatedAssetId: 'ds:purr',
+    symbol: 'PURR',
+    name: 'Purr',
+    address: {
+      '999': '0x9b498c3c8a0b8cd8ba1d9851d40d186f1872b44e',
+    },
+    decimals: 18,
+  },
+  {
+    aggregatedAssetId: 'ds:hbhype',
+    symbol: 'hbHYPE',
+    name: 'Hyperbeat Ultra HYPE',
+    address: {
+      '999': '0x96c6cbb6251ee1c257b2162ca0f39aa5fa44b1fb',
+    },
+    decimals: 18,
+  },
+  {
+    aggregatedAssetId: 'ds:rusd',
+    symbol: 'rUSD',
+    name: 'Reservoir rUSD',
+    address: {
+      '999': '0x866d66f64fb81461903e1e38d998e747ecf35e78',
+    },
+    decimals: 18,
+  },
+  {
+    aggregatedAssetId: 'ds:hbusdt',
+    symbol: 'hbUSDT',
+    name: 'Hyperbeat USDT',
+    address: {
+      '999': '0x5e105266db42f78fa814322bce7f388b4c2e61eb',
+    },
+    decimals: 18,
+  },
+  {
+    aggregatedAssetId: 'ds:lhype',
+    symbol: 'LHYPE',
+    name: 'Looped Hype',
+    address: {
+      '999': '0x5748ae796ae46a4f1348a1693de4b50560485562',
+    },
+    decimals: 18,
+  },
+  {
+    aggregatedAssetId: 'ds:whype',
+    symbol: 'WHYPE',
+    name: 'Wrapped HYPE',
+    address: {
+      '999': '0x5555555555555555555555555555555555555555',
+    },
+    decimals: 18,
+  },
+  {
+    aggregatedAssetId: 'ds:wstusr',
+    symbol: 'wstUSR',
+    name: 'Resolv wstUSR',
+    address: {
+      '999': '0x46c1c168ca597b9e5423aa7081a0dce782caeaab',
+    },
+    decimals: 18,
+  },
+  {
+    aggregatedAssetId: 'ds:upump',
+    symbol: 'UPUMP',
+    name: 'Unit Pump',
+    address: {
+      '999': '0x27ec642013bcb3d80ca3706599d3cda04f6f4452',
+    },
+    decimals: 6,
+  },
+  {
+    aggregatedAssetId: 'ds:rlp',
+    symbol: 'RLP',
+    name: 'Resolv RLP',
+    address: {
+      '999': '0x0a3d8466f5de586fa5f6de117301e2f90bcc5c48',
+    },
+    decimals: 18,
+  },
+  {
+    aggregatedAssetId: 'ds:feusd',
+    symbol: 'feUSD',
+    name: 'Felix feUSD',
+    address: {
+      '999': '0x02c6a2fa58cc01a18b8d9e00ea48d65e4df26c70',
+    },
+    decimals: 18,
+  },
 ] as const;
 
 export const findTokenBySymbol = (symbol: string): LEGACY_Token | null =>
