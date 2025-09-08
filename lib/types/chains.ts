@@ -43,6 +43,27 @@ export const CHAIN_CONFIG: Record<string, ChainConfig> = {
     name: 'Avalanche',
     logoUrl: 'https://storage.googleapis.com/onebalance-public-assets/networks/43114.svg',
   },
+  '130': {
+    name: 'Unichain',
+    logoUrl: 'https://storage.googleapis.com/onebalance-public-assets/networks/130.svg',
+  },
+  '999': {
+    name: 'HyperEVM',
+    logoUrl: 'https://storage.googleapis.com/onebalance-public-assets/networks/999.svg',
+  },
+  '1329': {
+    name: 'Sei',
+    logoUrl:
+      'https://assets.coingecko.com/coins/images/28205/large/Sei_Logo_-_Transparent.png?1696527207',
+  },
+  '792703809': {
+    name: 'Solana',
+    logoUrl: 'https://storage.googleapis.com/onebalance-public-assets/networks/solana.svg',
+  },
+  '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {
+    name: 'Solana',
+    logoUrl: 'https://storage.googleapis.com/onebalance-public-assets/networks/solana.svg',
+  },
 };
 
 // Legacy support for existing code
