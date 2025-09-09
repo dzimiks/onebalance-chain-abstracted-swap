@@ -47,7 +47,8 @@ export const TokenInput = ({
 
   // Get asset symbol for display
   const getAssetSymbol = (assetId: string) => {
-    return assetId.split(':')[1]?.toUpperCase() || assetId;
+    const asset = assets.find(a => a.aggregatedAssetId === assetId);
+    return asset?.symbol || assetId.split(':')[1]?.toUpperCase() || assetId;
   };
 
   // Format balance for display

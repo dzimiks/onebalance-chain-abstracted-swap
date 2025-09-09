@@ -16,6 +16,7 @@ export const TabNavigation = ({ className }: TabNavigationProps) => {
     { id: 'swap', label: 'Swap', path: '/swap' },
     { id: 'transfer', label: 'Transfer', path: '/transfer' },
     { id: 'history', label: 'History', path: '/history' },
+    { id: 'solana', label: 'Solana (New)', path: '/solana-swap' },
   ];
 
   const handleTabClick = (path: string) => {

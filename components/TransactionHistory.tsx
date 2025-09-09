@@ -114,7 +114,9 @@ export const TransactionHistory = ({ userAddress }: TransactionHistoryProps) => 
   // Get token icon for display
   const getTokenIcon = (assetId: string) => {
     const token = findTokenByAggregatedAssetId(assetId);
-    return token?.icon;
+    return (
+      token?.icon || 'https://storage.googleapis.com/onebalance-public-assets/networks/solana.svg'
+    );
   };
 
   const formatTokenAmountForDisplay = (amount: string, aggregatedAssetId: string) => {
@@ -418,7 +420,7 @@ const TransactionCard = ({
               <div className="space-y-3">
                 <h4 className="text-sm font-medium text-foreground">Transaction Details</h4>
 
-                <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr] gap-4 items-center">
+                <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr] gap-4 items-stretch">
                   {/* From Token */}
                   <div className="bg-muted/40 rounded-lg p-3">
                     <div className="space-y-2">

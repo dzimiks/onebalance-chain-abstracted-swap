@@ -25,6 +25,9 @@ export const Providers = ({ children }: ProvidersProps) => (
             embeddedWallets: {
               // Create embedded wallets for users who don't have a wallet
               createOnLogin: 'users-without-wallets',
+              solana: {
+                createOnLogin: 'users-without-wallets',
+              },
             },
             loginMethods: ['email', 'passkey', 'wallet'],
             appearance: {

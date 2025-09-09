@@ -50,12 +50,15 @@ export function AssetSelect({
   // Get token icon for display
   const getTokenIcon = (assetId: string) => {
     const token = findTokenByAggregatedAssetId(assetId);
-    return token?.icon;
+    return (
+      token?.icon || 'https://storage.googleapis.com/onebalance-public-assets/networks/solana.svg'
+    );
   };
 
   // Get asset symbol for display
   const getAssetSymbol = (assetId: string) => {
-    return assetId.split(':')[1]?.toUpperCase() || assetId;
+    const asset = assets.find(a => a.aggregatedAssetId === assetId);
+    return asset?.symbol || assetId.split(':')[1]?.toUpperCase() || assetId;
   };
 
   // Filter assets by search term
