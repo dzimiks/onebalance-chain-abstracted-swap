@@ -50,7 +50,7 @@ export const quotesApi = {
   },
 
   executeQuoteV3: async (quote: QuoteV3): Promise<any> => {
-    const response = await apiClient.post('/v3/quote/execute', quote);
+    const response = await apiClient.post('/v3/quote/execute-quote', quote);
     return response.data;
   },
 
