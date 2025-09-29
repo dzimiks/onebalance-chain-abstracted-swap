@@ -107,7 +107,7 @@ export const TransactionHistory = ({ userAddress }: TransactionHistoryProps) => 
   };
 
   const getAssetSymbol = (aggregatedAssetId: string) => {
-    // Extract symbol from aggregated asset ID (e.g., "ds:usdc" -> "USDC")
+    // Extract symbol from aggregated asset ID (e.g., "ob:usdc" -> "USDC")
     return aggregatedAssetId.split(':')[1]?.toUpperCase() || aggregatedAssetId;
   };
 

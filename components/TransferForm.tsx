@@ -27,7 +27,7 @@ export const TransferForm = () => {
   const embeddedWallet = useEmbeddedWallet();
 
   // Asset state
-  const [selectedAsset, setSelectedAsset] = useState<string>('ds:usdc');
+  const [selectedAsset, setSelectedAsset] = useState<string>('ob:usdc');
   const [amount, setAmount] = useState<string>('');
   const [parsedAmount, setParsedAmount] = useState('');
   const [recipientAddress, setRecipientAddress] = useState<string>('');
