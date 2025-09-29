@@ -18,8 +18,8 @@ export const SwapForm = () => {
   const embeddedWallet = useEmbeddedWallet();
 
   // Asset state
-  const [sourceAsset, setSourceAsset] = useState<string>('ds:usdc');
-  const [targetAsset, setTargetAsset] = useState<string>('ds:eth');
+  const [sourceAsset, setSourceAsset] = useState<string>('ob:usdc');
+  const [targetAsset, setTargetAsset] = useState<string>('ob:eth');
 
   // Amount state
   const [fromAmount, setFromAmount] = useState<string>('');

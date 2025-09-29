@@ -12,7 +12,7 @@ export interface LEGACY_Token {
 
 export const tokenList: LEGACY_Token[] = [
   {
-    aggregatedAssetId: 'ds:usdt',
+    aggregatedAssetId: 'ob:usdt',
     symbol: 'USDT',
     name: 'Tether USD',
     icon: 'https://assets.coingecko.com/coins/images/325/large/Tether.png',
@@ -28,7 +28,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 6,
   },
   {
-    aggregatedAssetId: 'ds:usdc',
+    aggregatedAssetId: 'ob:usdc',
     symbol: 'USDC',
     name: 'USDC',
     icon: 'https://assets.coingecko.com/coins/images/6319/large/usdc.png',
@@ -44,7 +44,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 6,
   },
   {
-    aggregatedAssetId: 'ds:weth',
+    aggregatedAssetId: 'ob:weth',
     symbol: 'WETH',
     name: 'WETH',
     icon: 'https://assets.coingecko.com/coins/images/2518/large/weth.png',
@@ -61,7 +61,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:eth',
+    aggregatedAssetId: 'ob:eth',
     symbol: 'ETH',
     name: 'Ethereum',
     icon: 'https://assets.coingecko.com/coins/images/279/large/ethereum.png',
@@ -76,7 +76,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:usdc.e',
+    aggregatedAssetId: 'ob:usdc.e',
     symbol: 'USDC.e',
     name: 'USDC.e',
     icon: 'https://coin-images.coingecko.com/coins/images/53064/large/logo.png',
@@ -91,7 +91,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 6,
   },
   {
-    aggregatedAssetId: 'ds:dai',
+    aggregatedAssetId: 'ob:dai',
     symbol: 'DAI',
     name: 'DAI',
     icon: 'https://assets.coingecko.com/coins/images/9956/large/Badge_Dai.png',
@@ -106,7 +106,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:gmx',
+    aggregatedAssetId: 'ob:gmx',
     symbol: 'GMX',
     name: 'GMX',
     icon: 'https://assets.coingecko.com/coins/images/18323/large/arbit.png',
@@ -117,7 +117,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:wld',
+    aggregatedAssetId: 'ob:wld',
     symbol: 'WLD',
     name: 'Worldcoin',
     icon: 'https://assets.coingecko.com/coins/images/31069/large/worldcoin.jpeg',
@@ -128,7 +128,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:brett',
+    aggregatedAssetId: 'ob:brett',
     symbol: 'BRETT',
     name: 'Brett',
     icon: 'https://assets.coingecko.com/coins/images/35529/large/1000050750.png',
@@ -138,7 +138,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:apepe',
+    aggregatedAssetId: 'ob:apepe',
     symbol: 'APEPE',
     name: 'Ape and Pepe',
     icon: 'https://assets.coingecko.com/coins/images/39614/large/APEPE_200.png',
@@ -148,7 +148,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:wbtc',
+    aggregatedAssetId: 'ob:wbtc',
     symbol: 'wBTC',
     name: 'Wrapped BTC',
     icon: 'https://coin-images.coingecko.com/coins/images/7598/large/wrapped_bitcoin_wbtc.png',
@@ -162,7 +162,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 8,
   },
   {
-    aggregatedAssetId: 'ds:link',
+    aggregatedAssetId: 'ob:link',
     symbol: 'LINK',
     name: 'ChainLink Token',
     icon: 'https://coin-images.coingecko.com/coins/images/877/large/chainlink-new-logo.png',
@@ -177,7 +177,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:uni',
+    aggregatedAssetId: 'ob:uni',
     symbol: 'UNI',
     name: 'Uniswap',
     icon: 'https://coin-images.coingecko.com/coins/images/12504/large/uniswap-logo.png',
@@ -192,7 +192,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:pepe',
+    aggregatedAssetId: 'ob:pepe',
     symbol: 'PEPE',
     name: 'Pepe',
     icon: 'https://coin-images.coingecko.com/coins/images/29850/large/pepe-token.jpeg',
@@ -204,7 +204,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:arb',
+    aggregatedAssetId: 'ob:arb',
     symbol: 'ARB',
     name: 'Arbitrum',
     icon: 'https://coin-images.coingecko.com/coins/images/16547/large/arb.jpg',
@@ -215,7 +215,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:grt',
+    aggregatedAssetId: 'ob:grt',
     symbol: 'GRT',
     name: 'Graph Token',
     icon: 'https://coin-images.coingecko.com/coins/images/13397/large/Graph_Token.png',
@@ -228,7 +228,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:ldo',
+    aggregatedAssetId: 'ob:ldo',
     symbol: 'LDO',
     name: 'Lido DAO',
     icon: 'https://coin-images.coingecko.com/coins/images/13573/large/Lido_DAO.png',
@@ -241,7 +241,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:ezeth',
+    aggregatedAssetId: 'ob:ezeth',
     symbol: 'ezETH',
     name: 'Renzo Restaked ETH',
     icon: 'https://coin-images.coingecko.com/coins/images/34753/large/Ezeth_logo_circle.png',
@@ -256,7 +256,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:weeth',
+    aggregatedAssetId: 'ob:weeth',
     symbol: 'weETH',
     name: 'Wrapped eETH',
     icon: 'https://coin-images.coingecko.com/coins/images/33033/large/weETH.png',
@@ -267,7 +267,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:pendle',
+    aggregatedAssetId: 'ob:pendle',
     symbol: 'PENDLE',
     name: 'Pendle',
     icon: 'https://coin-images.coingecko.com/coins/images/15069/large/Pendle_Logo_Normal-03.png',
@@ -280,7 +280,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:ape',
+    aggregatedAssetId: 'ob:ape',
     symbol: 'APE',
     name: 'ApeCoin',
     icon: 'https://coin-images.coingecko.com/coins/images/24383/large/apecoin.jpg',
@@ -292,7 +292,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:usdd',
+    aggregatedAssetId: 'ob:usdd',
     symbol: 'USDD',
     name: 'Decentralized USD',
     icon: 'https://coin-images.coingecko.com/coins/images/25380/large/UUSD.jpg',
@@ -305,7 +305,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:w',
+    aggregatedAssetId: 'ob:w',
     symbol: 'W',
     name: 'Wormhole',
     icon: 'https://coin-images.coingecko.com/coins/images/35087/large/womrhole_logo_full_color_rgb_2000px_72ppi_fb766ac85a.png',
@@ -318,7 +318,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:frax',
+    aggregatedAssetId: 'ob:frax',
     symbol: 'FRAX',
     name: 'Frax',
     icon: 'https://coin-images.coingecko.com/coins/images/13423/large/frax.png',
@@ -333,7 +333,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:axl',
+    aggregatedAssetId: 'ob:axl',
     symbol: 'AXL',
     name: 'Axelar',
     icon: 'https://coin-images.coingecko.com/coins/images/27277/large/V-65_xQ1_400x400.jpeg',
@@ -348,7 +348,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 6,
   },
   {
-    aggregatedAssetId: 'ds:gno',
+    aggregatedAssetId: 'ob:gno',
     symbol: 'GNO',
     name: 'Gnosis',
     icon: 'https://coin-images.coingecko.com/coins/images/662/large/logo_square_simple_300px.png?1696501854',
@@ -358,7 +358,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:cake',
+    aggregatedAssetId: 'ob:cake',
     symbol: 'CAKE',
     name: 'PancakeSwap',
     icon: 'https://coin-images.coingecko.com/coins/images/12632/large/pancakeswap-cake-logo_%281%29.png',
@@ -372,7 +372,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:zro',
+    aggregatedAssetId: 'ob:zro',
     symbol: 'ZRO',
     name: 'LayerZero',
     icon: 'https://coin-images.coingecko.com/coins/images/28206/large/ftxG9_TJ_400x400.jpeg',
@@ -388,7 +388,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:lpt',
+    aggregatedAssetId: 'ob:lpt',
     symbol: 'LPT',
     name: 'Livepeer',
     icon: 'https://coin-images.coingecko.com/coins/images/7137/large/badge-logo-circuit-green.png',
@@ -399,7 +399,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:wsteth',
+    aggregatedAssetId: 'ob:wsteth',
     symbol: 'wstETH',
     name: 'Wrapped liquid staked Ether 2.0',
     icon: 'https://coin-images.coingecko.com/coins/images/18834/large/wstETH.png',
@@ -414,7 +414,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:op',
+    aggregatedAssetId: 'ob:op',
     symbol: 'OP',
     name: 'Optimism',
     icon: 'https://coin-images.coingecko.com/coins/images/25244/large/Optimism.png',
@@ -424,7 +424,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:cbeth',
+    aggregatedAssetId: 'ob:cbeth',
     symbol: 'cbETH',
     name: 'Coinbase Wrapped Staked ETH',
     icon: 'https://coin-images.coingecko.com/coins/images/27008/large/cbeth.png',
@@ -438,7 +438,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:snx',
+    aggregatedAssetId: 'ob:snx',
     symbol: 'SNX',
     name: 'Synthetix Network',
     icon: 'https://coin-images.coingecko.com/coins/images/3406/large/SNX.png',
@@ -452,7 +452,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:woo',
+    aggregatedAssetId: 'ob:woo',
     symbol: 'WOO',
     name: 'WOO',
     icon: 'https://coin-images.coingecko.com/coins/images/12921/large/WOO_Logos_2023_Profile_Pic_WOO.png',
@@ -469,7 +469,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:reth',
+    aggregatedAssetId: 'ob:reth',
     symbol: 'rETH',
     name: 'Rocket Pool ETH',
     icon: 'https://coin-images.coingecko.com/coins/images/20764/large/reth.png',
@@ -483,7 +483,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:cbbtc',
+    aggregatedAssetId: 'ob:cbbtc',
     symbol: 'cbBTC',
     name: 'Coinbase Wrapped BTC',
     icon: 'https://coin-images.coingecko.com/coins/images/40143/large/cbbtc.webp',
@@ -494,7 +494,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 8,
   },
   {
-    aggregatedAssetId: 'ds:aero',
+    aggregatedAssetId: 'ob:aero',
     symbol: 'AERO',
     name: 'Aerodrome',
     icon: 'https://coin-images.coingecko.com/coins/images/31745/large/token.png',
@@ -504,7 +504,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:prime',
+    aggregatedAssetId: 'ob:prime',
     symbol: 'PRIME',
     name: 'Echelon Prime',
     icon: 'https://coin-images.coingecko.com/coins/images/29053/large/prime-logo-small-border_%282%29.png',
@@ -515,7 +515,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:1inch',
+    aggregatedAssetId: 'ob:1inch',
     symbol: '1INCH',
     name: '1INCH',
     icon: 'https://coin-images.coingecko.com/coins/images/13469/large/1inch-token.png',
@@ -529,7 +529,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:crv',
+    aggregatedAssetId: 'ob:crv',
     symbol: 'CRV',
     name: 'Curve DAO',
     icon: 'https://coin-images.coingecko.com/coins/images/12124/large/Curve.png',
@@ -543,7 +543,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:shib',
+    aggregatedAssetId: 'ob:shib',
     symbol: 'SHIB',
     name: 'SHIBA INU',
     icon: 'https://coin-images.coingecko.com/coins/images/11939/large/shiba.png?1696511800',
@@ -554,7 +554,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:aave',
+    aggregatedAssetId: 'ob:aave',
     symbol: 'AAVE',
     name: 'Aave',
     icon: 'https://coin-images.coingecko.com/coins/images/12645/large/aave-token-round.png',
@@ -569,7 +569,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:mana',
+    aggregatedAssetId: 'ob:mana',
     symbol: 'MANA',
     name: 'Decentraland',
     icon: 'https://coin-images.coingecko.com/coins/images/878/large/decentraland-mana.png?1696502010',
@@ -580,7 +580,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:mkr',
+    aggregatedAssetId: 'ob:mkr',
     symbol: 'MKR',
     name: 'Maker',
     icon: 'https://coin-images.coingecko.com/coins/images/1364/large/Mark_Maker.png?1696502423',
@@ -592,7 +592,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:virtual',
+    aggregatedAssetId: 'ob:virtual',
     symbol: 'VIRTUAL',
     name: 'Virtual Protocol',
     icon: 'https://coin-images.coingecko.com/coins/images/34057/large/LOGOMARK.png',
@@ -603,7 +603,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:mog',
+    aggregatedAssetId: 'ob:mog',
     symbol: 'MOG',
     name: 'Mog Coin',
     icon: 'https://coin-images.coingecko.com/coins/images/31059/large/MOG_LOGO_200x200.png',
@@ -614,7 +614,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:degen',
+    aggregatedAssetId: 'ob:degen',
     symbol: 'DEGEN',
     name: 'Degen (Base)',
     icon: 'https://coin-images.coingecko.com/coins/images/34515/large/android-chrome-512x512.png',
@@ -624,7 +624,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:spx',
+    aggregatedAssetId: 'ob:spx',
     symbol: 'SPX',
     name: 'SPX6900',
     icon: 'https://coin-images.coingecko.com/coins/images/31401/large/centeredcoin_%281%29.png',
@@ -635,7 +635,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 8,
   },
   {
-    aggregatedAssetId: 'ds:keycat',
+    aggregatedAssetId: 'ob:keycat',
     symbol: 'KEYCAT',
     name: 'Keyboard Cat (Base)',
     icon: 'https://coin-images.coingecko.com/coins/images/36608/large/IMG_9500.jpeg',
@@ -645,7 +645,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:trump',
+    aggregatedAssetId: 'ob:trump',
     symbol: 'TRUMP',
     name: 'MAGA',
     icon: 'https://coin-images.coingecko.com/coins/images/31498/large/Maga-Trump-Logo-200px.png',
@@ -657,7 +657,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 9,
   },
   {
-    aggregatedAssetId: 'ds:alb',
+    aggregatedAssetId: 'ob:alb',
     symbol: 'ALB',
     name: 'Alien Base',
     icon: 'https://coin-images.coingecko.com/coins/images/31301/large/ALB.png',
@@ -667,7 +667,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:miggles',
+    aggregatedAssetId: 'ob:miggles',
     symbol: 'MIGGLES',
     name: 'Mister Miggles',
     icon: 'https://coin-images.coingecko.com/coins/images/39251/large/New_LOGO.png',
@@ -677,7 +677,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:7007',
+    aggregatedAssetId: 'ob:7007',
     symbol: '7007',
     name: 'Token7007',
     icon: 'https://coin-images.coingecko.com/coins/images/55626/large/7007_Black_Logo.png',
@@ -688,7 +688,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:eth+',
+    aggregatedAssetId: 'ob:eth+',
     symbol: 'ETH+',
     name: 'ETHPlus',
     icon: 'https://coin-images.coingecko.com/coins/images/38061/large/ETH__Logo.png?1716440789',
@@ -699,7 +699,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:usd+',
+    aggregatedAssetId: 'ob:usd+',
     symbol: 'USD+',
     name: 'Overnight.fi USD+',
     icon: 'https://coin-images.coingecko.com/coins/images/25757/large/USD__logo.png',
@@ -711,7 +711,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 6,
   },
   {
-    aggregatedAssetId: 'ds:ausd',
+    aggregatedAssetId: 'ob:ausd',
     symbol: 'AUSD',
     name: 'AUSD',
     icon: 'https://coin-images.coingecko.com/coins/images/39284/large/Circle_Agora_White_on_Olive_1080px.png?1722961274',
@@ -723,7 +723,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 6,
   },
   {
-    aggregatedAssetId: 'ds:solvbtc',
+    aggregatedAssetId: 'ob:solvbtc',
     symbol: 'SOLVBTC',
     name: 'Solv Protocol SolvBTC',
     icon: 'https://coin-images.coingecko.com/coins/images/36800/large/solvBTC.png?1719810684',
@@ -738,7 +738,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:joe',
+    aggregatedAssetId: 'ob:joe',
     symbol: 'JOE',
     name: 'JOE',
     icon: 'https://coin-images.coingecko.com/coins/images/17569/large/LFJ_JOE_Logo.png?1727200941',
@@ -749,7 +749,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:savax',
+    aggregatedAssetId: 'ob:savax',
     symbol: 'sAVAX',
     name: 'BENQI Liquid Staked',
     icon: 'https://coin-images.coingecko.com/coins/images/23657/large/savax_blue.png?1696522860',
@@ -759,7 +759,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:qi',
+    aggregatedAssetId: 'ob:qi',
     symbol: 'QI',
     name: 'BENQI',
     icon: 'https://coin-images.coingecko.com/coins/images/16362/large/GergDDN3_400x400.jpg?1696515961',
@@ -769,7 +769,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:coq',
+    aggregatedAssetId: 'ob:coq',
     symbol: 'COQ',
     name: 'Coq Inu',
     icon: 'https://coin-images.coingecko.com/coins/images/33511/large/Coin_CoqInu_1200px.png?1702041053',
@@ -779,7 +779,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:susd',
+    aggregatedAssetId: 'ob:susd',
     symbol: 'SUSD',
     name: 'sUSD',
     icon: 'https://coin-images.coingecko.com/coins/images/33669/large/sUSDe-Symbol-Color.png',
@@ -790,7 +790,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:dola',
+    aggregatedAssetId: 'ob:dola',
     symbol: 'DOLA',
     name: 'DOLA',
     icon: 'https://coin-images.coingecko.com/coins/images/14287/large/dola.png',
@@ -804,7 +804,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:lusd',
+    aggregatedAssetId: 'ob:lusd',
     symbol: 'LUSD',
     name: 'Liquity USD',
     icon: 'https://coin-images.coingecko.com/coins/images/39651/large/RLUSD_200x200_%281%29.png',
@@ -818,7 +818,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:toshi',
+    aggregatedAssetId: 'ob:toshi',
     symbol: 'TOSHI',
     name: 'Toshi',
     icon: 'https://coin-images.coingecko.com/coins/images/31126/large/Toshi_Logo_-_Circular.png',
@@ -828,7 +828,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:wavax',
+    aggregatedAssetId: 'ob:wavax',
     symbol: 'WAVAX',
     name: 'Wrapped AVAX',
     icon: 'https://coin-images.coingecko.com/coins/images/15075/large/wrapped-avax.png?1696514734',
@@ -838,7 +838,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:normie',
+    aggregatedAssetId: 'ob:normie',
     symbol: 'NORMIE',
     name: 'NORMIE',
     icon: 'https://coin-images.coingecko.com/coins/images/35880/large/NORMIEsite.png',
@@ -848,7 +848,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 9,
   },
   {
-    aggregatedAssetId: 'ds:luna',
+    aggregatedAssetId: 'ob:luna',
     symbol: 'LUNA',
     name: 'Luna by Virtuals',
     icon: 'https://coin-images.coingecko.com/coins/images/50880/large/luna.png',
@@ -858,7 +858,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:pear',
+    aggregatedAssetId: 'ob:pear',
     symbol: 'PEAR',
     name: 'Pear Protocol',
     icon: 'https://coin-images.coingecko.com/coins/images/50484/large/pearlogo.jpg',
@@ -868,7 +868,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:velo',
+    aggregatedAssetId: 'ob:velo',
     symbol: 'VELO',
     name: 'Velodrome Finance',
     icon: 'https://coin-images.coingecko.com/coins/images/25783/large/velo.png',
@@ -878,7 +878,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:zkj',
+    aggregatedAssetId: 'ob:zkj',
     symbol: 'ZKJ',
     name: 'Polyhedra Network',
     icon: 'https://coin-images.coingecko.com/coins/images/36198/large/Polyhedra_Symbol_Black_on_White.png?1747150504',
@@ -889,7 +889,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:fdusd',
+    aggregatedAssetId: 'ob:fdusd',
     symbol: 'FDUSD',
     name: 'First Digital USD',
     icon: 'https://coin-images.coingecko.com/coins/images/36198/large/Polyhedra_Symbol_Black_on_White.png?1747150504',
@@ -900,7 +900,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:wbnb',
+    aggregatedAssetId: 'ob:wbnb',
     symbol: 'WBNB',
     name: 'Wrapped BNB',
     icon: 'https://coin-images.coingecko.com/coins/images/12591/large/binance-coin-logo.png?1696512401',
@@ -910,7 +910,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:koge',
+    aggregatedAssetId: 'ob:koge',
     symbol: 'KOGE',
     name: 'KOGE',
     icon: 'https://coin-images.coingecko.com/coins/images/13827/large/bnb48.png?1696513570',
@@ -920,7 +920,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:bnb',
+    aggregatedAssetId: 'ob:bnb',
     symbol: 'BNB',
     name: 'BNB',
     icon: 'https://coin-images.coingecko.com/coins/images/825/large/bnb-icon2_2x.png?1696501970',
@@ -930,7 +930,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:ton',
+    aggregatedAssetId: 'ob:ton',
     symbol: 'TON',
     name: 'Toncoin',
     icon: 'https://coin-images.coingecko.com/coins/images/17980/large/photo_2024-09-10_17.09.00.jpeg?1725963446',
@@ -941,7 +941,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 9,
   },
   {
-    aggregatedAssetId: 'ds:fet',
+    aggregatedAssetId: 'ob:fet',
     symbol: 'FET',
     name: 'Artificial Superintelligence Alliance',
     icon: 'https://coin-images.coingecko.com/coins/images/5681/large/ASI.png?1719827289',
@@ -952,7 +952,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:atom',
+    aggregatedAssetId: 'ob:atom',
     symbol: 'ATOM',
     name: 'Cosmos Hub',
     icon: 'https://coin-images.coingecko.com/coins/images/1481/large/cosmos_hub.png?1696502525',
@@ -962,7 +962,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:lbtc',
+    aggregatedAssetId: 'ob:lbtc',
     symbol: 'LBTC',
     name: 'Lombard Staked BTC',
     icon: 'https://coin-images.coingecko.com/coins/images/39969/large/LBTC_Logo.png?1724959872',
@@ -974,7 +974,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 8,
   },
   {
-    aggregatedAssetId: 'ds:ftn',
+    aggregatedAssetId: 'ob:ftn',
     symbol: 'FTN',
     name: 'Fasttoken',
     icon: 'https://coin-images.coingecko.com/coins/images/28478/large/lightenicon_200x200.png?1696527472',
@@ -987,7 +987,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 8,
   },
   {
-    aggregatedAssetId: 'ds:bonk',
+    aggregatedAssetId: 'ob:bonk',
     symbol: 'BONK',
     name: 'BONK',
     icon: 'https://coin-images.coingecko.com/coins/images/28600/large/bonk.jpg?1696527587',
@@ -1000,7 +1000,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 5,
   },
   {
-    aggregatedAssetId: 'ds:inj',
+    aggregatedAssetId: 'ob:inj',
     symbol: 'INJ',
     name: 'Injective',
     icon: 'https://coin-images.coingecko.com/coins/images/12882/large/Other_200x200.png?1738782212',
@@ -1011,7 +1011,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:floki',
+    aggregatedAssetId: 'ob:floki',
     symbol: 'FLOKI',
     name: 'FLOKI',
     icon: 'https://coin-images.coingecko.com/coins/images/16746/large/PNG_image.png?1696516318',
@@ -1022,7 +1022,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 9,
   },
   {
-    aggregatedAssetId: 'ds:btt',
+    aggregatedAssetId: 'ob:btt',
     symbol: 'BTT',
     name: 'BitTorrent',
     icon: 'https://coin-images.coingecko.com/coins/images/22457/large/btt_logo.png?1696521780',
@@ -1033,7 +1033,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:usdx',
+    aggregatedAssetId: 'ob:usdx',
     symbol: 'USDX',
     name: 'Stables Labs USDX',
     icon: 'https://coin-images.coingecko.com/coins/images/50360/large/USDX200px.png?1731906044',
@@ -1045,7 +1045,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:usd0',
+    aggregatedAssetId: 'ob:usd0',
     symbol: 'USD0',
     name: 'Usual USD',
     icon: 'https://coin-images.coingecko.com/coins/images/38272/large/USD0LOGO.png?1716962811',
@@ -1058,7 +1058,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:dexe',
+    aggregatedAssetId: 'ob:dexe',
     symbol: 'DEXE',
     name: 'DeXe',
     icon: 'https://coin-images.coingecko.com/coins/images/12713/large/DEXE_token_logo.png?1696512514',
@@ -1069,7 +1069,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:xcn',
+    aggregatedAssetId: 'ob:xcn',
     symbol: 'XCN',
     name: 'Onyxcoin',
     icon: 'https://coin-images.coingecko.com/coins/images/24210/large/onyxlogo.jpg?1696523397',
@@ -1081,7 +1081,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:tusd',
+    aggregatedAssetId: 'ob:tusd',
     symbol: 'TUSD',
     name: 'TrueUSD',
     icon: 'https://coin-images.coingecko.com/coins/images/3449/large/tusd.png?1696504140',
@@ -1093,7 +1093,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:comp',
+    aggregatedAssetId: 'ob:comp',
     symbol: 'COMP',
     name: 'Compound',
     icon: 'https://coin-images.coingecko.com/coins/images/10775/large/COMP.png?1696510737',
@@ -1108,7 +1108,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:nft',
+    aggregatedAssetId: 'ob:nft',
     symbol: 'NFT',
     name: 'APENFT',
     icon: 'https://coin-images.coingecko.com/coins/images/15687/large/apenft.jpg?1696515316',
@@ -1119,7 +1119,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 6,
   },
   {
-    aggregatedAssetId: 'ds:pumpbtc',
+    aggregatedAssetId: 'ob:pumpbtc',
     symbol: 'PUMPBTC',
     name: 'pumpBTC',
     icon: 'https://coin-images.coingecko.com/coins/images/39232/large/200pxPumpBTCLogo.png?1721227861',
@@ -1130,7 +1130,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 8,
   },
   {
-    aggregatedAssetId: 'ds:aioz',
+    aggregatedAssetId: 'ob:aioz',
     symbol: 'AIOZ',
     name: 'AIOZ Network',
     icon: 'https://coin-images.coingecko.com/coins/images/14631/large/aioz-logo-200.png?1696514309',
@@ -1141,7 +1141,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:axs',
+    aggregatedAssetId: 'ob:axs',
     symbol: 'AXS',
     name: 'Axie Infinity',
     icon: 'https://coin-images.coingecko.com/coins/images/13029/large/axie_infinity_logo.png?1696512817',
@@ -1152,7 +1152,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:b',
+    aggregatedAssetId: 'ob:b',
     symbol: 'B',
     name: 'BUILDon',
     icon: 'https://coin-images.coingecko.com/coins/images/55974/large/T7asvmCb_400x400.jpg?1747902862',
@@ -1162,7 +1162,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:beam',
+    aggregatedAssetId: 'ob:beam',
     symbol: 'BEAM',
     name: 'Beam',
     icon: 'https://coin-images.coingecko.com/coins/images/32417/large/cgicon.png?1747892021',
@@ -1174,7 +1174,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:twt',
+    aggregatedAssetId: 'ob:twt',
     symbol: 'TWT',
     name: 'Trust Wallet',
     icon: 'https://coin-images.coingecko.com/coins/images/11085/large/Trust.png?1696511026',
@@ -1184,7 +1184,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:matic',
+    aggregatedAssetId: 'ob:matic',
     symbol: 'MATIC',
     name: 'Polygon',
     icon: 'https://coin-images.coingecko.com/coins/images/4713/large/polygon.png?1698233745',
@@ -1195,7 +1195,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:ankr',
+    aggregatedAssetId: 'ob:ankr',
     symbol: 'ANKR',
     name: 'Ankr Network',
     icon: 'https://coin-images.coingecko.com/coins/images/4324/large/U85xTl2.png?1696504928',
@@ -1211,7 +1211,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:knc',
+    aggregatedAssetId: 'ob:knc',
     symbol: 'KNC',
     name: 'Kyber Network Crystal',
     icon: 'https://coin-images.coingecko.com/coins/images/14899/large/RwdVsGcw_400x400.jpg?1696514562',
@@ -1227,7 +1227,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:wpol',
+    aggregatedAssetId: 'ob:wpol',
     symbol: 'WPOL',
     name: 'Wrapped POL',
     icon: 'https://coin-images.coingecko.com/coins/images/14073/large/matic.png?1696513797',
@@ -1238,7 +1238,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:stg',
+    aggregatedAssetId: 'ob:stg',
     symbol: 'STG',
     name: 'Stargate Finance',
     icon: 'https://coin-images.coingecko.com/coins/images/24413/large/STG_LOGO.png?1696523595',
@@ -1255,7 +1255,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:sis',
+    aggregatedAssetId: 'ob:sis',
     symbol: 'SIS',
     name: 'Symbiosis',
     icon: 'https://coin-images.coingecko.com/coins/images/20805/large/SymbiosisFinance_logo-150x150.jpeg?1696520198',
@@ -1268,7 +1268,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:zero',
+    aggregatedAssetId: 'ob:zero',
     symbol: 'ZERO',
     name: 'ZeroLend',
     icon: 'https://coin-images.coingecko.com/coins/images/37375/large/image.png?1714884543',
@@ -1278,7 +1278,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:avax',
+    aggregatedAssetId: 'ob:avax',
     symbol: 'AVAX',
     name: 'Avalanche',
     icon: 'https://coin-images.coingecko.com/coins/images/12559/large/Avalanche_Circle_RedWhite_Trans.png?1696512369',
@@ -1288,14 +1288,14 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:sei',
+    aggregatedAssetId: 'ob:sei',
     symbol: 'SEI',
     name: 'Sei',
     icon: 'https://assets.coingecko.com/coins/images/28205/large/Sei_Logo_-_Transparent.png',
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:hype',
+    aggregatedAssetId: 'ob:hype',
     symbol: 'HYPE',
     name: 'Hype',
     decimals: 18,
@@ -1304,7 +1304,7 @@ export const tokenList: LEGACY_Token[] = [
     },
   },
   {
-    aggregatedAssetId: 'ds:sthype',
+    aggregatedAssetId: 'ob:sthype',
     symbol: 'stHYPE',
     name: 'Staked HYPE',
     address: {
@@ -1313,7 +1313,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:khype',
+    aggregatedAssetId: 'ob:khype',
     symbol: 'kHYPE',
     name: 'Kinetiq Staked HYPE',
     address: {
@@ -1322,7 +1322,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:xsolvbtc',
+    aggregatedAssetId: 'ob:xsolvbtc',
     symbol: 'xSolvBTC',
     name: 'Solv Protocol Staked BTC',
     address: {
@@ -1331,7 +1331,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:ubtc',
+    aggregatedAssetId: 'ob:ubtc',
     symbol: 'UBTC',
     name: 'Unit Bitcoin',
     address: {
@@ -1340,7 +1340,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 8,
   },
   {
-    aggregatedAssetId: 'ds:purr',
+    aggregatedAssetId: 'ob:purr',
     symbol: 'PURR',
     name: 'Purr',
     address: {
@@ -1349,7 +1349,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:hbhype',
+    aggregatedAssetId: 'ob:hbhype',
     symbol: 'hbHYPE',
     name: 'Hyperbeat Ultra HYPE',
     address: {
@@ -1358,7 +1358,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:rusd',
+    aggregatedAssetId: 'ob:rusd',
     symbol: 'rUSD',
     name: 'Reservoir rUSD',
     address: {
@@ -1367,7 +1367,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:hbusdt',
+    aggregatedAssetId: 'ob:hbusdt',
     symbol: 'hbUSDT',
     name: 'Hyperbeat USDT',
     address: {
@@ -1376,7 +1376,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:lhype',
+    aggregatedAssetId: 'ob:lhype',
     symbol: 'LHYPE',
     name: 'Looped Hype',
     address: {
@@ -1385,7 +1385,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:whype',
+    aggregatedAssetId: 'ob:whype',
     symbol: 'WHYPE',
     name: 'Wrapped HYPE',
     address: {
@@ -1394,7 +1394,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:wstusr',
+    aggregatedAssetId: 'ob:wstusr',
     symbol: 'wstUSR',
     name: 'Resolv wstUSR',
     address: {
@@ -1403,7 +1403,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:upump',
+    aggregatedAssetId: 'ob:upump',
     symbol: 'UPUMP',
     name: 'Unit Pump',
     address: {
@@ -1412,7 +1412,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 6,
   },
   {
-    aggregatedAssetId: 'ds:rlp',
+    aggregatedAssetId: 'ob:rlp',
     symbol: 'RLP',
     name: 'Resolv RLP',
     address: {
@@ -1421,7 +1421,7 @@ export const tokenList: LEGACY_Token[] = [
     decimals: 18,
   },
   {
-    aggregatedAssetId: 'ds:feusd',
+    aggregatedAssetId: 'ob:feusd',
     symbol: 'feUSD',
     name: 'Felix feUSD',
     address: {

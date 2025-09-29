@@ -16,7 +16,7 @@ export interface IndividualAssetBalance {
  * Balance information for an aggregated asset
  */
 export interface BalanceByAssetDto {
-  /** The aggregated asset ID (e.g., ds:eth) */
+  /** The aggregated asset ID (e.g., ob:eth) */
   aggregatedAssetId: string;
 
   /** The total balance of the aggregated asset */
