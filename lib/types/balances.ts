@@ -44,7 +44,7 @@ export interface TotalBalance {
 }
 
 /**
- * Complete balance response structure
+ * Complete balance response structure (v2 API)
  */
 export interface BalancesResponse {
   /** Array of balance information for each aggregated asset */
@@ -52,4 +52,62 @@ export interface BalancesResponse {
 
   /** Total balance information */
   totalBalance: TotalBalance;
+}
+
+// ===== V3 API TYPES FOR MULTI-ACCOUNT BALANCES =====
+
+/**
+ * Specific asset balance (for balanceBySpecificAsset array)
+ */
+export interface SpecificAssetBalance {
+  /** The specific asset type (CAIP-19 format) */
+  assetType: string;
+
+  /** The balance of the specific asset */
+  balance: string;
+
+  /** Fiat value of the specific asset */
+  fiatValue: number;
+}
+
+/**
+ * Account addresses parsed from the request
+ */
+export interface BalanceAccountsV3 {
+  /** EVM account address (if provided) */
+  evm?: string;
+
+  /** Solana account address (if provided) */
+  solana?: string;
+}
+
+/**
+ * Complete balance response structure for v3 API (multi-account support)
+ */
+export interface BalancesResponseV3 {
+  /** Parsed account addresses from the request */
+  accounts: BalanceAccountsV3;
+
+  /** Array of balance information for each aggregated asset */
+  balanceByAggregatedAsset: BalanceByAssetDto[];
+
+  /** Array of balance information for specific assets */
+  balanceBySpecificAsset: SpecificAssetBalance[];
+
+  /** Total balance information */
+  totalBalance: TotalBalance;
+}
+
+/**
+ * Parameters for v3 aggregated balance request
+ */
+export interface BalanceParamsV3 {
+  /** Account identifiers in CAIP-10 format or custom format, comma-separated */
+  account: string;
+
+  /** Optional: Aggregated asset IDs to filter by, comma-separated (e.g., "ob:eth,ob:usdc") */
+  aggregatedAssetId?: string;
+
+  /** Optional: Additional token asset IDs to include, comma-separated */
+  assetId?: string;
 }

@@ -6,7 +6,7 @@ export interface LEGACY_Token {
   symbol: string;
   name?: string;
   icon?: string;
-  address?: Record<number, string>;
+  address?: Record<string, string>;
   decimals: number;
 }
 
@@ -1428,6 +1428,16 @@ export const tokenList: LEGACY_Token[] = [
       '999': '0x02c6a2fa58cc01a18b8d9e00ea48d65e4df26c70',
     },
     decimals: 18,
+  },
+  {
+    aggregatedAssetId: 'ob:sol',
+    symbol: 'SOL',
+    name: 'Solana',
+    icon: 'https://storage.googleapis.com/onebalance-public-assets/networks/solana.svg',
+    address: {
+      solana: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+    },
+    decimals: 9,
   },
 ] as const;
 
