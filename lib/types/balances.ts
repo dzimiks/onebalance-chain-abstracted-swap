@@ -105,7 +105,7 @@ export interface BalanceParamsV3 {
   /** Account identifiers in CAIP-10 format or custom format, comma-separated */
   account: string;
 
-  /** Optional: Aggregated asset IDs to filter by, comma-separated (e.g., "ds:eth,ds:usdc") */
+  /** Optional: Aggregated asset IDs to filter by, comma-separated (e.g., "ob:eth,ob:usdc") */
   aggregatedAssetId?: string;
 
   /** Optional: Additional token asset IDs to include, comma-separated */

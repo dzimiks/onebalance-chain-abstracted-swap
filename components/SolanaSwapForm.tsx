@@ -13,7 +13,7 @@ import { useQuotesV3 } from '@/lib/hooks/useQuotesV3';
 import { useBalancesV3 } from '@/lib/hooks/useBalancesV3';
 import { useEmbeddedWallet } from '@/lib/hooks/useEmbeddedWallet';
 import { usePredictedAddress } from '@/lib/contexts/PredictedAddressContext';
-import { ENHANCED_SOLANA_ASSETS } from '@/lib/constants';
+import { tokenList } from '@/lib/constants';
 import { QuoteRequestV3, AccountV3, SolanaAccount, EVMRoleBasedAccount } from '@/lib/types/quote';
 import { formatTokenAmount, parseTokenAmount } from '@/lib/utils/token';
 import { formatErrorForDisplay } from '@/lib/utils/errorHandling';
@@ -29,8 +29,8 @@ export const SolanaSwapForm = () => {
   const { balances, fetchAggregatedBalance } = useBalancesV3();
 
   // Asset state - following SwapForm pattern
-  const [sourceAsset, setSourceAsset] = useState<string>('ds:sol');
-  const [targetAsset, setTargetAsset] = useState<string>('ds:usdc');
+  const [sourceAsset, setSourceAsset] = useState<string>('ob:sol');
+  const [targetAsset, setTargetAsset] = useState<string>('ob:usdc');
 
   // Amount state - following SwapForm pattern
   const [fromAmount, setFromAmount] = useState<string>('');
@@ -68,9 +68,9 @@ export const SolanaSwapForm = () => {
 
   // Get selected assets - following SwapForm pattern
   const selectedSourceAsset =
-    ENHANCED_SOLANA_ASSETS.find(asset => asset.aggregatedAssetId === sourceAsset) ?? null;
+    tokenList.find(asset => asset.aggregatedAssetId === sourceAsset) ?? null;
   const selectedTargetAsset =
-    ENHANCED_SOLANA_ASSETS.find(asset => asset.aggregatedAssetId === targetAsset) ?? null;
+    tokenList.find(asset => asset.aggregatedAssetId === targetAsset) ?? null;
 
   // Update balance state when balances or selected assets change - following SwapForm pattern
   useEffect(() => {
@@ -373,13 +373,13 @@ export const SolanaSwapForm = () => {
           <div>
             <TokenInput
               label="Sell"
-              assets={ENHANCED_SOLANA_ASSETS as any}
+              assets={tokenList as any}
               selectedAsset={sourceAsset}
               onAssetChange={value => {
                 setSourceAsset(value);
                 if (fromAmount && value !== sourceAsset) {
                   // Refresh quote when asset changes
-                  const asset = ENHANCED_SOLANA_ASSETS.find(a => a.aggregatedAssetId === value);
+                  const asset = tokenList.find(a => a.aggregatedAssetId === value);
                   if (asset) {
                     const parsed = parseTokenAmount(fromAmount, asset.decimals || 9);
                     setParsedFromAmount(parsed);
@@ -482,7 +482,7 @@ export const SolanaSwapForm = () => {
           <div>
             <TokenInput
               label="Buy"
-              assets={ENHANCED_SOLANA_ASSETS as any}
+              assets={tokenList as any}
               selectedAsset={targetAsset}
               onAssetChange={value => {
                 setTargetAsset(value);

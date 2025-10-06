@@ -25,7 +25,7 @@ export const useBalancesV3 = () => {
   /**
    * Fetch aggregated balances using the v3 API
    * @param accounts Array of account identifiers (CAIP-10 format or custom)
-   * @param aggregatedAssetId Optional: comma-separated list of aggregated asset IDs (e.g., "ds:eth,ds:usdc")
+   * @param aggregatedAssetId Optional: comma-separated list of aggregated asset IDs (e.g., "ob:eth,ob:usdc")
    * @param assetId Optional: comma-separated list of specific asset IDs
    */
   const fetchAggregatedBalance = useCallback(
@@ -48,7 +48,7 @@ export const useBalancesV3 = () => {
 
         // If no filters are provided, default to a common set of aggregated assets
         if (!aggregatedAssetId && !assetId) {
-          params.aggregatedAssetId = 'ds:eth,ds:usdc,ds:usdt,ds:sol'; // Default to common assets
+          params.aggregatedAssetId = 'ob:eth,ob:usdc,ob:usdt,ob:sol'; // Default to common assets
         }
 
         const data = await balancesApi.getAggregatedBalanceV3(params);

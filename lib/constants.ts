@@ -1429,19 +1429,8 @@ export const tokenList: LEGACY_Token[] = [
     },
     decimals: 18,
   },
-] as const;
-
-export const findTokenBySymbol = (symbol: string): LEGACY_Token | null =>
-  tokenList.find(token => token.symbol.toLowerCase() === symbol.toLowerCase()) || null;
-
-export const findTokenByAggregatedAssetId = (aggregatedAssetId: string): LEGACY_Token | null =>
-  tokenList.find(token => token.aggregatedAssetId === aggregatedAssetId) || null;
-
-// Enhanced asset list for Solana swaps - includes SOL + all aggregated assets
-export const ENHANCED_SOLANA_ASSETS: LEGACY_Token[] = [
-  // Always include SOL as the primary Solana asset
   {
-    aggregatedAssetId: 'ds:sol',
+    aggregatedAssetId: 'ob:sol',
     symbol: 'SOL',
     name: 'Solana',
     icon: 'https://storage.googleapis.com/onebalance-public-assets/networks/solana.svg',
@@ -1450,22 +1439,10 @@ export const ENHANCED_SOLANA_ASSETS: LEGACY_Token[] = [
     },
     decimals: 9,
   },
-  // {
-  //   aggregatedAssetId: 'ds:usdc',
-  //   symbol: 'USDC',
-  //   name: 'USDC',
-  //   icon: 'https://assets.coingecko.com/coins/images/6319/large/usdc.png',
-  //   address: {
-  //     '1': '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-  //     '10': '0x0b2c639c533813f4aa9d7837caf62653d097ff85',
-  //     '56': '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
-  //     '137': '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
-  //     '8453': '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
-  //     '42161': '0xaf88d065e77c8cc2239327c5edb3a432268e5831',
-  //     '43114': '0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E',
-  //   },
-  //   decimals: 6,
-  // },
-  // Add all aggregated assets from tokenList (cross-chain capable)
-  ...tokenList,
-];
+] as const;
+
+export const findTokenBySymbol = (symbol: string): LEGACY_Token | null =>
+  tokenList.find(token => token.symbol.toLowerCase() === symbol.toLowerCase()) || null;
+
+export const findTokenByAggregatedAssetId = (aggregatedAssetId: string): LEGACY_Token | null =>
+  tokenList.find(token => token.aggregatedAssetId === aggregatedAssetId) || null;
