@@ -7,9 +7,11 @@ import {
   SolanaOperation,
   EVMOperation,
 } from '@/lib/types/quote';
-import { signSolanaQuote, signSolanaOperation } from '@/lib/utils/solanaSigning';
+import { signSolanaQuote, signSolanaOperationWithHook } from '@/lib/utils/solanaSigning';
 import { signTypedDataWithPrivy, sequentialPromises } from '@/lib/utils/privySigningUtils';
 import { processApiError, type ProcessedError } from '@/lib/utils/errorHandling';
+import type { ConnectedStandardSolanaWallet } from '@privy-io/react-auth/solana';
+import { useSignTransaction } from '@privy-io/react-auth/solana';
 
 /**
  * Hook for managing v3 quotes (Solana and cross-chain operations)
@@ -26,6 +28,9 @@ export const useQuotesV3 = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<ProcessedError | null>(null);
   const [isPolling, setIsPolling] = useState(false);
+
+  // Privy v3 hook for signing Solana transactions
+  const { signTransaction: signSolanaTransaction } = useSignTransaction();
 
   const getQuote = useCallback(async (request: QuoteRequestV3): Promise<QuoteV3 | null> => {
     setLoading(true);
@@ -62,7 +67,11 @@ export const useQuotesV3 = () => {
   // Mixed signing - single pass through operations (new approach)
   // Key difference: Uses sequential signing instead of Promise.all (parallel)
   const signMixedQuote = useCallback(
-    async (quote: QuoteV3, solanaWallet?: any, evmWallet?: any): Promise<QuoteV3> => {
+    async (
+      quote: QuoteV3,
+      solanaWallet?: ConnectedStandardSolanaWallet,
+      evmWallet?: any
+    ): Promise<QuoteV3> => {
       console.log('Signing mixed quote with operations:', quote.originChainsOperations.length);
 
       // Use sequential signing instead of parallel to match working approach
@@ -85,7 +94,11 @@ export const useQuotesV3 = () => {
           }
 
           console.log('Signing Solana operation...');
-          const signature = await signSolanaOperation(solanaOp.dataToSign, solanaWallet);
+          const signature = await signSolanaOperationWithHook(
+            solanaOp.dataToSign,
+            solanaWallet,
+            signSolanaTransaction
+          );
 
           signedOperations.push({
             ...solanaOp,
@@ -139,12 +152,16 @@ export const useQuotesV3 = () => {
       console.log('Mixed quote signing completed');
       return signedQuote;
     },
-    []
+    [signSolanaTransaction]
   );
 
   // Sequential signing following useQuotes.ts pattern (original approach for comparison)
   const signQuote = useCallback(
-    async (quote: QuoteV3, solanaWallet?: any, evmWallet?: any): Promise<QuoteV3> => {
+    async (
+      quote: QuoteV3,
+      solanaWallet?: ConnectedStandardSolanaWallet,
+      evmWallet?: any
+    ): Promise<QuoteV3> => {
       console.log('Signing v3 quote with operations:', quote.originChainsOperations.length);
 
       let signedQuote = { ...quote };
@@ -186,7 +203,11 @@ export const useQuotesV3 = () => {
   );
 
   const executeQuote = useCallback(
-    async (quoteToExecute: QuoteV3, solanaWallet?: any, evmWallet?: any): Promise<boolean> => {
+    async (
+      quoteToExecute: QuoteV3,
+      solanaWallet?: ConnectedStandardSolanaWallet,
+      evmWallet?: any
+    ): Promise<boolean> => {
       setLoading(true);
       setError(null);
 

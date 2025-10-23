@@ -1,21 +1,23 @@
-import { useSolanaWallets } from '@privy-io/react-auth';
-import { PublicKey } from '@solana/web3.js';
+import { useWallets, type ConnectedStandardSolanaWallet } from '@privy-io/react-auth/solana';
 
 /**
  * Hook to manage Solana wallet operations
+ * Updated for Privy React SDK v3
  */
 export const useSolanaWallet = () => {
-  const { wallets, ready } = useSolanaWallets();
+  const { ready, wallets } = useWallets();
 
-  // Get the embedded Solana wallet
-  const embeddedWallet =
-    wallets?.find(wallet => wallet.walletClientType === 'privy') || wallets[0] || null;
+  // Get the first Solana wallet (embedded or connected)
+  // In v3, useWallets() from solana entrypoint returns only Solana wallets
+  const embeddedWallet: ConnectedStandardSolanaWallet | null = wallets?.[0] || null;
 
-  // Validate Solana address
+  // Validate Solana address (basic validation without @solana/web3.js)
   const isValidSolanaAddress = (address: string): boolean => {
     try {
-      new PublicKey(address);
-      return true;
+      // Basic validation: Solana addresses are 32-44 characters base58
+      if (address.length < 32 || address.length > 44) return false;
+      // Base58 character set validation
+      return /^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(address);
     } catch {
       return false;
     }
